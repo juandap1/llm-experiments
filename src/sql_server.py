@@ -78,3 +78,11 @@ class MySQLClient:
         with self.connection.cursor() as cursor:
             cursor.execute(query, params or ())
             return cursor.fetchall()
+
+
+client = MySQLClient()
+client.connect()
+transactions = client.fetch_all("SELECT * FROM transactions")
+print("All transactions:", transactions)
+
+client.close()

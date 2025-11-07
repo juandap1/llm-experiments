@@ -48,6 +48,27 @@ h6 {
   margin: 0;
 }
 
+.btn {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--secondary);
+  padding: 5px 15px;
+  background: var(--secondary);
+  outline: none;
+  gap: 5px;
+  border-radius: 5px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn.full,
+.alt-btn.full {
+  width: 100%;
+  justify-content: center;
+}
+
 .alt-btn {
   display: flex;
   align-items: center;
@@ -64,6 +85,7 @@ h6 {
   transition: all 0.3s;
 }
 
-.alt-btn:hover {
+.alt-btn:hover,
+.btn:hover {
   scale: 1.03;
 }
