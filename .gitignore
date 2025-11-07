@@ -1,0 +1,7 @@
+model/
+venv/
+interface/
+output/
+__pycache__/
+.cache/
+background_video.mp4
