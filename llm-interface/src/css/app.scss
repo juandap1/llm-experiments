@@ -1,1 +1,69 @@
 // app global css in SCSS form
+:root {
+  --border-color: rgba(255, 255, 255, 0.1);
+  --primary: #111;
+  --secondary: #06d671;
+  --txt-color: #eee;
+}
+
+body {
+  background-color: #161616;
+  color: var(--txt-color);
+}
+
+.basic-page {
+  padding: 30px;
+}
+
+.navbar {
+  border-bottom: 1px solid var(--border-color);
+  background-color: var(--primary);
+}
+
+.sidebar {
+  background-color: var(--primary);
+  border-right: 1px solid var(--border-color);
+}
+
+.sidebar-header {
+  height: 50px;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  padding: 0px 15px;
+}
+
+.logo {
+  font-size: 28px;
+  color: var(--secondary);
+  font-weight: 500;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+}
+
+.alt-btn {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--txt-color);
+  padding: 5px 15px;
+  background: transparent;
+  outline: none;
+  color: var(--txt-color);
+  gap: 5px;
+  border-radius: 5px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.alt-btn:hover {
+  scale: 1.03;
+}
