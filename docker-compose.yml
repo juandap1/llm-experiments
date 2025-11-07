@@ -9,3 +9,20 @@ services:
       - "6333:6333" # Qdrant API port
     volumes:
       - ./qdrant_storage:/qdrant/storage
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: my_database
+      MYSQL_USER: my_user
+      MYSQL_PASSWORD: my_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  qdrant_data:
+  mysql_data:
