@@ -2,12 +2,17 @@ from transformers import AutoTokenizer, AutoModelForCausalLM, TextStreamer
 import torch
 
 class CustomStreamer(TextStreamer):
-    def on_finalized_text(self, text: str, stream_end: bool = False):
-        # Called whenever text is ready to be shown
-        print(text, end="", flush=True)
-        # You could instead: send via websocket, append to a variable, etc.
+    def __init__(self, tokenizer: AutoTokenizer, **kwargs):
+        super().__init__(tokenizer, **kwargs)
 
-modelPath = r"C:\Users\mhb90\OneDrive\Documents\GitHub\llama"
+    def on_finalized_text(self, text: str, stream_end: bool = False):
+        clean_text = self.tokenizer.decode(
+            self.tokenizer.encode(text, add_special_tokens=False),
+            skip_special_tokens=True
+        )
+        print(clean_text, end="", flush=True)
+
+modelPath = r"../model"
 
 tokenizer = AutoTokenizer.from_pretrained(modelPath)
 model = AutoModelForCausalLM.from_pretrained(modelPath, torch_dtype=torch.bfloat16, device_map="auto")
@@ -20,11 +25,11 @@ inputs = tokenizer("Explain quantum computing simply:", return_tensors="pt").to(
 
 # _ = model.generate(**inputs, streamer=streamer, max_new_tokens=100)
 
-while True:
-    user_input = input("You: ")
-    if user_input.lower() in ("quit", "exit"):
-        break
 
-    inputs = tokenizer(user_input, return_tensors="pt").to(model.device)
-    _ = model.generate(**inputs, streamer=streamer, max_new_tokens=200)
-    print("\n")
+user_input = input("You: ")
+# if user_input.lower() in ("quit", "exit"):
+#     break
+
+inputs = tokenizer(user_input, return_tensors="pt").to(model.device)
+_ = model.generate(**inputs, streamer=streamer, max_new_tokens=200, eos_token_id=tokenizer.eos_token_id)
+print("\n")
