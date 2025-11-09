@@ -6,5 +6,6 @@ CREATE TABLE IF NOT EXISTS transactions (
     ticker VARCHAR(100),
     share_count FLOAT,
     share_price FLOAT,
-    transaction_date DATE
+    transaction_date DATE,
+    buying BOOLEAN
 );
