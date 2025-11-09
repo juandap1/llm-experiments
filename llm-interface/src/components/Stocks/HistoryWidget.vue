@@ -7,17 +7,9 @@
         Add
       </button>
     </div>
-    <div class="hist-item" v-for="i in 3" :key="i">
-      <div class="hist-row main">
-        <div>AMZN market buy</div>
-        <div>-235.97</div>
-      </div>
-      <div class="hist-row alt">
-        <div>Sep 23, 2025</div>
-        <div>1.06073 shares at $222.46</div>
-      </div>
-      <hr />
-    </div>
+    <template v-if="history != null">
+      <history-item v-for="i in history" :key="i" v-bind="i" />
+    </template>
     <q-dialog v-model="addModal">
       <div class="modal">
         <h6>Add Stock Purchase</h6>
@@ -71,8 +63,10 @@
 <script>
 import { api } from 'src/boot/axios'
 import { defineComponent } from 'vue'
+import HistoryItem from './Items/HistoryItem.vue'
 
 export default defineComponent({
+  components: { HistoryItem },
   name: 'HistoryWidget',
   props: {},
   data() {
@@ -83,6 +77,7 @@ export default defineComponent({
       price: 0,
       purchaseDate: '2025-11-08',
       buy: true,
+      history: null,
     }
   },
   methods: {
@@ -113,6 +108,7 @@ export default defineComponent({
         })
         .then((response) => {
           console.log(response)
+          this.history = response.data
         })
         .catch(console.error)
     },
@@ -133,37 +129,7 @@ export default defineComponent({
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 10px;
-}
-
-.hist-item {
-  padding: 0px 10px;
-}
-
-.hist-row {
-  display: flex;
-  justify-content: space-between;
-
-  :last-child {
-    justify-content: flex-end;
-  }
-}
-
-.hist-row.main {
-  font-weight: bold;
-}
-
-.hist-row.alt {
-  font-weight: bold;
-  color: #aaa;
-  font-size: 13px;
-}
-
-hr {
-  border: none; /* Remove default borders */
-  height: 1px; /* Set the height of the line */
-  background-color: var(--border-color); /* Set the color of the line */
-  margin: 10px 15px;
+  margin-bottom: 20px;
 }
 
 .modal {

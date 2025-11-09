@@ -12,7 +12,7 @@ def hello_world():
 
 @app.route("/transactions")
 def sql():
-    transactions = db.fetch_all("SELECT * FROM transactions")
+    transactions = db.fetch_all("SELECT * FROM transactions ORDER BY transaction_date DESC")
     # print("All transactions:", transactions)
     return jsonify(transactions), 200
 
