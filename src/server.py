@@ -29,7 +29,7 @@ def add_transaction():
 
         id = db.insert_transaction(ticker, share_count, share_price, transaction_date, buying)
 
-        return jsonify({"message": f"Transaction {id} added successfully"}), 201
+        return jsonify({"message": f"Transaction {id} added successfully", "new_id": id}), 201
     except Exception as e:
         print(f"❌ Error inserting transaction: {e}")
         return jsonify({"error": str(e)}), 500

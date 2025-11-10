@@ -7,8 +7,8 @@
         Add
       </button>
     </div>
-    <template v-if="history != null">
-      <history-item v-for="i in history" :key="i" v-bind="i" />
+    <template v-if="store.history != null">
+      <history-item v-for="i in store.history" :key="i" v-bind="i" />
     </template>
     <q-dialog v-model="addModal">
       <div class="modal">
@@ -64,11 +64,17 @@
 import { api } from 'src/boot/axios'
 import { defineComponent } from 'vue'
 import HistoryItem from './Items/HistoryItem.vue'
+import { useStore } from 'src/stores/store'
 
 export default defineComponent({
   components: { HistoryItem },
   name: 'HistoryWidget',
   props: {},
+  setup() {
+    return {
+      store: useStore(),
+    }
+  },
   data() {
     return {
       addModal: false,
@@ -77,7 +83,6 @@ export default defineComponent({
       price: 0,
       purchaseDate: '2025-11-08',
       buy: true,
-      history: null,
     }
   },
   methods: {
@@ -95,26 +100,18 @@ export default defineComponent({
         .then((response) => {
           console.log(response.data)
           this.addModal = false
+          data.id = response.data.id
+          //should be sorted
+          this.store._history.unshift(data)
         })
         .catch((error) => {
           console.error('Error creating transaction:', error)
           this.addModal = false
         })
     },
-    getTransactions() {
-      api
-        .get('/transactions', {
-          params: {},
-        })
-        .then((response) => {
-          console.log(response)
-          this.history = response.data
-        })
-        .catch(console.error)
-    },
   },
   mounted() {
-    this.getTransactions()
+    this.store.getTransactions()
   },
 })
 </script>
