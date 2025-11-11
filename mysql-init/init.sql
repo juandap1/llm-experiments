@@ -9,3 +9,9 @@ CREATE TABLE IF NOT EXISTS transactions (
     transaction_date DATE,
     buying BOOLEAN
 );
+
+CREATE TABLE IF NOT EXISTS tickers(
+    ticker VARCHAR(100) PRIMARY KEY,
+    logo VARCHAR(100),
+    latest_price FLOAT
+);

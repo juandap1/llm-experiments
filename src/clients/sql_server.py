@@ -93,3 +93,15 @@ class MySQLClient:
             self.connection.commit()
             inserted_id = cursor.lastrowid
             return inserted_id
+        
+    def update_logo(self, ticker, path):
+        self.ensure_connected()
+
+        with self.connection.cursor() as cursor:
+            sql = """
+                INSERT INTO tickers (ticker, logo) VALUES (%s, %s)
+                ON DUPLICATE KEY UPDATE logo=%s
+            """
+            cursor.execute(sql, (ticker, path, path)) 
+            self.connection.commit()
+            return 200

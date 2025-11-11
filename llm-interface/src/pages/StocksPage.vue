@@ -1,5 +1,6 @@
 <template>
   <q-page class="basic-page">
+    <img src="http://localhost:3141/logo/MSFT" alt="Stock ticker logo" />
     <history-widget />
   </q-page>
 </template>

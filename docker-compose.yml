@@ -6,6 +6,7 @@ services:
     container_name: flask_api
     command: sh -c "sleep 5 && flask run --host=0.0.0.0 --port=3141"
     environment:
+      - LOGO_DEV_TOKEN=${LOGO_DEV_TOKEN}
       - FLASK_APP=src/server.py
       - FLASK_ENV=development
       - FLASK_DEBUG=1
