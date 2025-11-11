@@ -111,11 +111,49 @@ def get_stock_info(ticker):
 def get_stock_history(ticker):
     ticker = ticker.upper()
     try:
-        # db = get_db()
+        db = get_db()
+        history = db.fetch_all("""
+            SELECT date, open_price, close_price, low, high 
+            FROM price_history 
+            WHERE ticker = %s 
+            ORDER BY date ASC
+        """, ticker)
+        if history:
+            return jsonify(history), 200
+
         url = f'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={ticker}&apikey={stock_token}&outputsize=full'
         r = requests.get(url)
         data = r.json()
-        return data["Time Series (Daily)"]
+        price_history = data.get("Time Series (Daily)", {})
+        records_to_insert = []
+        for date_str, daily_data in price_history.items():
+            try:
+                record = (
+                    ticker,
+                    # open_price
+                    float(daily_data['1. open']), 
+                    # close_price
+                    float(daily_data['4. close']), 
+                    # low
+                    float(daily_data['3. low']), 
+                    # high
+                    float(daily_data['2. high']), 
+                    # date (formatted as string)
+                    date_str 
+                )
+                records_to_insert.append(record)
+            except KeyError as e:
+                # Handle cases where a key might be missing
+                print(f"Skipping record for {date_str}: Missing key {e}")
+                continue
+            except ValueError as e:
+                # Handle cases where data is not a valid number
+                print(f"Skipping record for {date_str}: Invalid numeric value {e}")
+                continue
+        if records_to_insert:
+            rows_inserted = db.insert_many_prices(ticker, records_to_insert)
+            print(f"✅ Successfully inserted {rows_inserted} price records for {ticker}.")
+            return jsonify(records_to_insert), 200
     except Exception as e:
         print(f"Error pulling stock history: {e}")
         return jsonify({"error": str(e)}), 500

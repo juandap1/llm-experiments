@@ -7,8 +7,8 @@
         Add
       </button>
     </div>
-    <template v-if="store.history != null">
-      <history-item v-for="i in store.history" :key="i" v-bind="i" />
+    <template v-if="store.transactions != null">
+      <history-item v-for="i in store.transactions" :key="i" v-bind="i" />
     </template>
     <q-dialog v-model="addModal">
       <div class="modal">
@@ -102,7 +102,7 @@ export default defineComponent({
           this.addModal = false
           data.id = response.data.id
           //should be sorted
-          this.store._history.unshift(data)
+          this.store._transactions.unshift(data)
         })
         .catch((error) => {
           console.error('Error creating transaction:', error)

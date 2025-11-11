@@ -3,13 +3,15 @@ import { api } from 'src/boot/axios'
 
 export const useStore = defineStore('counter', {
   state: () => ({
-    _history: null,
+    _transactions: null,
     _loadedInfo: {},
+    _history: {},
   }),
 
   getters: {
-    history: (state) => state._history,
+    transactions: (state) => state._transactions,
     loadedInfo: (state) => state._loadedInfo,
+    history: (state) => state._history,
   },
 
   actions: {
@@ -31,18 +33,19 @@ export const useStore = defineStore('counter', {
         })
         .then((response) => {
           console.log(response)
-          this._history = response.data
+          this._transactions = response.data
         })
         .catch(console.error)
     },
     getStockHistory(ticker) {
+      if (this._history[ticker] != null) return
       api
         .get('/stock/history/' + ticker, {
           params: {},
         })
         .then((response) => {
           console.log(response)
-          // this._loadedInfo[ticker] = response.data
+          this._history[ticker] = response.data
         })
         .catch(console.error)
     },

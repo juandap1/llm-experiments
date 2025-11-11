@@ -20,3 +20,14 @@ CREATE TABLE IF NOT EXISTS tickers(
     latest_price FLOAT,
     latest_date DATE
 );
+
+CREATE TABLE IF NOT EXISTS price_history(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    ticker VARCHAR(100),
+    open_price FLOAT,
+    close_price FLOAT,
+    high FLOAT,
+    low FLOAT,
+    date DATE,
+    FOREIGN KEY (ticker) REFERENCES tickers(ticker)
+);

@@ -134,3 +134,32 @@ class MySQLClient:
             cursor.execute(sql, (ticker, path, path)) 
             # self.connection.commit()
             return 200
+        
+    def insert_many_prices(self, ticker, price_data_list):
+        """
+        Inserts a list of price records using executemany for efficiency.
+        price_data_list should be a list of tuples: 
+        [(open_price, close_price, low, high, date), ...]
+        """
+        MAX_RETRIES = 2
+        
+        # Base SQL statement for the price_history table
+        sql = """
+            INSERT INTO price_history 
+            (ticker, open_price, close_price, low, high, date)
+            VALUES (%s, %s, %s, %s, %s, %s)
+        """
+        for attempt in range(MAX_RETRIES):
+            self.ensure_connected() 
+            with self.connection.cursor() as cursor:
+                try:
+                    # Use executemany for batch insertion
+                    cursor.executemany(sql, price_data_list)
+                    return cursor.rowcount 
+                except Exception as e:
+                    if attempt < MAX_RETRIES - 1:
+                        print(f"⚠️ Batch insert failed on attempt {attempt + 1}. Retrying...")
+                        continue
+                    else:
+                        print(f"❌ Batch insert failed after {MAX_RETRIES} attempts. Final Error: {e}")
+                        raise
