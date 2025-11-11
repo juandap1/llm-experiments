@@ -35,6 +35,7 @@ export default defineComponent({
     return {
       store: useStore(),
       rangeOptions: ['1W', '1M', 'YTD', '1YR', '5YR', '10YR', 'All'],
+      chart: null,
     }
   },
   data() {
@@ -46,14 +47,12 @@ export default defineComponent({
     genChart() {
       if (this.history.length == 0) return
       let reduced = this.reduceDateRange()
-      console.log(reduced)
       const data = {
         labels: reduced?.map((x) => x.date),
         datasets: [
           {
             label: 'MSFT',
             data: reduced?.map((x) => x.close_price),
-            tension: 0.8,
             backgroundColor: '#06d671',
             borderColor: '#06d671',
             pointRadius: 0,
@@ -81,7 +80,8 @@ export default defineComponent({
         },
       }
       let htmlRef = this.$refs.pchart
-      new Chart(htmlRef, config)
+      if (this.chart) this.chart.destroy()
+      this.chart = new Chart(htmlRef, config)
     },
     reduceDateRange() {
       if (this.history.length == 0) return
@@ -135,7 +135,8 @@ export default defineComponent({
           break
         }
       }
-      let range = this.history.slice(startIndex)
+      let range =
+        this.selectedRange.toLowerCase() == 'all' ? this.history : this.history.slice(startIndex)
       let reduced = this.filterByInterval(range, samplingIntervalDays)
       return reduced
     },
@@ -167,6 +168,9 @@ export default defineComponent({
   },
   watch: {
     'history.length': function () {
+      this.genChart()
+    },
+    selectedRange: function () {
       this.genChart()
     },
   },
