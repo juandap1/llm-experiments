@@ -35,6 +35,17 @@ export const useStore = defineStore('counter', {
         })
         .catch(console.error)
     },
+    getStockHistory(ticker) {
+      api
+        .get('/stock/history/' + ticker, {
+          params: {},
+        })
+        .then((response) => {
+          console.log(response)
+          // this._loadedInfo[ticker] = response.data
+        })
+        .catch(console.error)
+    },
   },
 })
 

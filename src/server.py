@@ -107,6 +107,19 @@ def get_stock_info(ticker):
         print(f"Error pulling stock data: {e}")
         return jsonify({"error": str(e)}), 500
 
+@app.route("/stock/history/<ticker>")
+def get_stock_history(ticker):
+    ticker = ticker.upper()
+    try:
+        # db = get_db()
+        url = f'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={ticker}&apikey={stock_token}&outputsize=full'
+        r = requests.get(url)
+        data = r.json()
+        return data["Time Series (Daily)"]
+    except Exception as e:
+        print(f"Error pulling stock history: {e}")
+        return jsonify({"error": str(e)}), 500
+
 @app.route("/logo/<ticker>")
 def get_logo(ticker):
     ticker = ticker.upper()

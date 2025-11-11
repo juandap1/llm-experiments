@@ -9,10 +9,12 @@
 body {
   background-color: #161616;
   color: var(--txt-color);
+  line-height: 1.2;
 }
 
 .basic-page {
   padding: 30px;
+  position: relative;
 }
 
 .navbar {
@@ -46,6 +48,7 @@ h4,
 h5,
 h6 {
   margin: 0;
+  font-weight: bold;
 }
 
 .btn {
