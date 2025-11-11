@@ -35,6 +35,11 @@ services:
       MYSQL_DATABASE: my_database
       MYSQL_USER: my_user
       MYSQL_PASSWORD: my_password
+    command:
+      - --wait_timeout=3600 # 1 hour idle timeout
+      - --interactive_timeout=3600 # 1 hour interactive timeout
+      - --net_read_timeout=120 # 2 minutes for reading a block of data
+      - --net_write_timeout=120 # 2 minutes for writing a block of data
     ports:
       - "3306:3306"
     volumes:

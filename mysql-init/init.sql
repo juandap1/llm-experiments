@@ -12,6 +12,11 @@ CREATE TABLE IF NOT EXISTS transactions (
 
 CREATE TABLE IF NOT EXISTS tickers(
     ticker VARCHAR(100) PRIMARY KEY,
+    name VARCHAR(255),
+    description MEDIUMTEXT,
+    sector VARCHAR(255),
+    industry VARCHAR(255),
     logo VARCHAR(100),
-    latest_price FLOAT
+    latest_price FLOAT,
+    latest_date DATE
 );

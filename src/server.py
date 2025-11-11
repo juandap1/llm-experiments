@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, send_file
+from flask import Flask, request, jsonify, send_file, g
 from clients.sql_server import MySQLClient
 from flask_cors import CORS
 import requests
@@ -6,13 +6,26 @@ import os
 
 app = Flask(__name__)
 CORS(app)
-db = MySQLClient()
 
 CONTAINER_ROOT = '/app'
 
 # SECRETS
 logo_dev_token = os.getenv("LOGO_DEV_TOKEN")
+stock_token = os.getenv("ALPHAVANTAGE_TOKEN")
 
+def get_db():
+    """Returns a new database connection object for the current request context."""
+    if 'db' not in g:
+        # If no connection exists in the context, create a new one
+        g.db = MySQLClient()
+    return g.db
+
+@app.teardown_request
+def teardown_db(exception):
+    """Closes the connection when the request finishes."""
+    db_conn = g.pop('db', None)
+    if db_conn is not None:
+        db_conn.close()
 
 @app.route("/")
 def hello_world():
@@ -20,6 +33,7 @@ def hello_world():
 
 @app.route("/transactions")
 def sql():
+    db = get_db()
     transactions = db.fetch_all("SELECT * FROM transactions ORDER BY transaction_date DESC, id DESC")
     # print("All transactions:", transactions)
     return jsonify(transactions), 200
@@ -34,7 +48,7 @@ def add_transaction():
         share_price = data.get("share_price")
         transaction_date = data.get("transaction_date")
         buying = data.get("buying")
-
+        db = get_db()
         id = db.insert_transaction(ticker, share_count, share_price, transaction_date, buying)
 
         return jsonify({"message": f"Transaction {id} added successfully", "new_id": id}), 201
@@ -43,10 +57,61 @@ def add_transaction():
         return jsonify({"error": str(e)}), 500
     
 
+@app.route("/stock/<ticker>")
+def get_stock_info(ticker):
+    ticker = ticker.upper()
+    try:
+        db = get_db()
+        row = db.fetch_one("SELECT ticker, name, description, latest_price, sector, industry FROM tickers WHERE ticker = %s", (ticker,))
+        if row and row["name"] and row["latest_price"]:
+            return jsonify({
+                "ticker": ticker,
+                "name": row["name"],
+                "description": row["description"],
+                "latest_price": row["latest_price"],
+                "sector": row["sector"],
+                "industry": row["industry"]
+            })
+        else:
+            latest_price = row["latest_price"] if row else None
+            if not row or not latest_price:
+                url = f'https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol={ticker}&apikey={stock_token}'
+                r = requests.get(url)
+                data = r.json()
+                latest_price = data["Global Quote"]["05. price"]
+                latest_date = data["Global Quote"]["07. latest trading day"]
+                db.update_stock_price(ticker, latest_price, latest_date)
+            if not row or not row["name"]:
+                url = f'https://www.alphavantage.co/query?function=OVERVIEW&symbol={ticker}&apikey={stock_token}'
+                r = requests.get(url)
+                data = r.json()
+                db.update_company_data(ticker, data["Name"], data["Description"], data["Sector"], data["Industry"])
+                return jsonify({
+                    "ticker": ticker,
+                    "name": data["Name"],
+                    "description": data["Description"],
+                    "latest_price": latest_price,
+                    "sector": data["Sector"],
+                    "industry": data["Industry"]
+                })
+            else:
+                return jsonify({
+                    "ticker": ticker,
+                    "name": row["name"],
+                    "description": row["description"],
+                    "latest_price": latest_price,
+                    "sector": row["sector"],
+                    "industry": row["industry"]
+                })
+    except Exception as e:
+        print(f"Error pulling stock data: {e}")
+        return jsonify({"error": str(e)}), 500
+
 @app.route("/logo/<ticker>")
 def get_logo(ticker):
     ticker = ticker.upper()
     try:
+        db = get_db()
         row = db.fetch_one("SELECT logo FROM tickers WHERE ticker = %s", (ticker,))
         # Check if row exists AND logo path is defined
         if row and row['logo']:
@@ -78,7 +143,7 @@ def get_logo(ticker):
         # Update the database with the new path
         db.update_logo(ticker, full_path)
         print(f"✅ Image successfully saved and DB updated for {ticker} at: {full_path}")
-        return send_file(full_path, mimetype='image/svg+xml')
+        return send_file(full_path, mimetype='image/jpeg')
     except requests.exceptions.RequestException as e:
         # Handle errors related to the HTTP request (network, 404, etc.)
         print(f"❌ Failed to download logo for {ticker}: {e}")

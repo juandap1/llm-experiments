@@ -22,14 +22,19 @@ class MySQLClient:
                 database=self.database,
                 port=self.port,
                 cursorclass=DictCursor,
-                autocommit=False
+                autocommit=True
             )
             print("✅ Connected to MySQL successfully.")
         except Exception as e:
             print("❌ Failed to connect to MySQL:", e)
 
     def ensure_connected(self):
-        if not self.connection or not self.connection.open:
+        try:
+            # PyMySQL attempts to reconnect if the connection is detected as closed.
+            self.connection.ping(reconnect=True) 
+        except Exception as e:
+            print(f"❌ Connection check failed, trying full reconnect: {e}")
+            # If ping failed, try establishing a brand new connection
             self.connect()
 
     def close(self):
@@ -56,6 +61,8 @@ class MySQLClient:
                 self.connection.rollback()
                 print("❌ Query failed:", e)
                 return None
+
+# MAYBE ADD CONDITION FOR NOT AUTO COMMITING (for performance?)
 
     def fetch_one(self, query, params=None):
         """
@@ -90,9 +97,31 @@ class MySQLClient:
                 VALUES (%s, %s, %s, %s, %s)
             """
             cursor.execute(sql, (ticker, share_count, share_price, transaction_date, buying))
-            self.connection.commit()
+            # self.connection.commit()
             inserted_id = cursor.lastrowid
             return inserted_id
+
+    def update_company_data(self, ticker, name, description, sector, industry):
+        self.ensure_connected()
+        with self.connection.cursor() as cursor:
+            sql = """
+                INSERT INTO tickers (ticker, name, description, sector, industry) VALUES (%s, %s, %s, %s, %s)
+                ON DUPLICATE KEY UPDATE name=%s, description=%s, sector=%s, industry=%s
+            """
+            cursor.execute(sql, (ticker, name, description, sector, industry, name, description, sector, industry)) 
+            # self.connection.commit()
+            return 200
+        
+    def update_stock_price(self, ticker, price, date):
+        self.ensure_connected()
+        with self.connection.cursor() as cursor:
+            sql = """
+                INSERT INTO tickers (ticker, latest_price, latest_date) VALUES (%s, %s, %s)
+                ON DUPLICATE KEY UPDATE latest_price=%s, latest_date=%s
+            """
+            cursor.execute(sql, (ticker, price, date, price, date))
+            # self.connection.commit()
+            return 
         
     def update_logo(self, ticker, path):
         self.ensure_connected()
@@ -103,5 +132,5 @@ class MySQLClient:
                 ON DUPLICATE KEY UPDATE logo=%s
             """
             cursor.execute(sql, (ticker, path, path)) 
-            self.connection.commit()
+            # self.connection.commit()
             return 200
