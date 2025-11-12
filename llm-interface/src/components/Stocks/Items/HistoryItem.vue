@@ -2,7 +2,11 @@
   <div class="hist-item">
     <div class="hist-row main">
       <div>{{ ticker }} market buy</div>
-      <div>${{ cost }} <span class="price-change positive">+ 0.47%</span></div>
+      <div>
+        ${{ cost }}
+        <span v-if="priceChange >= 0" class="price-change positive">+{{ priceChange }}%</span>
+        <span v-else class="price-change negative">{{ priceChange }}%</span>
+      </div>
     </div>
     <div class="hist-row alt">
       <div>{{ date }}</div>
@@ -13,6 +17,7 @@
 </template>
 
 <script>
+import { useStore } from 'src/stores/store'
 import { defineComponent } from 'vue'
 
 export default defineComponent({
@@ -38,6 +43,15 @@ export default defineComponent({
       }
       const formattedDate = new Intl.DateTimeFormat('en-US', options).format(d)
       return formattedDate
+    },
+    stockInfo() {
+      return useStore().loadedInfo[this.ticker]
+    },
+    priceChange() {
+      let first = parseFloat(this.share_price)
+      let last = parseFloat(this.stockInfo?.latest_price)
+      let change = ((last - first) / first) * 100
+      return Math.round(change * 100) / 100
     },
   },
 })
@@ -83,5 +97,10 @@ hr {
 .price-change.positive {
   color: #7cff7c;
   background-color: #7cff7c35;
+}
+
+.price-change.negative {
+  color: #ff7c7c;
+  background-color: #ff7c7c35;
 }
 </style>

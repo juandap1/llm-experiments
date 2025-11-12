@@ -12,10 +12,10 @@
     <price-chart-widget />
     <div class="q-my-md">
       <h6>Profile</h6>
-      <div class="stock-desc">{{ stockInfo.description }}</div>
+      <div class="stock-desc">{{ stockInfo?.description }}</div>
       <div>
-        <span class="tag">{{ stockInfo.sector }}</span>
-        <span class="tag">{{ stockInfo.industry }}</span>
+        <span class="tag">{{ stockInfo?.sector }}</span>
+        <span class="tag">{{ stockInfo?.industry }}</span>
       </div>
     </div>
     <history-widget />
