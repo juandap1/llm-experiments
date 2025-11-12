@@ -21,7 +21,7 @@ export const useStore = defineStore('counter', {
           params: {},
         })
         .then((response) => {
-          console.log(response)
+          // console.log(response)
           this._loadedInfo[ticker] = response.data
         })
         .catch(console.error)
@@ -32,7 +32,7 @@ export const useStore = defineStore('counter', {
           params: {},
         })
         .then((response) => {
-          console.log(response)
+          // console.log(response)
           this._transactions = response.data
         })
         .catch(console.error)
@@ -44,7 +44,7 @@ export const useStore = defineStore('counter', {
           params: {},
         })
         .then((response) => {
-          console.log(response)
+          // console.log(response)
           this._history[ticker] = response.data
         })
         .catch(console.error)

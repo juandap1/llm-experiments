@@ -1,7 +1,11 @@
 <template>
   <div class="q-mb-md">
     <div class="widget-header">
-      <h4>${{ stockInfo?.latest_price.toFixed(2) }}</h4>
+      <div class="price-wrapper">
+        <h4>${{ stockInfo?.latest_price.toFixed(2) }}</h4>
+        <span v-if="priceChange >= 0" class="price-change positive">+{{ priceChange }}%</span>
+        <span v-else class="price-change negative">{{ priceChange }}%</span>
+      </div>
       <div class="range-toolbar">
         <div
           class="range-opt"
@@ -330,6 +334,14 @@ export default defineComponent({
       if (this.store.history?.['MSFT'] == null) return []
       return this.store.history['MSFT']
     },
+    priceChange() {
+      if (this.history.length == 0) return 0
+      let reduced = this.reduceDateRange()
+      let first = reduced[0].open_price
+      let last = reduced.at(-1).close_price
+      let change = ((last - first) / first) * 100
+      return Math.round(change * 100) / 100
+    },
   },
   watch: {
     'history.length': function () {
@@ -370,5 +382,29 @@ export default defineComponent({
     color: #222;
     background-color: #aaa;
   }
+}
+
+.price-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.price-change {
+  border-radius: 50px;
+  padding: 2px 10px;
+  background-color: rgb(255, 255, 255, 0.1);
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.price-change.positive {
+  color: #7cff7c;
+  background-color: #7cff7c35;
+}
+
+.price-change.negative {
+  color: #ff7c7c;
+  background-color: #ff7c7c35;
 }
 </style>
