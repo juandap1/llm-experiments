@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="q-mb-md">
     <div class="widget-header">
       <h4>${{ stockInfo?.latest_price.toFixed(2) }}</h4>
       <div class="range-toolbar">
@@ -47,8 +47,16 @@ export default defineComponent({
     genChart() {
       if (this.history.length == 0) return
       let reduced = this.reduceDateRange()
+      const labels = reduced?.map((x) => x.date)
       const data = {
-        labels: reduced?.map((x) => x.date),
+        labels: labels.map((x) =>
+          new Date(x).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            timeZone: 'UTC',
+          }),
+        ),
         datasets: [
           {
             label: 'MSFT',
@@ -63,21 +71,130 @@ export default defineComponent({
         type: 'line',
         data: data,
         options: {
+          layout: {
+            padding: {
+              bottom: 20,
+            },
+          },
           responsive: true,
+          interaction: {
+            intersect: false,
+          },
           plugins: {
             legend: {
               display: false,
             },
+            tooltip: {
+              callbacks: {
+                label: function (context) {
+                  const label = context.dataset.label || ''
+                  const value = context.parsed.y
+                  return `${label}: $${value.toFixed(2)}`
+                },
+              },
+            },
           },
           scales: {
             x: {
-              display: false,
+              grid: {
+                display: false,
+              },
+              border: {
+                display: true,
+                color: '#333',
+                width: 2,
+              },
+              ticks: {
+                display: false,
+                color: '#aaa',
+                font: {
+                  weight: 'bold',
+                },
+                autoSkip: false,
+                callback: (value, index) => {
+                  let cur = this.formatDate(labels[index])
+                  if (index === 0) return cur
+                  let prev = this.formatDate(labels[index - 1])
+                  return cur !== prev ? cur : ''
+                },
+              },
             },
             y: {
-              display: false,
+              grid: {
+                display: false,
+              },
+              border: {
+                display: true,
+                color: '#333',
+                width: 2,
+              },
+              ticks: {
+                color: '#aaa',
+                font: {
+                  weight: 'bold',
+                },
+                maxTicksLimit: 8,
+                callback: function (value) {
+                  return '$' + value.toLocaleString()
+                },
+              },
             },
           },
         },
+        plugins: [
+          {
+            id: 'centeredLabels',
+            afterDraw: (chart) => {
+              const {
+                ctx,
+                chartArea: { bottom },
+                scales,
+              } = chart
+              const xScale = scales.x
+              const labelsArray = chart.data.labels
+
+              ctx.save()
+              ctx.textAlign = 'center'
+              ctx.textBaseline = 'top'
+              ctx.fillStyle = '#aaa'
+              ctx.font = 'bold 12px Arial'
+
+              const groups = []
+              let start = 0
+              while (start < labelsArray.length) {
+                const label = this.formatDate(labelsArray[start])
+                let end = start
+                while (
+                  end + 1 < labelsArray.length &&
+                  this.formatDate(labelsArray[end + 1]) === label
+                ) {
+                  end++
+                }
+                groups.push({ label, start, end })
+                start = end + 1
+              }
+              const MAX_LABELS = 8
+              // Determine step to sample max labels
+              const step = Math.ceil(groups.length / MAX_LABELS)
+
+              // Draw only sampled groups
+              groups.forEach((group, i) => {
+                if (i % step !== 0) return // skip to reduce labels
+
+                const startPixel = xScale.getPixelForValue(group.start)
+                const endPixel = xScale.getPixelForValue(group.end)
+                const centerX = Math.min(
+                  (startPixel + endPixel) / 2,
+                  chart.width - 20, // leave 5px from right edge
+                )
+
+                ctx.fillText(group.label, centerX, bottom + 5)
+              })
+
+              ctx.restore()
+            },
+          },
+        ],
       }
       let htmlRef = this.$refs.pchart
       if (this.chart) this.chart.destroy()
@@ -87,10 +204,12 @@ export default defineComponent({
       if (this.history.length == 0) return
       const today = new Date()
       let startDate = new Date()
+      startDate.setUTCHours(0, 0, 0, 0)
+      startDate.setDate(today.getDate() - 8)
       let samplingIntervalDays = 1
       switch (this.selectedRange.toLowerCase()) {
         case '1w':
-          startDate.setDate(today.getDate() - 7)
+          startDate.setDate(today.getDate() - 8)
           samplingIntervalDays = 1 // Keep daily data
           break
 
@@ -150,7 +269,53 @@ export default defineComponent({
       for (let i = 0; i < data.length; i += intervalDays) {
         reducedData.push(data[i])
       }
+      if (reducedData[reducedData.length - 1] !== data[data.length - 1]) {
+        reducedData.push(data[data.length - 1])
+      }
       return reducedData
+    },
+    formatDate(d) {
+      let options = {
+        month: 'short', // "Sep"
+        day: 'numeric', // "21"
+        year: 'numeric', // "2025"
+        timeZone: 'UTC',
+      }
+      switch (this.selectedRange.toLowerCase()) {
+        case '1w':
+          options = {
+            weekday: 'short',
+            timeZone: 'UTC',
+          }
+          break
+
+        case '1m': // Last 1 month
+          options = {
+            month: 'short', // "Sep"
+            day: 'numeric', // "21"
+            timeZone: 'UTC',
+          }
+          break
+
+        case 'ytd': // Year To Date
+        case '1yr': // Last 1 year
+          options = {
+            month: 'short', // "Sep"
+            timeZone: 'UTC',
+          }
+          break
+
+        case '5yr': // Last 5 years
+        case '10yr': // Last 10 years
+        case 'all': // All Time (since 1990)
+          options = {
+            year: 'numeric', // "2025"
+            timeZone: 'UTC',
+          }
+          break
+      }
+      const formattedDate = new Intl.DateTimeFormat('en-US', options).format(new Date(d))
+      return formattedDate
     },
   },
   mounted() {
