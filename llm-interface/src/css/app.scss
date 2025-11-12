@@ -92,3 +92,13 @@ h6 {
 .btn:hover {
   scale: 1.03;
 }
+
+.tag {
+  border-radius: 50px;
+  border: 1px solid rgb(122, 122, 255);
+  padding: 4px 10px;
+  color: rgb(122, 122, 255);
+  font-weight: bold;
+  font-size: 12px;
+  margin-right: 10px;
+}
