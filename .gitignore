@@ -1,4 +1,5 @@
 model/
+gguf-models/
 venv/
 interface/
 output/

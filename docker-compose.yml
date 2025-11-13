@@ -45,6 +45,21 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
       - ./mysql-init:/docker-entrypoint-initdb.d
+  localai:
+    image: quay.io/go-skynet/local-ai:latest
+    container_name: localai
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./gguf-models:/models
+    environment:
+      - MODELS_PATH=/models
+      - LOCALAI_LOG_LEVEL=info
+      - THREADS=8
+      - DISABLE_BACKENDS_AUTO_DOWNLOAD=true
+      - GGML_METAL=1
+    command: ["run", "--models-path", "/models"]
+    restart: unless-stopped
 
 volumes:
   qdrant_data:
