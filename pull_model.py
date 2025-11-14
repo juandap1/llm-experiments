@@ -5,4 +5,4 @@ import os
 hugging_face_secret = os.getenv("HUGGING_FACE_SECRET")
 snapshot_download(repo_id="microsoft/Phi-4-mini-instruct", 
                   use_auth_token=hugging_face_secret,
-                  local_dir="../")
+                  local_dir="./model")
