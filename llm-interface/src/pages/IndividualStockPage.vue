@@ -4,9 +4,20 @@
       <div class="stock-logo">
         <img src="http://localhost:3141/logo/MSFT" alt="Stock ticker logo" />
       </div>
-      <div></div>
+      <div>
+        <div class="stock-ticker">{{ stockInfo?.ticker }}</div>
+        <div class="stock-name">{{ stockInfo?.name }}</div>
+      </div>
     </div>
     <price-chart-widget />
+    <div class="q-my-md">
+      <h6>Profile</h6>
+      <div class="stock-desc">{{ stockInfo?.description }}</div>
+      <div>
+        <span class="tag">{{ stockInfo?.sector }}</span>
+        <span class="tag">{{ stockInfo?.industry }}</span>
+      </div>
+    </div>
     <history-widget />
   </q-page>
 </template>
@@ -14,14 +25,20 @@
 <script>
 import { defineComponent } from 'vue'
 import HistoryWidget from '../components/Stocks/HistoryWidget.vue'
-// import { useStore } from 'src/stores/store'
+import { useStore } from 'src/stores/store'
 import PriceChartWidget from '../components/Stocks/PriceChartWidget.vue'
 
 export default defineComponent({
-  name: 'StocksPage',
+  name: 'IndividualStockPage',
   components: { HistoryWidget, PriceChartWidget },
-  mounted() {},
-  computed: {},
+  mounted() {
+    useStore().getStockInfo('MSFT')
+  },
+  computed: {
+    stockInfo() {
+      return useStore().loadedInfo['MSFT']
+    },
+  },
 })
 </script>
 <style lang="scss" scoped>
