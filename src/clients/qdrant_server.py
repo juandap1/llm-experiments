@@ -1,5 +1,5 @@
 from qdrant_client import QdrantClient
-from qdrant_client.models import PointStruct, VectorParams
+from qdrant_client.models import PointStruct, VectorParams, Filter
 from sentence_transformers import SentenceTransformer
 import uuid
 
@@ -10,7 +10,7 @@ class QdrantServerClient:
         self.model = SentenceTransformer("all-MiniLM-L6-v2")
 
 
-    def upsert_vectors(self, collection_name: str, vectors: list[str], chunks: list[str], ticker: str, timestamp: str, source: str = "", url: str = ""):
+    def upsert_vectors(self, collection_name: str, vectors: list[str], payloads: list[object]):
         # if collection does not exist, create it
         if not self.client.collection_exists(collection_name=collection_name):
             self.client.create_collection(
@@ -22,13 +22,7 @@ class QdrantServerClient:
             PointStruct(
                 id=str(uuid.uuid4()), 
                 vector=vectors[i], 
-                payload={
-                    "text": chunks[i],
-                    "ticker": ticker,
-                    "timestamp": timestamp,
-                    "source": source,
-                    "url": url
-                }
+                payload=payloads[i]
             )
             for i in range(len(vectors))
         ]
@@ -45,6 +39,41 @@ class QdrantServerClient:
             limit=limit
         ).points
         return hits
+    
+    def fetch_relevant_chunks(
+        self,
+        collection: str = "news_articles",
+        min_importance: int = 7,
+        tickers: list[str] | None = None,
+        limit: int = 300,
+        sort: bool = False
+    ):
+        must_filters = [
+            {"key": "importance", "range": {"gte": min_importance}}
+        ]
+
+        if tickers:
+            must_filters.append({"key": "ticker", "match": {"any": tickers}})
+
+        filter_clause = Filter(must=must_filters)
+
+        # Query more if sorting
+        scroll_result = self.client.scroll(
+            collection_name=collection,
+            limit=limit * 3 if sort else limit,
+            with_payload=True,
+            with_vectors=False,
+            scroll_filter=filter_clause
+        )
+
+        points, _ = scroll_result
+        if sort:
+            points = sorted(
+                points,
+                key=lambda p: (p.payload["importance"], p.payload["timestamp"]),
+                reverse=True
+            )[0:limit]
+        return points
 
 
 
