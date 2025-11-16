@@ -19,7 +19,7 @@ import json
 from pathlib import Path
 from bs4 import BeautifulSoup
 
-from llm_model import LocalLLM
+from archive.llm_model import LocalLLM
 
 # Initialize your model once
 model_path = r"../model"
