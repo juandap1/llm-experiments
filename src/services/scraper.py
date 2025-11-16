@@ -6,14 +6,15 @@ import httpx
 import asyncio
 import json
 from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception
-from utils import clean_json_response
+from services.utils import clean_json_response
 
 class ScraperService:
     def __init__(self, vector_db, ollama_client):
         self.vector_db = vector_db
         self.client = ollama_client
 
-    def is_retryable_exception(self, exception):
+    @staticmethod
+    def is_retryable_exception(exception):
         # Retry only on network issues or server errors (5xx)
         if isinstance(exception, httpx.HTTPStatusError):
             status = exception.response.status_code

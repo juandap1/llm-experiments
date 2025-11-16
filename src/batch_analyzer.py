@@ -8,6 +8,8 @@ from services.utils import clean_json_response
 from services.scraper import ScraperService
 import requests
 from clients.qdrant_server import QdrantServerClient
+# import time
+# from datetime import timedelta
 
 news_api_token = os.getenv("NEWS_API")
 
@@ -219,11 +221,21 @@ class BatchAnalyzer:
         clean_text = clean_json_response(full_response)
         return clean_text
 
-articles = open_local_articles()
-asyncio.run(ingest_many_articles_async(
-    articles=articles,
-    ticker="MSFT",
-    batch_size=50,
-    concurrency=10,
-    collection_name="news_articles"
-))
+# start_time = time.time()
+# client = ollama.Client(host='http://localhost:11434')
+# vector_db = QdrantServerClient()
+# analyzer = BatchAnalyzer(vector_db, client)
+# articles = analyzer.open_local_articles()
+# asyncio.run(analyzer.ingest_many_articles_async(
+#     articles=articles,
+#     ticker="MSFT",
+#     batch_size=50,
+#     concurrency=10,
+#     collection_name="news_articles"
+# ))
+# end_time = time.time()
+# elapsed_time = end_time - start_time
+# elapsed_time_readable = str(timedelta(seconds=elapsed_time))
+
+# print(f"\nElapsed wall clock time: {elapsed_time:.4f} seconds")
+# print(f"Readable time: {elapsed_time_readable}")

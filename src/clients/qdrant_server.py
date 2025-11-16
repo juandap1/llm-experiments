@@ -16,7 +16,7 @@ class QdrantServerClient:
         if not self.client.collection_exists(collection_name=collection_name):
             self.client.create_collection(
                 collection_name=collection_name,
-                vectors_config=VectorParams(size=len(vector_size), distance="Cosine"),
+                vectors_config=VectorParams(size=vector_size, distance="Cosine"),
             )
 
     def upsert_vectors(self, collection_name: str, vectors: list[str], payloads: list[object]):
