@@ -2,6 +2,8 @@ from qdrant_client import QdrantClient
 from qdrant_client.models import PointStruct, VectorParams, Filter
 from sentence_transformers import SentenceTransformer
 import uuid
+import functools
+from asyncio import get_event_loop
 
 
 class QdrantServerClient:
@@ -28,8 +30,13 @@ class QdrantServerClient:
         ]
         self.client.upsert(collection_name=collection_name, points=points)
 
-    def encode_texts(self, chunks: list[str]) -> list[list[float]]:
-        return self.model.encode(chunks).tolist()
+    async def encode_texts(self, chunks: list[str]) -> list[list[float]]:
+        # return self.model.encode(chunks).tolist()
+        loop = get_event_loop()
+        return await loop.run_in_executor(
+            None,
+            functools.partial(self.model.encode, chunks, convert_to_numpy=True, normalize_embeddings=True)
+        )
 
     def query(self, collection_name: str, query_text: str, limit: int = 3):
         query_vector = self.model.encode(query_text).tolist()
@@ -43,30 +50,32 @@ class QdrantServerClient:
     def fetch_relevant_chunks(
         self,
         collection: str = "news_articles",
+        query: str= "",
         min_importance: int = 7,
-        tickers: list[str] | None = None,
         limit: int = 300,
         sort: bool = False
     ):
-        must_filters = [
-            {"key": "importance", "range": {"gte": min_importance}}
-        ]
-
-        if tickers:
-            must_filters.append({"key": "ticker", "match": {"any": tickers}})
-
-        filter_clause = Filter(must=must_filters)
+        query_vector = self.model.encode(query_text).tolist()
+        # filter_clause = Filter(must=must_filters)
 
         # Query more if sorting
-        scroll_result = self.client.scroll(
+        points = self.client.query_points(
             collection_name=collection,
+            query=query_vector,
             limit=limit * 3 if sort else limit,
             with_payload=True,
             with_vectors=False,
-            scroll_filter=filter_clause
+            filter=Filter(
+                must=[
+                    {
+                        "key": "importance",
+                        "range": {
+                            "gte": min_importance
+                        }
+                    }
+                ]
+            )
         )
-
-        points, _ = scroll_result
         if sort:
             points = sorted(
                 points,

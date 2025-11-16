@@ -1,13 +1,1302 @@
-{
-    "source": {
-        "id": "the-verge",
-        "name": "The Verge"
+[
+    {
+        "source": {
+            "id": "the-verge",
+            "name": "The Verge"
+        },
+        "author": "Hayden Field",
+        "title": "The AI industry is running on FOMO",
+        "description": "For Big Tech, a penny invested in AI is a penny earned\u2026 Maybe. After an indeterminate amount of time. Investors hope. On earnings calls last week, Amazon, Google, Microsoft, and Meta reported more than $350 billion this year on capital expenditures, or longer\u2026",
+        "url": "https://www.theverge.com/ai-artificial-intelligence/812455/ai-industry-earnings-bubble-fomo-hype",
+        "urlToImage": "https://platform.theverge.com/wp-content/uploads/sites/2/2025/10/Vrg_Illo_AI_Bubble.jpg?quality=90&strip=all&crop=0%2C10.732984293194%2C100%2C78.534031413613&w=1200",
+        "publishedAt": "2025-11-03T17:06:02Z",
+        "content": "<ul><li></li><li></li><li></li></ul>\r\nAt least according to Big Techs latest earnings calls.\r\nAt least according to Big Techs latest earnings calls.\r\nby\r\nHayden FieldClose\r\nHayden Field\r\nPosts from t\u2026 [+8768 chars]"
     },
-    "author": "Hayden Field",
-    "title": "The AI industry is running on FOMO",
-    "description": "For Big Tech, a penny invested in AI is a penny earned\u2026 Maybe. After an indeterminate amount of time. Investors hope. On earnings calls last week, Amazon, Google, Microsoft, and Meta reported more than $350 billion this year on capital expenditures, or longer\u2026",
-    "url": "https://www.theverge.com/ai-artificial-intelligence/812455/ai-industry-earnings-bubble-fomo-hype",
-    "urlToImage": "https://platform.theverge.com/wp-content/uploads/sites/2/2025/10/Vrg_Illo_AI_Bubble.jpg?quality=90&strip=all&crop=0%2C10.732984293194%2C100%2C78.534031413613&w=1200",
-    "publishedAt": "2025-11-03T17:06:02Z",
-    "content": "<ul><li></li><li></li><li></li></ul>\r\nAt least according to Big Techs latest earnings calls.\r\nAt least according to Big Techs latest earnings calls.\r\nby\r\nHayden FieldClose\r\nHayden Field\r\nPosts from t\u2026 [+8768 chars]"
-}
+    {
+        "source": {
+            "id": "wired",
+            "name": "Wired"
+        },
+        "author": "Louise Matsakis",
+        "title": "The AI Data Center Boom Is Warping the US Economy",
+        "description": "Microsoft, Alphabet, Meta, and Amazon are investing tens of billions in data centers. AI infrastructure is now a key driver of US economic growth.",
+        "url": "https://www.wired.com/story/data-center-ai-boom-us-economy-jobs/",
+        "urlToImage": "https://media.wired.com/photos/690928b72b2e4892c20c307e/191:100/w_1280,c_limit/Model-Behavior-AI-Infrastructure-Spending-Business.jpg",
+        "publishedAt": "2025-11-05T20:45:38Z",
+        "content": "The amount of capital pouring into AI data center projects is staggering. Last week, Microsoft, Alphabet, Meta, and Amazon reported their 2025 capital expenditures would total roughly $370 billion, a\u2026 [+2443 chars]"
+    },
+    {
+        "source": {
+            "id": "the-verge",
+            "name": "The Verge"
+        },
+        "author": "Terrence O\u2019Brien",
+        "title": "Xbox sales continue to tank",
+        "description": "Xbox sales have been tanking for a while now \u2014\u00a0and the story hasn\u2019t gotten any brighter. Microsoft just released its Q1 2026 earnings and Xbox hardware revenue was down 29 percent year-over-year. Last quarter, it was down 22 percent. Down 29 percent in the fi\u2026",
+        "url": "https://www.theverge.com/news/809532/xbox-sales-continue-to-tank",
+        "urlToImage": "https://platform.theverge.com/wp-content/uploads/sites/2/2025/04/STK095_Microsoft_04.jpg?quality=90&strip=all&crop=0%2C10.732984293194%2C100%2C78.534031413613&w=1200",
+        "publishedAt": "2025-10-29T21:23:53Z",
+        "content": "<ul><li></li><li></li><li></li></ul>\r\nBut Microsoft keeps growing thanks to Azure and the cloud.\r\nBut Microsoft keeps growing thanks to Azure and the cloud.\r\nby\r\nTerrence O'BrienClose\r\nTerrence O'Bri\u2026 [+3211 chars]"
+    },
+    {
+        "source": {
+            "id": "the-verge",
+            "name": "The Verge"
+        },
+        "author": "Tom Warren",
+        "title": "Anthropic connects Claude to Microsoft Teams, Outlook, and OneDrive",
+        "description": "Anthropic is integrating its Claude AI assistant with Microsoft 365 services so it can surface content from Word documents, Teams messages, and Outlook emails in conversations with the chatbot. It\u2019s part of a series of updates to Claude to make the chatbot mo\u2026",
+        "url": "https://www.theverge.com/news/801487/anthropic-claude-microsoft-365-connector-ai",
+        "urlToImage": "https://platform.theverge.com/wp-content/uploads/sites/2/2025/10/m365premium.jpg?quality=90&strip=all&crop=0%2C10.732984293194%2C100%2C78.534031413613&w=1200",
+        "publishedAt": "2025-10-17T08:53:02Z",
+        "content": "<ul><li></li><li></li><li></li></ul>\r\nAnthropic and Microsoft are increasingly cozying up for AI models and services.\r\nAnthropic and Microsoft are increasingly cozying up for AI models and services.\r\u2026 [+3538 chars]"
+    },
+    {
+        "source": {
+            "id": null,
+            "name": "Yahoo Entertainment"
+        },
+        "author": "Yahoo Finance",
+        "title": "Earnings live: Meta stock tumbles, Microsoft slides, and Alphabet jumps as Big Tech earnings pour in",
+        "description": "Third quarter earnings season is ramping up, and analysts expect S&P 500 companies grew their profits by 8% during the quarter.",
+        "url": "https://finance.yahoo.com/news/live/earnings-live-meta-stock-tumbles-microsoft-slides-and-alphabet-jumps-as-big-tech-earnings-pour-in-121919945.html",
+        "urlToImage": "https://s.yimg.com/ny/api/res/1.2/l2zkCvrF2PR_UniT4fT3DQ--/YXBwaWQ9aGlnaGxhbmRlcjt3PTEyMDA7aD04MDA-/https://s.yimg.com/os/creatr-uploaded-images/2025-10/8efaaeb0-b506-11f0-a7fe-d44b4a3949f3",
+        "publishedAt": "2025-10-30T12:19:19Z",
+        "content": "Markets are in the midst of the busiest week for third quarter earnings, with results from several Big Tech companies highlighting the calendar.\r\nSo far, the earnings season is off to a positive star\u2026 [+8087 chars]"
+    },
+    {
+        "source": {
+            "id": "wired",
+            "name": "Wired"
+        },
+        "author": "Brian Merchant",
+        "title": "AI Is the Bubble to Burst Them All",
+        "description": "I talked to the scholars who literally wrote the book on tech bubbles\u2014and applied their test.",
+        "url": "https://www.wired.com/story/ai-bubble-will-burst/",
+        "urlToImage": "https://media.wired.com/photos/68e043992e3fc9a36ea8f485/191:100/w_1280,c_limit/WIRED-AI-as_Bubble_Blue_ALT2.jpg",
+        "publishedAt": "2025-10-27T10:00:00Z",
+        "content": "In the nearly three years since AI took center stage in Silicon Valley, the major players, with the exception of Nvidia, whose chips would likely still be in use post-bust, still havent demonstrated \u2026 [+3675 chars]"
+    },
+    {
+        "source": {
+            "id": null,
+            "name": "Gizmodo.com"
+        },
+        "author": "Lucas Ropek",
+        "title": "Microsoft Claims It Will Double Its Data Center Footprint in Two Years",
+        "description": "Microsoft's CEO, Satya Nadella, told investors that the company plans to double its data center footprint over the next two years.",
+        "url": "https://gizmodo.com/microsoft-doublea-data-centers-2000679081",
+        "urlToImage": "https://gizmodo.com/app/uploads/2024/10/Donald-Trump-Jeff-Bezos-in-2017.jpg",
+        "publishedAt": "2025-10-30T01:00:18Z",
+        "content": "The data center industry is the backbone of the AI business, and the AI business, as we all know, is where the money\u2019s at these days. As AI becomes the unstable center of America\u2019s weird new economy,\u2026 [+2322 chars]"
+    },
+    {
+        "source": {
+            "id": "business-insider",
+            "name": "Business Insider"
+        },
+        "author": "ktan@businessinsider.com (Kwan Wei Kevin Tan)",
+        "title": "Microsoft CEO Satya Nadella says Bill Gates warned him that investing in OpenAI would be like setting $1 billion on fire",
+        "description": "Microsoft made its first investment in Sam Altman's OpenAI in 2019. It now holds a 27% in OpenAI's for-profit business.",
+        "url": "https://www.businessinsider.com/microsoft-satya-nadella-bill-gates-warn-invest-openai-billion-burn-2025-10",
+        "urlToImage": "https://i.insider.com/69017654599d46a4ccc109d4?width=1200&format=jpeg",
+        "publishedAt": "2025-10-29T04:04:15Z",
+        "content": "Microsoft's early investments in OpenAI may seem like a no-brainer today, but Satya Nadella says the company and its founder, Bill Gates, saw the decision as a risk back then.\r\nMicrosoft invested $1 \u2026 [+1898 chars]"
+    },
+    {
+        "source": {
+            "id": null,
+            "name": "Yahoo Entertainment"
+        },
+        "author": "Yahoo Finance",
+        "title": "Earnings live: Amazon stock soars, Apple CEO predicts 'best-ever' holiday quarter, Reddit and Coinbase rise",
+        "description": "Third quarter earnings season is ramping up, and analysts expect S&P 500 companies grew their profits by 8% during the quarter.",
+        "url": "https://finance.yahoo.com/news/live/earnings-live-amazon-stock-soars-apple-ceo-predicts-best-ever-holiday-quarter-reddit-and-coinbase-rise-204131316.html",
+        "urlToImage": "https://s.yimg.com/ny/api/res/1.2/xfkaPYnrHLMYRVxmWJblAg--/YXBwaWQ9aGlnaGxhbmRlcjt3PTEyMDA7aD04Mzc-/https://s.yimg.com/os/creatr-uploaded-images/2025-09/d033dbf0-8dd7-11f0-9bef-725073505e74",
+        "publishedAt": "2025-10-30T20:41:31Z",
+        "content": "Markets are in the midst of the busiest week for third quarter earnings, with results from several Big Tech companies highlighting the calendar.\r\nSo far, the earnings season is off to a positive star\u2026 [+12794 chars]"
+    },
+    {
+        "source": {
+            "id": null,
+            "name": "Gizmodo.com"
+        },
+        "author": "Kyle Barr",
+        "title": "The Numbers Show Xbox\u2019s Current Plan Isn\u2019t Working",
+        "description": "This is what happens when you ignore hardware for years while dumping all your once-exclusive titles onto other platforms.",
+        "url": "https://gizmodo.com/numbers-show-xbox-current-plan-not-working-2000679428",
+        "urlToImage": "https://gizmodo.com/app/uploads/2025/10/Xbox-Series-X-plus-Xbox-Controller-1200x675.jpg",
+        "publishedAt": "2025-10-30T15:38:53Z",
+        "content": "Its time for Xbox to eat some humble pie and perform some real soul-searching. Microsoft released its latest quarterly earnings report and proved the worst of our fears about its gaming brand. Not on\u2026 [+4390 chars]"
+    },
+    {
+        "source": {
+            "id": null,
+            "name": "Yahoo Entertainment"
+        },
+        "author": "Arsheeya Bajwa and Max A. Cherney",
+        "title": "AMD forecasts fourth-quarter revenue above estimates on strong AI chip demand",
+        "description": "(Reuters) -Advanced Micro Devices forecast fourth-quarter revenue above market estimates on Tuesday, betting on the multibillion-dollar expansions of data...",
+        "url": "https://finance.yahoo.com/news/amd-forecasts-fourth-quarter-revenue-211854749.html",
+        "urlToImage": "https://media.zenfs.com/en/reuters-finance.com/34052d94edbe02a3b25bbe85b2a74a62",
+        "publishedAt": "2025-11-04T21:18:54Z",
+        "content": "By Arsheeya Bajwa and Max A. Cherney\r\n(Reuters) -Advanced Micro Devices forecast fourth-quarter revenue above market estimates on Tuesday, betting on the multibillion-dollar expansions of data center\u2026 [+4074 chars]"
+    },
+    {
+        "source": {
+            "id": "business-insider",
+            "name": "Business Insider"
+        },
+        "author": "sobrient@insider.com (Samuel O'Brient)",
+        "title": "Morgan Stanley says the colossal AI spending spree could pay for itself by 2028",
+        "description": "Some in markets have wondered if the AI spending boom is sustainable, but Morgan Stanley says the huge capex will deliver returns by 2028.",
+        "url": "https://www.businessinsider.com/ai-spending-boom-capex-big-tech-morgan-stanley-2025-10",
+        "urlToImage": "https://i.insider.com/68eeb5351c1f80efbec597a6?width=1200&format=jpeg",
+        "publishedAt": "2025-10-15T09:30:01Z",
+        "content": "AI is the story driving markets in 2025, but as companies rack up huge tabs in their sprawling infrastructure buildout, some investors have begun to worry: will all of the spending be worth it?\r\nMorg\u2026 [+1639 chars]"
+    },
+    {
+        "source": {
+            "id": "business-insider",
+            "name": "Business Insider"
+        },
+        "author": "Alistair Barr",
+        "title": "OMG! 'AMG' is a money machine the world has never seen before.",
+        "description": "The AMG trio\u2014Amazon, Microsoft, and Google\u2014leads the cloud industry, creating a financial loop unmatched by other tech giants like Meta.",
+        "url": "https://www.businessinsider.com/amg-cloud-money-machine-amazon-microsoft-google-2025-10",
+        "urlToImage": "https://i.insider.com/69051c230be9845f2dc58749?width=920&format=jpeg",
+        "publishedAt": "2025-10-31T21:13:54Z",
+        "content": "Amazon CEO Andy Jassy (left), Microsoft CEO Satya Nadella (center), and Google CEO Sundar Pichai (right).Reuters\r\n<ul><li>Amazon, Microsoft, and Google dominate the cloud market with unprecedented sc\u2026 [+3692 chars]"
+    },
+    {
+        "source": {
+            "id": null,
+            "name": "Yahoo Entertainment"
+        },
+        "author": "Rian Howlett",
+        "title": "Stock market today: Dow, S&P 500, Nasdaq futures sink as worries about frothy valuations run high",
+        "description": "Techs led a sharp retreat before the bell as doubts about valuations and the recent rally emerge.",
+        "url": "https://finance.yahoo.com/news/live/stock-market-today-dow-sp-500-nasdaq-futures-sink-as-worries-about-frothy-valuations-run-high-234947080.html",
+        "urlToImage": "https://s.yimg.com/ny/api/res/1.2/qRM3_xFkO6eT7x7w0WcqaA--/YXBwaWQ9aGlnaGxhbmRlcjt3PTEyMDA7aD04MDA-/https://s.yimg.com/os/creatr-uploaded-images/2025-11/d5bbd8b0-b844-11f0-bfbf-3a3941e29ddd",
+        "publishedAt": "2025-11-03T23:49:47Z",
+        "content": "Tech led a sharp pullback in US stock futures on Tuesday as doubts about high-running valuations preyed on investors sifting through the latest flurry of quarterly earnings.\r\nS&amp;P 500 futures (ES=\u2026 [+6066 chars]"
+    },
+    {
+        "source": {
+            "id": "the-verge",
+            "name": "The Verge"
+        },
+        "author": "Tom Warren",
+        "title": "Google pitches Workspace tools for \u2018when, not if\u2019\u00a0Microsoft\u00a0365 fails",
+        "description": "Google is trying to capitalize on what it calls \u201cfrequent and severe\u201d Microsoft 365 outages by offering up services like email, storage, and videoconferencing to businesses in the event of a Microsoft outage. The search giant\u2019s new Business Continuity plan ru\u2026",
+        "url": "https://www.theverge.com/news/800829/google-workspace-microsoft-365-tools-outage-marketing",
+        "urlToImage": "https://platform.theverge.com/wp-content/uploads/sites/2/2025/10/Google_Workspace_with_Gemini_Blog_Hero_1.max-2500x2500-1.png?quality=90&strip=all&crop=2.9556650246305%2C0%2C94.088669950739%2C100&w=1200",
+        "publishedAt": "2025-10-16T14:51:26Z",
+        "content": "<ul><li></li><li></li><li></li></ul>\r\nGoogle wants businesses to use Gmail and Google Meet as a backup solution for Microsoft 365 outages.\r\nGoogle wants businesses to use Gmail and Google Meet as a b\u2026 [+2954 chars]"
+    },
+    {
+        "source": {
+            "id": "the-verge",
+            "name": "The Verge"
+        },
+        "author": "Tom Warren",
+        "title": "These are the Office icons Microsoft rejected",
+        "description": "Microsoft is busy rolling out new curvy and colorful new Office icons, and now it\u2019s revealing a set of design concepts it experimented with before finalizing these new icons. Some of the concepts are radically different from what Microsoft is shipping, with d\u2026",
+        "url": "https://www.theverge.com/news/799736/microsoft-office-icons-test-versions",
+        "urlToImage": "https://platform.theverge.com/wp-content/uploads/sites/2/2025/10/officeicondesignexplorations.jpg?quality=90&strip=all&crop=0%2C10.694144515047%2C100%2C78.611710969907&w=1200",
+        "publishedAt": "2025-10-15T10:09:41Z",
+        "content": "<ul><li></li><li></li><li></li></ul>\r\nMicrosoft explored some designs that closely resembled its older Office for Mac icons.\r\nMicrosoft explored some designs that closely resembled its older Office f\u2026 [+2777 chars]"
+    },
+    {
+        "source": {
+            "id": null,
+            "name": "Barchart.com"
+        },
+        "author": "Aditya Raghunath",
+        "title": "Google Has a \u2018Secret Weapon\u2019 That Could Make GOOGL Stock One of the Best AI Buys for 2026",
+        "description": "Google's stock has increased by more than 50% in the last 12 months, making it a top investment given its expanding AI product portfolio.",
+        "url": "https://www.barchart.com/story/news/36032876/google-has-a-secret-weapon-that-could-make-googl-stock-one-of-the-best-ai-buys-for-2026",
+        "urlToImage": "https://s.yimg.com/ny/api/res/1.2/qYaxxKhZqjDXwaPjampMag--/YXBwaWQ9aGlnaGxhbmRlcjt3PTEyMDA7aD04MDA-/https://media.zenfs.com/en/barchart_com_477/1e2479f4257cd273a18d6e63fdd6213f",
+        "publishedAt": "2025-11-10T21:18:33Z",
+        "content": "Alphabet's (GOOGL) (GOOG) Google aims to gain traction in the artificial intelligence race that extends beyond its search engine dominance and cloud services. While Nvidia (NVDA) has captured headlin\u2026 [+5169 chars]"
+    },
+    {
+        "source": {
+            "id": null,
+            "name": "Yahoo Entertainment"
+        },
+        "author": "Aniruddha Ganguly",
+        "title": "Buy, Sell or Hold GOOGL Stock Before Q3 Earnings? Here's What to Know",
+        "description": "Alphabet's AI-driven Search gains, cloud expansion, and easing regulatory pressure set the stage for its Q3 2025 earnings release.",
+        "url": "https://finance.yahoo.com/news/buy-sell-hold-googl-stock-173800424.html",
+        "urlToImage": "https://media.zenfs.com/en/zacks.com/30e90ac213ebedcfe9ef1b79c529169c",
+        "publishedAt": "2025-10-24T17:38:00Z",
+        "content": "Alphabet GOOGL is set to report third-quarter 2025 results on Oct. 30.\u00a0\r\nFor third-quarter 2025, the Zacks Consensus Estimate for earnings is pegged at $2.27 per share, down 3 cents over the past 30 \u2026 [+6017 chars]"
+    },
+    {
+        "source": {
+            "id": "business-insider",
+            "name": "Business Insider"
+        },
+        "author": "Lee Chong Ming",
+        "title": "Satya Nadella is netting a record $96.5 million pay package as Microsoft's AI bets paid off",
+        "description": "Microsoft CEO Satya Nadella's pay soared to a record $96.5 million as the company's revenue hit $281 billion this year.",
+        "url": "https://www.businessinsider.com/satya-nadella-96-million-pay-salary-microsoft-ai-filing-2025-10",
+        "urlToImage": "https://i.insider.com/68f84e82cc993f9955d0a349?width=1200&format=jpeg",
+        "publishedAt": "2025-10-22T04:49:44Z",
+        "content": "Satya Nadella's record $96.5 million payday shows how Microsoft's AI boom is rewarding its top leader.JASON REDMOND/AFP via Getty Images\r\n<ul><li>Satya Nadella's pay package rose to a record $96.5 mi\u2026 [+2519 chars]"
+    },
+    {
+        "source": {
+            "id": null,
+            "name": "Gizmodo.com"
+        },
+        "author": "Kyle Barr",
+        "title": "Xbox Is Suffering for the Dumbest Reason Possible",
+        "description": "You can already guess which corporate entity's greed is forcing Xbox to skimp to survive.",
+        "url": "https://gizmodo.com/xbox-is-suffering-for-the-dumbest-reason-possible-2000676268",
+        "urlToImage": "https://gizmodo.com/app/uploads/2025/10/Xbox-Series-X-Controller-1-1200x675.jpg",
+        "publishedAt": "2025-10-23T17:57:43Z",
+        "content": "For all of us who grew up on Xbox, every recent decision Microsoft\u2019s gaming brand has made these past two years has seemed nonsensical. The company has closed studios and hiked prices across the boar\u2026 [+5245 chars]"
+    },
+    {
+        "source": {
+            "id": "business-insider",
+            "name": "Business Insider"
+        },
+        "author": "Dakin Campbell",
+        "title": "Big Tech says 'AI bubble? What AI bubble?'",
+        "description": "Big Tech keeps pouring billions into AI infrastructure as Google, Meta, and Microsoft boost spending despite talk of an AI bubble.",
+        "url": "https://www.businessinsider.com/big-tech-capex-spending-ai-earnings-2025-10",
+        "urlToImage": "https://i.insider.com/690291d1c007ca8c2737e3be?width=1200&format=jpeg",
+        "publishedAt": "2025-10-30T00:35:07Z",
+        "content": "Eli Hiller/For The Washington Post via Getty Images\r\n<ul><li>Google, Meta, and Microsoft all reported earnings and showed no sign of slowing their AI investments.</li><li>Each spent more on AI infras\u2026 [+4346 chars]"
+    },
+    {
+        "source": {
+            "id": "business-insider",
+            "name": "Business Insider"
+        },
+        "author": "Katherine Li",
+        "title": "'Peacetime CEO': Microsoft resolves major dispute with OpenAI ahead of earnings",
+        "description": "Microsoft lifted a funding restriction on OpenAI that became a point of conflict after ChatGPT took off required more computing power.",
+        "url": "https://www.businessinsider.com/microsoft-resolves-major-dispute-with-openai-ahead-of-earnings-2025-10",
+        "urlToImage": "https://i.insider.com/6901389cc007ca8c2737d09b?width=1200&format=jpeg",
+        "publishedAt": "2025-10-29T01:08:40Z",
+        "content": "Microsoft and OpenAI resolve a major dispute, lifting fundraising restrictions for OpenAI.Chalinee Thirasupa/REUTERS\r\n<ul><li>Microsoft and OpenAI resolved a major dispute, lifting fundraising restri\u2026 [+3146 chars]"
+    },
+    {
+        "source": {
+            "id": "business-insider",
+            "name": "Business Insider"
+        },
+        "author": "Lee Chong Ming",
+        "title": "Meta's big AI gamble just cost Mark Zuckerberg two spots on the billionaire's index",
+        "description": "Mark Zuckerberg lost about $29.2 billion as Meta's AI spending spooked investors, knocking him two spots down on Bloomberg's Billionaires Index.",
+        "url": "https://www.businessinsider.com/meta-ai-gamble-mark-zuckerberg-billionaire-list-net-worth-2025-10",
+        "urlToImage": "https://i.insider.com/69043a6a599d46a4ccc1340b?width=1200&format=jpeg",
+        "publishedAt": "2025-10-31T05:45:41Z",
+        "content": "Mark Zuckerberg lost about $29.2 billion as Meta's AI spending spooked investors, knocking him two spots down on Bloomberg's Billionaires Index.Taylor Hill/Getty Images\r\n<ul><li>Mark Zuckerberg lost \u2026 [+3835 chars]"
+    },
+    {
+        "source": {
+            "id": "business-insider",
+            "name": "Business Insider"
+        },
+        "author": "Ashley Stewart",
+        "title": "Microsoft's CFO highlights record infrastructure investments, OpenAI deal in internal memo",
+        "description": "The memos mostly rehash what the company reports publicly, but often they show what developments the executive deems most important.",
+        "url": "https://www.businessinsider.com/microsofts-cfo-highlights-record-capex-openai-deal-in-internal-memo-2025-10",
+        "urlToImage": "https://i.insider.com/69028b2cc007ca8c2737e339?width=1200&format=jpeg",
+        "publishedAt": "2025-10-29T22:04:35Z",
+        "content": "Microsoft CFO Amy HoodStephen Brashear/Getty Images\r\n<ul><li>Microsoft's Q1 revenue hit $77.7 billion, surpassing Wall Street expectations.</li><li>The earnings release followed an Azure outage and a\u2026 [+5858 chars]"
+    },
+    {
+        "source": {
+            "id": null,
+            "name": "Yahoo Entertainment"
+        },
+        "author": "Rian Howlett",
+        "title": "Stock market today: Nasdaq, S&P 500, Dow rise off lows as rough week for tech nears end",
+        "description": "Markets trimmed losses as investors weighed Musk's $1T pay package and deteriorating jobs data.",
+        "url": "https://finance.yahoo.com/news/live/stock-market-today-nasdaq-sp-500-dow-come-off-lows-as-rough-week-for-tech-nears-end-201237522.html",
+        "urlToImage": "https://s.yimg.com/ny/api/res/1.2/HxW7Uthb5DhMhXsy8HO_pg--/YXBwaWQ9aGlnaGxhbmRlcjt3PTEyMDA7aD04MDA-/https://s.yimg.com/os/creatr-uploaded-images/2025-11/7312aa10-b7fc-11f0-9ffc-4d7844c1fde9",
+        "publishedAt": "2025-11-07T20:12:37Z",
+        "content": "US stocks came off session lows on Friday as investors weighed bearish consumer sentiment data and odds that the AI investment boom will pay off, while monitoring the ongoing US government shutdown f\u2026 [+15240 chars]"
+    },
+    {
+        "source": {
+            "id": "business-insider",
+            "name": "Business Insider"
+        },
+        "author": "Samuel O'Brient",
+        "title": "Amazon Q3 earnings updates: Analysts expect answers on AI progress and AWS as AMZN lags other Mag 7 stocks",
+        "description": "Amazon stock is up 4% this year ahead of its Q3 earnings report, lagging its mega-cap peers. The call with analysts is scheduled for 5 p.m. ET.",
+        "url": "https://www.businessinsider.com/amazon-q3-earnings-report-amzn-stock-live-updates-2025-10",
+        "urlToImage": "https://i.insider.com/6902593d599d46a4ccc113bd?width=1200&format=jpeg",
+        "publishedAt": "2025-10-30T13:30:11Z",
+        "content": "Amazon CEO Andy JassyNoah Berger/Noah Berger\r\nAmazon is heading into its latest earnings report as the laggard of the Magnificent Seven this year, and investors are looking for some key updates that \u2026 [+1788 chars]"
+    },
+    {
+        "source": {
+            "id": "business-insider",
+            "name": "Business Insider"
+        },
+        "author": "Dan DeFrancesco",
+        "title": "How some of the world's biggest tech companies stacked up during earnings season",
+        "description": "To quickly catch you up on how things shook out, here's a rundown on the main takeaways from Alphabet, Amazon, Apple, Meta, and Microsoft.",
+        "url": "https://www.businessinsider.com/key-insights-tech-earnings-alphabet-amazon-apple-meta-microsoft-2025-10",
+        "urlToImage": "https://i.insider.com/6904c20b599d46a4ccc1387c?width=1200&format=jpeg",
+        "publishedAt": "2025-10-31T14:29:28Z",
+        "content": "ANGELA WEISS / AFP via Getty Images\r\n<ul><li>This post originally appeared in the Business Insider Today newsletter.</li><li>You can sign up for Business Insider's daily newsletter here.</li></ul>Hap\u2026 [+7805 chars]"
+    },
+    {
+        "source": {
+            "id": "business-insider",
+            "name": "Business Insider"
+        },
+        "author": "Ellen Thomas",
+        "title": "We broke down the eye-popping AI spending for 4 Big Tech firms \u2014 and their plans to go even harder next year",
+        "description": "Amazon, Google,  Meta, and Microsoft are spending record amounts on AI infrastructure.",
+        "url": "https://www.businessinsider.com/big-tech-spending-on-ai-capex-q3-2025-10",
+        "urlToImage": "https://i.insider.com/6903f3f6c007ca8c2737fa86?width=1200&format=jpeg",
+        "publishedAt": "2025-10-31T10:00:01Z",
+        "content": "Big Tech ramped up spending on capex in the third quarter.Andy Kiersz/Business Insider\r\n<ul><li>On earnings calls this week, Big Tech companies reported significant AI spending.</li><li>Each said the\u2026 [+5166 chars]"
+    },
+    {
+        "source": {
+            "id": null,
+            "name": "Yahoo Entertainment"
+        },
+        "author": "Petr Hu\u0159\u0165\u00e1k",
+        "title": "Fastly (NYSE:FSLY) Delivers Strong Q3 Numbers, Stock Jumps 12.8%",
+        "description": "Edge cloud platform Fastly (NYSE:FSLY) announced better-than-expected revenue in Q3 CY2025, with sales up 15.3% year on year to $158.2 million. On top of...",
+        "url": "https://finance.yahoo.com/news/fastly-nyse-fsly-delivers-strong-214016188.html",
+        "urlToImage": "https://s.yimg.com/ny/api/res/1.2/mx4oScXKtviiuhBR6hU4Fw--/YXBwaWQ9aGlnaGxhbmRlcjt3PTEyMDA7aD02MDA-/https://media.zenfs.com/en/stockstory_922/2877fce943881a954e884365e8a2ccc1",
+        "publishedAt": "2025-11-05T21:40:16Z",
+        "content": "Edge cloud platform Fastly (NYSE:FSLY) announced better-than-expected revenue in Q3 CY2025, with sales up 15.3% year on year to $158.2 million. On top of that, next quarters revenue guidance ($161 mi\u2026 [+4324 chars]"
+    },
+    {
+        "source": {
+            "id": null,
+            "name": "Yahoo Entertainment"
+        },
+        "author": "Yahoo Finance Video",
+        "title": "Big Tech earnings: The 3 things Wall Street will be listening for",
+        "description": "Big Tech is on deck for earnings season this week with Magnificent Seven companies Meta Platforms (META), Microsoft (MSFT), and Alphabet (GOOGL, GOOG...",
+        "url": "https://finance.yahoo.com/video/big-tech-earnings-3-things-143000573.html",
+        "urlToImage": "https://s.yimg.com/ny/api/res/1.2/W3taRNsJL7FcNnOoPUov3g--/YXBwaWQ9aGlnaGxhbmRlcjt3PTEyMDA7aD02NzQ-/https://s.yimg.com/os/creatr-uploaded-images/2025-10/f1cdc750-b33c-11f0-bfd7-93882954981f",
+        "publishedAt": "2025-10-27T14:30:00Z",
+        "content": "What report do you think is really critical that has to come out here and be the tone setter out of all these names reporting. \r\nOh, well I I mean, I think all of them. Um, look, meta on CAPEX spendi\u2026 [+4184 chars]"
+    },
+    {
+        "source": {
+            "id": null,
+            "name": "Slashdot.org"
+        },
+        "author": "msmash",
+        "title": "OpenAI Finalizes Corporate Restructuring, Gives Microsoft 27% Stake and Technology Access Until 2032",
+        "description": "Microsoft and OpenAI have finalized a new agreement that removes uncertainty for investors and clears the path for OpenAI to restructure as a for-profit business. Microsoft receives a 27% ownership stake in OpenAI worth approximately $135 billion and retains \u2026",
+        "url": "https://slashdot.org/story/25/10/28/149254/openai-finalizes-corporate-restructuring-gives-microsoft-27-stake-and-technology-access-until-2032",
+        "urlToImage": "https://a.fsdn.com/sd/topics/microsoft_64100.png",
+        "publishedAt": "2025-10-28T14:41:00Z",
+        "content": "Microsoft and OpenAI have finalized a new agreement that removes uncertainty for investors and clears the path for OpenAI to restructure as a for-profit business. Microsoft receives a 27% ownership s\u2026 [+830 chars]"
+    },
+    {
+        "source": {
+            "id": null,
+            "name": "Barchart.com"
+        },
+        "author": "Pathikrit Bose",
+        "title": "Dear AMD Stock Fans, Mark Your Calendars for November 11",
+        "description": "The chipmaker is set for its Financial Analyst Day next week.",
+        "url": "https://www.barchart.com/story/news/35963889/dear-amd-stock-fans-mark-your-calendars-for-november-11",
+        "urlToImage": "https://media.zenfs.com/en/barchart_com_477/6f0af714944129c1f031d0cd3f9af558",
+        "publishedAt": "2025-11-06T19:40:10Z",
+        "content": "The recent selloff in tech stocks, especially more profoundly seen in the twin chipmaking giants, Nvidia (NVDA) and AMD (AMD), has come as a long-awaited reason for cheer for the AI bears. After rais\u2026 [+5120 chars]"
+    },
+    {
+        "source": {
+            "id": null,
+            "name": "Yahoo Entertainment"
+        },
+        "author": "Nauman khan",
+        "title": "AMD Set to Reveal Major Surprises on Nov. 11 -- Investors Don't Miss This",
+        "description": "Market Watches AMD as Key Product Updates Loom on Nov. 11",
+        "url": "https://finance.yahoo.com/news/amd-set-reveal-major-surprises-122924896.html",
+        "urlToImage": "https://media.zenfs.com/en/us.finance.gurufocus/35374f9af1c90b1e6f7cf432691fc152",
+        "publishedAt": "2025-11-10T12:29:24Z",
+        "content": "This article first appeared on GuruFocus.\r\nThe Advanced Micro Devices (NASDAQ:AMD) Financial Analyst Day on Nov. 11 could reset expectations for the semiconductor company.\r\nThe Financial Analyst Day \u2026 [+1588 chars]"
+    },
+    {
+        "source": {
+            "id": "business-insider",
+            "name": "Business Insider"
+        },
+        "author": "Henry Chandonnet",
+        "title": "Sam Altman shuts down question about how OpenAI can commit to spending $1.4 trillion while earning billions: 'Enough'",
+        "description": "Sam Altman said that shares of OpenAI were in demand, and that the company was making a \"bet\" and \"taking a risk along with that.\"",
+        "url": "https://www.businessinsider.com/sam-altman-defends-openai-trillion-spending-2025-11",
+        "urlToImage": "https://i.insider.com/6908d9d8c007ca8c27381e76?width=1200&format=jpeg",
+        "publishedAt": "2025-11-03T18:08:33Z",
+        "content": "OpenAI CEO Sam AltmanShelby Tauber/Reuters\r\n<ul><li>Sam Altman dismissed criticisms of OpenAI's trillion-dollar-plus compute spending commitments in a recent podcast interview.</li><li>Shares of Open\u2026 [+3592 chars]"
+    },
+    {
+        "source": {
+            "id": "business-insider",
+            "name": "Business Insider"
+        },
+        "author": "Daniel Geiger",
+        "title": "A $5 billion deal key to CoreWeave's AI empire just lost another investor's support",
+        "description": "CoreWeave's deal to acquire a data center partner is in jeopardy after shareholders oppose the transaction.",
+        "url": "https://www.businessinsider.com/core-scientific-shareholder-oppose-coreweave-takeover-bid-2025-10",
+        "urlToImage": "https://i.insider.com/68f2a1551c1f80efbec5d3f2?width=1200&format=jpeg",
+        "publishedAt": "2025-10-17T21:44:09Z",
+        "content": "Michael Intrator, CoreWeave's CEOTom Williams/CQ-Roll Call, Inc via Getty Images\r\n<ul><li>CoreWeave's rapid growth has thrust it into the center of a growing debate about an AI bubble.</li><li>In Jul\u2026 [+7588 chars]"
+    },
+    {
+        "source": {
+            "id": null,
+            "name": "Kotaku"
+        },
+        "author": "Kenneth Shepard",
+        "title": "Report: Microsoft Has Pushed Xbox To Make Much Higher Profits For The Past Two Years",
+        "description": "A push for 30 percent profit has led to layoffs, project cancellations, and price increases\nThe post Report: Microsoft Has Pushed Xbox To Make Much Higher Profits For The Past Two Years appeared first on Kotaku.",
+        "url": "https://kotaku.com/xbox-microsoft-price-hike-game-pass-layoffs-new-console-2000638546",
+        "urlToImage": "https://kotaku.com/app/uploads/2025/09/Xbox-logo3-1200x675.jpg",
+        "publishedAt": "2025-10-23T13:22:03Z",
+        "content": "Bloomberghas published a new report about the state of Microsofts Xbox division, providing some potential insight into the reasoning behind so many baffling decisions the company has made in the past\u2026 [+2293 chars]"
+    },
+    {
+        "source": {
+            "id": null,
+            "name": "Yahoo Entertainment"
+        },
+        "author": "Radek Strnad",
+        "title": "WD-40 (WDFC) Reports Q3: Everything You Need To Know Ahead Of Earnings",
+        "description": "Household products company WD-40 (NASDAQ:WDFC) will be reporting results this Wednesday after market hours. Here\u2019s what investors should know.",
+        "url": "https://finance.yahoo.com/news/wd-40-wdfc-reports-q3-030612703.html",
+        "urlToImage": "https://s.yimg.com/ny/api/res/1.2/uUJB8U0dT3djHbCTNj3bOg--/YXBwaWQ9aGlnaGxhbmRlcjt3PTEyMDA7aD02MDA-/https://media.zenfs.com/en/stockstory_922/601738337ca4d41345ba70564a5f82b8",
+        "publishedAt": "2025-10-21T03:06:12Z",
+        "content": "Household products company WD-40 (NASDAQ:WDFC) will be reporting results this Wednesday after market hours. Heres what investors should know.\r\nWD-40 missed analysts revenue expectations by 2.3% last \u2026 [+2214 chars]"
+    },
+    {
+        "source": {
+            "id": "business-insider",
+            "name": "Business Insider"
+        },
+        "author": "Eugene Kim",
+        "title": "How Amazon flipped the script on a challenging week",
+        "description": "Wall Street loved what it saw from Amazon this week. Yes, despite the layoffs.",
+        "url": "https://www.businessinsider.com/amazon-layoffs-earnings-investors-happy-ai-progress-culture-2025-11",
+        "urlToImage": "https://i.insider.com/690519770be9845f2dc586c5?width=1200&format=jpeg",
+        "publishedAt": "2025-11-01T09:24:02Z",
+        "content": "Amazon CEO Andy JassyJordan Strauss/AP\r\n<ul><li>Amazon had a roller coaster week.</li><li>It started with layoffs on Tuesday; by Thursday, Wall Street was cheering.</li><li>CEO Andy Jassy has been fo\u2026 [+4931 chars]"
+    },
+    {
+        "source": {
+            "id": "business-insider",
+            "name": "Business Insider"
+        },
+        "author": "Brent D. Griffiths",
+        "title": "Amazon stock jumps 5% premarket after OpenAI announces $38 billion AWS partnership",
+        "description": "The AWS partnership is OpenAI's first major cloud computing deal since striking a new agreement with Microsoft that gave it more flexibility.",
+        "url": "https://www.businessinsider.com/openai-amazon-aws-parternship-2025-11",
+        "urlToImage": "https://i.insider.com/68dc20f81c1f80efbec49e20?width=1200&format=jpeg",
+        "publishedAt": "2025-11-03T14:19:17Z",
+        "content": "OpenAI CEO Sam Altman seems to be making Hollywood a proposal. Does it matter if studio owners and talent agencies like it?MANDEL NGAN/AFP via Getty Images\r\nOpenAI announced a multi-year $38 billion \u2026 [+501 chars]"
+    },
+    {
+        "source": {
+            "id": null,
+            "name": "Yahoo Entertainment"
+        },
+        "author": "Yahoo Finance Video",
+        "title": "3 most important things to watch with Big Tech earnings next week",
+        "description": "Big Tech earnings are on deck next week with Magnificent Seven companies Microsoft (MSFT), Amazon (AMZN), Apple (AAPL), Alphabet (GOOG, GOOGL), and Meta...",
+        "url": "https://finance.yahoo.com/video/3-most-important-things-watch-205449651.html",
+        "urlToImage": "https://s.yimg.com/ny/api/res/1.2/yiQBY.8cGY1HQDxIiUwb3g--/YXBwaWQ9aGlnaGxhbmRlcjt3PTEyMDA7aD02NzU-/https://s.yimg.com/os/creatr-uploaded-images/2025-10/9ea40cb0-b11b-11f0-badf-defbcab889b0",
+        "publishedAt": "2025-10-24T20:54:49Z",
+        "content": "Well Big tech taking center stage. Microsoft, Alphabet, Meta reporting earnings on Wednesday followed by Apple and Amazon on Thursday. Together, they represent a huge slice of the market, saying the \u2026 [+6287 chars]"
+    },
+    {
+        "source": {
+            "id": null,
+            "name": "Yahoo Entertainment"
+        },
+        "author": "Rian Howlett",
+        "title": "Stock market today: Dow, S&P 500, Nasdaq end volatile week lower amid worst tech sell-off since April",
+        "description": "Markets trimmed losses as investors weighed Musk's $1T pay package and deteriorating jobs data.",
+        "url": "https://finance.yahoo.com/news/live/stock-market-today-dow-sp-500-nasdaq-end-volatile-week-lower-amid-worst-tech-sell-off-since-april-210026318.html",
+        "urlToImage": "https://s.yimg.com/ny/api/res/1.2/HxW7Uthb5DhMhXsy8HO_pg--/YXBwaWQ9aGlnaGxhbmRlcjt3PTEyMDA7aD04MDA-/https://s.yimg.com/os/creatr-uploaded-images/2025-11/7312aa10-b7fc-11f0-9ffc-4d7844c1fde9",
+        "publishedAt": "2025-11-07T21:00:26Z",
+        "content": "US stocks came off session lows on Friday as investors weighed bearish consumer sentiment data and odds that the AI investment boom will pay off, while monitoring the ongoing US government shutdown f\u2026 [+16110 chars]"
+    },
+    {
+        "source": {
+            "id": "business-insider",
+            "name": "Business Insider"
+        },
+        "author": "Steven Tweedie",
+        "title": "OpenAI completes long-awaited restructuring, signs new agreement with Microsoft",
+        "description": "As part of the new agreement, Microsoft holds a $135 billion stake in the for-profit OpenAI business public benefit corporation, or OpenAI Group PBC,",
+        "url": "https://www.businessinsider.com/openai-completes-restructuring-for-profit-signs-new-microsoft-agreement-2025-10",
+        "urlToImage": "https://www.businessinsider.com/public/assets/logos/og-image-logo-social.png?v=2023-11",
+        "publishedAt": "2025-10-28T13:31:08Z",
+        "content": "OpenAI announced on Tuesday that it had completed its restructuring a move it has previously said is vital to attract future capital and remain competitive in the AI race.\r\nThe AI startup's unusual s\u2026 [+1680 chars]"
+    },
+    {
+        "source": {
+            "id": "business-insider",
+            "name": "Business Insider"
+        },
+        "author": "tmohamed@businessinsider.com (Theron Mohamed)",
+        "title": "Apple just joined Nvidia and Microsoft in the $4 trillion club",
+        "description": "Apple has joined one of the most exclusive clubs in business after its stock hit a record high on the back of strong iPhone 17 sales and AI buzz.",
+        "url": "https://markets.businessinsider.com/news/stocks/apple-stock-price-market-cap-iphone-17-nvidia-microsoft-ai-2025-10",
+        "urlToImage": "https://i.insider.com/68f79339cc993f9955d09004?width=1200&format=jpeg",
+        "publishedAt": "2025-10-28T15:01:33Z",
+        "content": "Apple just secured a $4 trillion market capitalization for the first time, becoming only the third public company ever to be worth that much, after Nvidia and Microsoft.\r\nThe tech titan's stock price\u2026 [+1270 chars]"
+    },
+    {
+        "source": {
+            "id": null,
+            "name": "Gizmodo.com"
+        },
+        "author": "Kyle Barr",
+        "title": "Gaming Is Gonna Suck a Whole Lot Less on Copilot+ PCs",
+        "description": "Microsoft is finally making gaming on ARM-based PCs work like they should have a year ago.",
+        "url": "https://gizmodo.com/gaming-arm-copilot-plus-pc-suck-less-prism-emulator-2000675748",
+        "urlToImage": "https://gizmodo.com/app/uploads/2025/09/Qualcomm-Snapdragon-X2-Elite-Extreme-PC-examples-1200x675.jpg",
+        "publishedAt": "2025-10-22T21:05:56Z",
+        "content": "There could be a sea change coming for many of the touted Qualcomm Snapdragon-based Copilot+ PCs Microsoft helped launch over a year ago. Took them long enough. Many of the early Copilot+ devices spo\u2026 [+4626 chars]"
+    },
+    {
+        "source": {
+            "id": null,
+            "name": "Kotaku"
+        },
+        "author": "Ethan Gach",
+        "title": "Microsoft Boss Explains Xbox\u2019s Controversial New Approach To Gaming",
+        "description": "CEO Satya Nadella defended controversial moves around exclusivity and higher profit margins\nThe post Microsoft Boss Explains Xbox\u2019s Controversial New Approach To Gaming appeared first on Kotaku.",
+        "url": "https://kotaku.com/microsoft-satya-nadella-xbox-halo-profit-margins-2000639721",
+        "urlToImage": "https://kotaku.com/app/uploads/2025/09/xbox-logo1-1200x675.jpg",
+        "publishedAt": "2025-10-28T20:58:42Z",
+        "content": "Having failed to keep up with PlayStation through two successive hardware generations, Microsoft is pivoting Xbox into something other than a conventional console platform. What exact shape that will\u2026 [+3668 chars]"
+    },
+    {
+        "source": {
+            "id": null,
+            "name": "Yahoo Entertainment"
+        },
+        "author": "Benjamin Rains",
+        "title": "AI Nuclear Energy Stocks to Now Buy On the Dip: CEG, GEV",
+        "description": "The pullback across AI stocks and the broader nuclear-heavy AI energy trade offers investors a great chance to start buying best-in-class stocks on the dip, ...",
+        "url": "https://finance.yahoo.com/news/ai-nuclear-energy-stocks-now-225500330.html",
+        "urlToImage": "https://media.zenfs.com/en/zacks.com/9eb778d01f68d33947cb279d99e17e68",
+        "publishedAt": "2025-11-13T22:55:00Z",
+        "content": "The pullback across artificial intelligence stocks and the broader nuclear-heavy AI energy trade offers investors a great chance to start buying best-in-class stocks on the dip, including GE Vernova \u2026 [+6118 chars]"
+    },
+    {
+        "source": {
+            "id": null,
+            "name": "Yahoo Entertainment"
+        },
+        "author": "Jeran Wittenstein",
+        "title": "Burry\u2019s Depreciation Gripe Shines Spotlight on Big Tech Profits",
+        "description": "The head of Scion Asset Management, who\u2019s best known for his bet against the US housing market before the 2008 global financial crisis and recently...",
+        "url": "https://finance.yahoo.com/news/burry-depreciation-gripe-shines-spotlight-104409439.html",
+        "urlToImage": "https://s.yimg.com/ny/api/res/1.2/s61Ii5vBOFrF_sjvnd0wCQ--/YXBwaWQ9aGlnaGxhbmRlcjt3PTEyMDA7aD0xMDA1/https://media.zenfs.com/en/bloomberg_holding_pen_162/4d43bd9ff5c3f384c3509a6230269eb7",
+        "publishedAt": "2025-11-14T10:44:09Z",
+        "content": "(Bloomberg) -- Big Techs ability to churn out ever-increasing profits has underpinned investors ongoing enthusiasm for the stocks regardless of their soaring valuations. But what if those numbers are\u2026 [+6187 chars]"
+    },
+    {
+        "source": {
+            "id": "the-verge",
+            "name": "The Verge"
+        },
+        "author": "Justine Calma",
+        "title": "Why is Bill Gates tone policing on climate change?",
+        "description": "Bill Gates wants us all to be more upbeat about climate change. He argues that we've made great progress on the problem, aided in large part by technological advances. So it's time to focus more on improving people's lives, particularly by fighting hunger and\u2026",
+        "url": "https://www.theverge.com/report/808647/bill-gates-climate-change-ai-emissions-memo",
+        "urlToImage": "https://platform.theverge.com/wp-content/uploads/sites/2/2025/10/gettyimages-2237235833.jpg?quality=90&strip=all&crop=0%2C10.75214828329%2C100%2C78.49570343342&w=1200",
+        "publishedAt": "2025-10-29T12:05:45Z",
+        "content": "<ul><li></li><li></li><li></li></ul>\r\nHe says there needs to be more focus on health and prosperity and less obsession over reducing pollution. But its all connected.\r\nHe says there needs to be more \u2026 [+9602 chars]"
+    },
+    {
+        "source": {
+            "id": null,
+            "name": "Gizmodo.com"
+        },
+        "author": "Lucas Ropek",
+        "title": "$1 Trillion in Tech Stocks Sold Off as Market Grows Skeptical of AI",
+        "description": "What do bubbles do?",
+        "url": "https://gizmodo.com/1-trillion-in-tech-stocks-sold-off-as-market-grows-skeptical-of-ai-2000683226",
+        "urlToImage": "https://gizmodo.com/app/uploads/2021/03/pedsdyugfyfnuh68tlsy.jpg",
+        "publishedAt": "2025-11-07T21:10:53Z",
+        "content": "The market\u2019s confidence in artificial intelligence may be wavering, and companies with big investments in it seem to be shedding supporters. The Financial Times notes that, over the course of the pas\u2026 [+3367 chars]"
+    },
+    {
+        "source": {
+            "id": null,
+            "name": "Yahoo Entertainment"
+        },
+        "author": "Faizan Farooque",
+        "title": "Oracle Enters Strongest Growth Phase in Two Decades on AI and Cloud Demand",
+        "description": "Company targets 16% revenue growth as AI partnerships and data centers drive expansion",
+        "url": "https://finance.yahoo.com/news/oracle-enters-strongest-growth-phase-175047867.html",
+        "urlToImage": "https://media.zenfs.com/en/us.finance.gurufocus/be8b0ee50de3af9268d7ff8f47f03722",
+        "publishedAt": "2025-11-05T17:50:47Z",
+        "content": "This article first appeared on GuruFocus.\r\nOracle Corp. (ORCL, Financials) is seeing growth that it hasn't seen in more than 20 years, thanks to a rise in demand for cloud and AI services.\r\nThe compa\u2026 [+758 chars]"
+    },
+    {
+        "source": {
+            "id": null,
+            "name": "Theregister.com"
+        },
+        "author": "Matt Rosoff",
+        "title": "Microsoft seemingly just revealed that OpenAI lost $11.5B last quarter",
+        "description": "Satya has also delivered Sam most of the cash he promised\nMicrosoft reported earnings for the quarter ended Sept. 30 on Wednesday after market close and buried in its financial filings were a couple of passages suggesting that OpenAI suffered a net loss of $1\u2026",
+        "url": "https://www.theregister.com/2025/10/29/microsoft_earnings_q1_26_openai_loss/",
+        "urlToImage": "https://regmedia.co.uk/2023/11/21/shutterstock_altman_nadella.jpg",
+        "publishedAt": "2025-10-29T23:17:31Z",
+        "content": "Microsoft reported earnings for the quarter ended Sept. 30 on Wednesday after market close and buried in its financial filings were a couple of passages suggesting that OpenAI suffered a net loss of \u2026 [+2962 chars]"
+    },
+    {
+        "source": {
+            "id": "business-insider",
+            "name": "Business Insider"
+        },
+        "author": "bbergman@insider.com (Ben Bergman)",
+        "title": "Google is in early talks to deepen its investment in Anthropic",
+        "description": "Google is in early discussions to deepen its investment in Anthropic. The two companies announced a massive cloud computing deal in October.",
+        "url": "https://www.businessinsider.com/google-deepen-investment-in-ai-anthropic-2025-11",
+        "urlToImage": "https://i.insider.com/690befe921c3f142ebfc2ec0?width=1200&format=jpeg",
+        "publishedAt": "2025-11-06T02:36:13Z",
+        "content": "Google is in early discussions to deepen its investment in Anthropic, Business Insider has learned.\r\nThe new round of funding could value Anthropic at more than $350 billion, according to one source \u2026 [+2034 chars]"
+    },
+    {
+        "source": {
+            "id": null,
+            "name": "Yahoo Entertainment"
+        },
+        "author": "Faizan Farooque",
+        "title": "Canaccord Genuity Boosts Iris Energy Price Target to $70 After Microsoft GPU Deal",
+        "description": "The partnership adds fresh momentum to Iris Energy's AI cloud ambitions despite short-term stock weakness.",
+        "url": "https://finance.yahoo.com/news/canaccord-genuity-boosts-iris-energy-172839739.html",
+        "urlToImage": "https://media.zenfs.com/en/us.finance.gurufocus/cc83e8dd59638b7b08a444368555b62c",
+        "publishedAt": "2025-11-10T17:28:39Z",
+        "content": "This article first appeared on GuruFocus.\r\nCanaccord Genuity has raised its price target on Iris Energy (IREN, Financials) to $70 from $42 while keeping a Buy rating, following the company's new GPU \u2026 [+890 chars]"
+    },
+    {
+        "source": {
+            "id": null,
+            "name": "Substack.com"
+        },
+        "author": "Zvi Mowshowitz",
+        "title": "OpenAI Moves to Complete Potentially the Largest Theft in Human History",
+        "description": "OpenAI is now set to become a Public Benefit Corporation, with its investors entitled to uncapped profit shares.",
+        "url": "https://thezvi.substack.com/p/openai-moves-to-complete-potentially",
+        "urlToImage": "https://substackcdn.com/image/fetch/$s_!ASX0!,w_1200,h_600,c_fill,f_jpg,q_auto:good,fl_progressive:steep,g_auto/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fb1484b22-1854-4af6-b1c4-b92b406632f4_500x822.jpeg",
+        "publishedAt": "2025-11-01T17:25:12Z",
+        "content": "OpenAI is now set to become a Public Benefit Corporation, with its investors entitled to uncapped profit shares. Its nonprofit foundation will retain some measure of control and a 26% financial stake\u2026 [+34394 chars]"
+    },
+    {
+        "source": {
+            "id": null,
+            "name": "MacRumors"
+        },
+        "author": "Juli Clover",
+        "title": "Nvidia Becomes First $5 Trillion Company as AI Demand Surges",
+        "description": "Nvidia today became the first public company to reach a $5 trillion market capitalization, hitting the milestone 3.5 months after surpassing $4 trillion.\n\n\n\n\n\nOver the past week, Nvidia's shares have climbed 14.5 percent due to demand for its GPUs and the pos\u2026",
+        "url": "https://www.macrumors.com/2025/10/29/nvidia-5-trillion-market-cap/",
+        "urlToImage": "https://images.macrumors.com/t/hTWtXD99jUuYkTySQL6_TOl47us=/2500x/article-new/2024/06/Apple-vs-Nvidia.jpg",
+        "publishedAt": "2025-10-29T17:15:52Z",
+        "content": "Nvidia today became the first public company to reach a $5 trillion market capitalization, hitting the milestone 3.5 months after surpassing $4 trillion.\r\nOver the past week, Nvidia's shares have cli\u2026 [+1713 chars]"
+    },
+    {
+        "source": {
+            "id": null,
+            "name": "Yahoo Entertainment"
+        },
+        "author": "Nauman khan",
+        "title": "AI Boom Could Send Palantir, Microsoft, and Amazon Stocks Soaring in 2026",
+        "description": "Analysts See White-Knuckle Volatility, Big Upside in Tech Stocks",
+        "url": "https://finance.yahoo.com/news/ai-boom-could-send-palantir-172737406.html",
+        "urlToImage": "https://media.zenfs.com/en/us.finance.gurufocus/325f48a70dc6c0c52a00317b6f6bc6ba",
+        "publishedAt": "2025-11-10T17:27:37Z",
+        "content": "This article first appeared on GuruFocus.\r\nWedbush says tech stocks could climb another 8% to 10% into year-end as investors pivot to AI-related spending, according to a Monday note from the firm.\r\nA\u2026 [+1010 chars]"
+    },
+    {
+        "source": {
+            "id": "the-verge",
+            "name": "The Verge"
+        },
+        "author": "Sean Hollister",
+        "title": "Valve enters the console wars",
+        "description": "On the 15th floor of an upscale office building in Bellevue, Washington, security guards line the halls. They're here to make sure we don't stray - because I'm visiting Valve's headquarters, a place few journalists ever get to go. The guards help escort me to\u2026",
+        "url": "https://www.theverge.com/games/818622/valve-console-wars-price-sony-microsoft-nintendo-windows",
+        "urlToImage": "https://platform.theverge.com/wp-content/uploads/sites/2/2025/11/Vrg_illo_valve_console_wars.jpg?quality=90&strip=all&crop=0%2C10.732984293194%2C100%2C78.534031413613&w=1200",
+        "publishedAt": "2025-11-12T18:04:15Z",
+        "content": "<ul><li></li><li></li><li></li></ul>\r\nValve is rebooting its failed Steam Machine initiative and this time, its building the living room console itself.\r\nby\r\nSean HollisterClose\r\nSean Hollister\r\nPost\u2026 [+13449 chars]"
+    },
+    {
+        "source": {
+            "id": null,
+            "name": "Windows Central"
+        },
+        "author": "kevinokemwa@outlook.com (Kevin Okemwa) , Kevin Okemwa",
+        "title": "Microsoft obscures OpenAI's $11.5 billion loss last quarter behind corporate and financial jargon in FY26 Q1 earnings",
+        "description": "Microsoft's latest financial report seemingly suggests that OpenAI might have incurred a $11.5 billion loss in the quarter that just ended.",
+        "url": "https://www.windowscentral.com/artificial-intelligence/openai-chatgpt/microsoft-obscures-openais-usd11-5-billion-loss",
+        "urlToImage": "https://cdn.mos.cms.futurecdn.net/qCzGC8LXpZmpGM4Jakp6uV-2560-80.jpg",
+        "publishedAt": "2025-10-31T11:33:00Z",
+        "content": "Earlier this week, I reported that Microsoft had filed a $4.7 billion loss by OpenAI in its annual report for the fiscal year ending June 30 under \"other expenses\". Speculations suggested that the te\u2026 [+3572 chars]"
+    },
+    {
+        "source": {
+            "id": "the-verge",
+            "name": "The Verge"
+        },
+        "author": "Robert Hart",
+        "title": "AI browsers are a cybersecurity time bomb",
+        "description": "Web browsers are getting awfully chatty. They got even chattier last week after OpenAI and Microsoft kicked the AI browser race into high gear with ChatGPT Atlas and a \"Copilot Mode\" for Edge. They can answer questions, summarize pages, and even take actions \u2026",
+        "url": "https://www.theverge.com/report/810083/ai-browser-cybersecurity-problems",
+        "urlToImage": "https://platform.theverge.com/wp-content/uploads/sites/2/2025/10/Vrg_illo_ai_browser_security_Kristen__Radtke.webp?quality=90&strip=all&crop=0%2C10.732984293194%2C100%2C78.534031413613&w=1200",
+        "publishedAt": "2025-10-30T15:53:23Z",
+        "content": "<ul><li></li><li></li><li></li></ul>\r\nRushed releases, corruptible AI agents, and supercharged tracking make AI browsers home to a host of known and unknown cybersecurity risks.\r\nRushed releases, cor\u2026 [+8011 chars]"
+    },
+    {
+        "source": {
+            "id": null,
+            "name": "Windows Central"
+        },
+        "author": "kevinokemwa@outlook.com (Kevin Okemwa) , Kevin Okemwa",
+        "title": "$100 billion for OpenAI by 2027? Sam Altman confirms the one reason he'd actually back an IPO \u2014 revenge",
+        "description": "OpenAI CEO Sam Altman is fed up with critics, says 'enough' to questions about OpenAI's finances, and claims the company's revenue is \"growing steeply\" and exceeding $13 billion annually.",
+        "url": "https://www.windowscentral.com/artificial-intelligence/openai-chatgpt/100-billion-for-openai-by-2027-sam-altman-ipo",
+        "urlToImage": "https://cdn.mos.cms.futurecdn.net/oTV6Kwbu7YYXhdMwwqTmRT-2560-80.jpg",
+        "publishedAt": "2025-11-05T12:12:00Z",
+        "content": "OpenAI is arguably the most sought-after AI lab in the world, though tech leaders like Microsoft CEO Satya Nadella have attributed its immense success in the AI space to a 2-year runway for building \u2026 [+4866 chars]"
+    },
+    {
+        "source": {
+            "id": null,
+            "name": "Kotaku"
+        },
+        "author": "Ethan Gach",
+        "title": "Report: Microsoft Jacks The Price Of Xbox Dev Kits To $2,000",
+        "description": "Even dev kits are getting their prices jacked way up\nThe post Report: Microsoft Jacks The Price Of Xbox Dev Kits To $2,000 appeared first on Kotaku.",
+        "url": "https://kotaku.com/xbox-dev-kit-price-chinese-tariffs-microsoft-2000637701",
+        "urlToImage": "https://kotaku.com/app/uploads/2025/04/853ff08806cd2afb8c3f348bec9c3032-1200x675.jpg",
+        "publishedAt": "2025-10-21T17:41:30Z",
+        "content": "Current-gen Xbox dev kits used to cost $1,500. They\u2019ll now be $2,000 for any game studio who wants to make a game for Xbox Series X/S and doesn\u2019t already have one.\r\nThat\u2019s according to a new report f\u2026 [+1666 chars]"
+    },
+    {
+        "source": {
+            "id": null,
+            "name": "Yahoo Entertainment"
+        },
+        "author": "Daniel Howley",
+        "title": "Qualcomm stock jumps 11% as company enters AI chip race, taking on Nvidia, AMD",
+        "description": "Qualcomm is entering into the AI data center business with its new AI200 and AI250 chips and server racks.",
+        "url": "https://finance.yahoo.com/news/qualcomm-stock-jumps-11-as-company-enters-ai-chip-race-taking-on-nvidia-amd-140024484.html",
+        "urlToImage": "https://s.yimg.com/os/creatr-uploaded-images/2025-10/268b72e0-b0f3-11f0-bfcf-816f87be6591",
+        "publishedAt": "2025-10-27T14:00:24Z",
+        "content": "Qualcomm (QCOM) shares soared more than 20% Monday before closing the day out up 11% after the company announced it is entering the data center market its new AI200 and AI250 chips and rack-scale ser\u2026 [+3587 chars]"
+    },
+    {
+        "source": {
+            "id": null,
+            "name": "Kotaku"
+        },
+        "author": "Ethan Gach",
+        "title": "This Is Ubisoft\u2019s Weirdest Delay Yet",
+        "description": "The Assassin's Creed has halted trading of its stock\nThe post This Is Ubisoft\u2019s Weirdest Delay Yet appeared first on Kotaku.",
+        "url": "https://kotaku.com/ubisoft-assassins-creed-far-cry-stock-announcement-delayed-2000644091",
+        "urlToImage": "https://kotaku.com/app/uploads/2025/08/Mirage.jpg",
+        "publishedAt": "2025-11-13T18:24:50Z",
+        "content": "Usually Ubisoft is delaying its upcoming games. Sometimes it delays big updates to ones that are already out. I\u2019m not sure I\u2019ve ever seen it delay its official quarterly earnings report and certainly\u2026 [+3111 chars]"
+    },
+    {
+        "source": {
+            "id": null,
+            "name": "BBC News"
+        },
+        "author": null,
+        "title": "ChatGPT's new browser has potential, if you're willing to pay",
+        "description": "OpenAI hopes to upend the browser market currently dominated by Google Chrome, but it depends on paid users.",
+        "url": "https://www.bbc.com/news/articles/c20pdy1exxvo",
+        "urlToImage": "https://ichef.bbci.co.uk/news/1024/branded_news/a33c/live/c9e36ee0-b0b5-11f0-aba1-bffe4144781c.jpg",
+        "publishedAt": "2025-10-25T23:24:03Z",
+        "content": "Imran Rahman-JonesTechnology reporter\r\nOpenAI wants to take on similar browsers such as those from Microsoft, Oracle and Perplexity\r\nA few minutes into using ChatGPT Atlas, the new internet browser f\u2026 [+4491 chars]"
+    },
+    {
+        "source": {
+            "id": "business-insider",
+            "name": "Business Insider"
+        },
+        "author": "jciolli@businessinsider.com (Joe Ciolli)",
+        "title": "The stock market is staring down a chaotic mix of its 4 most important catalysts this week",
+        "description": "All of the market's main narratives are colliding during an especially busy week for investors.",
+        "url": "https://www.businessinsider.com/stock-market-facing-chaotic-mix-4-important-catalysts-this-week-2025-10",
+        "urlToImage": "https://i.insider.com/68ffe6f5c007ca8c2737ba23?width=1024&format=jpeg",
+        "publishedAt": "2025-10-28T11:26:25Z",
+        "content": "Good morning and welcome to First Trade. Did you make Trump's shortlist for the next Fed chair? Check out the five favored candidates, including a big Wall Street name.\r\nRundown\r\n<ul><li>Is it time t\u2026 [+8524 chars]"
+    },
+    {
+        "source": {
+            "id": "the-verge",
+            "name": "The Verge"
+        },
+        "author": "Alex Heath",
+        "title": "What insiders anonymously think about the AI race",
+        "description": "This is an excerpt of Sources by Alex Heath, a newsletter about AI and the tech industry, syndicated just for The Verge subscribers once a week. I spent yesterday at Eric Newcomer's Cerebral Valley conference in San Francisco, which is now in its third year. \u2026",
+        "url": "https://www.theverge.com/column/820664/cerebral-valley-conference-ai-anonymous-survey",
+        "urlToImage": "https://platform.theverge.com/wp-content/uploads/sites/2/2025/11/STKS522_AGI_D.jpg?quality=90&strip=all&crop=0%2C10.732984293194%2C100%2C78.534031413613&w=1200",
+        "publishedAt": "2025-11-13T23:27:04Z",
+        "content": "<ul><li></li><li></li></ul>\r\nBuy Anthropic. Short Perplexity. Notes from this years Cerebral Valley conference.\r\nBuy Anthropic. Short Perplexity. Notes from this years Cerebral Valley conference.\r\nby\u2026 [+6649 chars]"
+    },
+    {
+        "source": {
+            "id": "business-insider",
+            "name": "Business Insider"
+        },
+        "author": "Theron Mohamed",
+        "title": "Forget the $100 billion club \u2014 there are now 6 people worth over $200 billion",
+        "description": "Elon Musk, Jeff Bezos, and Mark Zuckerberg are three of the six members of the world's most exclusive club: people with a $200 billion-plus net worth.",
+        "url": "https://www.businessinsider.com/net-worth-rich-list-billionaires-club-musk-zuck-huang-ballmer-2025-10",
+        "urlToImage": "https://i.insider.com/690356a40be9845f2dc56018?width=1200&format=jpeg",
+        "publishedAt": "2025-10-31T10:34:56Z",
+        "content": "Mark Zuckerberg attends the 2025 Breakthrough Prize ceremony in Santa Monica, California.Mario Anzuoni/REUTERS\r\n<ul><li>The $100 billion club is being replaced by the $200 billion club as tech fortun\u2026 [+3024 chars]"
+    },
+    {
+        "source": {
+            "id": null,
+            "name": "Gizmodo.com"
+        },
+        "author": "Ece Yildirim",
+        "title": "OpenAI Inks First Multi-Billion Dollar Deal With Amazon",
+        "description": "AWS joins OpenAI's tangled web of dealmaking.",
+        "url": "https://gizmodo.com/openai-inks-first-multi-billion-dollar-deal-with-amazon-2000680755",
+        "urlToImage": "https://gizmodo.com/app/uploads/2025/11/shutterstock_2671784579-1200x675.jpg",
+        "publishedAt": "2025-11-03T18:20:21Z",
+        "content": "OpenAI just inked another multibillion dollar deal.\r\nThe AI giant will pay Amazon $38 billion over the next seven years to gain access to the company\u2019s AI infrastructure, the two companies announced \u2026 [+3244 chars]"
+    },
+    {
+        "source": {
+            "id": null,
+            "name": "Kotaku"
+        },
+        "author": "Kotaku Deals",
+        "title": "Lenovo IdeaPad with Office 365 and 1TB Selling Cheaper Than No-Name Laptops, Amazon Clears Stock",
+        "description": "Brand-name laptop with Office 365 and serious specs for no-name prices.\nThe post Lenovo IdeaPad with Office 365 and 1TB Selling Cheaper Than No-Name Laptops, Amazon Clears Stock appeared first on Kotaku.",
+        "url": "https://kotaku.com/lenovo-ideapad-with-office-365-and-1tb-selling-cheaper-than-no-name-laptops-amazon-clears-stock-2000640767",
+        "urlToImage": "https://kotaku.com/app/uploads/2025/11/lenovo-ideapad-3i.jpg",
+        "publishedAt": "2025-11-03T13:43:00Z",
+        "content": "Most people just want a laptop that works without drama or over-engineering. Lenovo\u2019s IdeaPad line is specifically designed with all the everyday scenarios in mind and peel away the extraneous gaming\u2026 [+3421 chars]"
+    },
+    {
+        "source": {
+            "id": "business-insider",
+            "name": "Business Insider"
+        },
+        "author": "Theron Mohamed",
+        "title": "'Google Guys' Larry Page and Sergey Brin have grown $50 billion richer in 3 months \u2014 and only trail Larry Ellison in wealth gain this year",
+        "description": "Larry Page and Sergey Brin are this year's biggest wealth gainers after Oracle's Larry Ellison thanks to Alphabet's stock surge.",
+        "url": "https://www.businessinsider.com/alphabet-page-brin-google-ai-stock-wealth-billionaires-ellison-musk-2025-10",
+        "urlToImage": "https://i.insider.com/68ff5cfec007ca8c2737a972?width=1200&format=jpeg",
+        "publishedAt": "2025-10-27T13:11:16Z",
+        "content": "Google cofounders Larry Page and Sergey Brin met at Stanford.James Leynse/Corbis via Getty Images\r\n<ul><li>Larry Page and Sergey Brin are the biggest wealth gainers this year after Oracle's Larry Ell\u2026 [+2708 chars]"
+    },
+    {
+        "source": {
+            "id": null,
+            "name": "Gizmodo.com"
+        },
+        "author": "Matt Novak",
+        "title": "White House Goes Full Gamer, Tries and Fails to Pump Meme Stock",
+        "description": "\"This is about as fascist as you get, right?\"",
+        "url": "https://gizmodo.com/white-house-goes-full-gamer-tries-and-fails-to-pump-meme-stock-2000678016",
+        "urlToImage": "https://gizmodo.com/app/uploads/2025/10/white-house-halo-1200x675.jpg",
+        "publishedAt": "2025-10-28T18:15:39Z",
+        "content": "On Friday, Microsoft announced that a new Halo video game would be coming to Sony\u2019s PlayStation, a longtime rival to Microsoft\u2019s Xbox. That prompted video game retailer GameStop to issue a press rele\u2026 [+5122 chars]"
+    },
+    {
+        "source": {
+            "id": "business-insider",
+            "name": "Business Insider"
+        },
+        "author": "astewart@insider.com (Ashley Stewart)",
+        "title": "Microsoft's AI CEO explains why he wants employees in the office, working at open desks",
+        "description": "Microsoft AI CEO Mustafa Suleyman enforces strict in-person office work policies for his team.",
+        "url": "https://www.businessinsider.com/microsoft-ai-ceo-mustafa-suleyman-rto-offices-employees-open-desks-2025-11",
+        "urlToImage": "https://i.insider.com/6912626a46c4547ecb0584fc?width=1200&format=jpeg",
+        "publishedAt": "2025-11-12T10:00:02Z",
+        "content": "Microsoft\r\n AI CEO Mustafa Suleyman's expectations for how his employees work at the office are uniquely strict within the company.\r\nSuleyman requires employees to work from the office more than is s\u2026 [+2480 chars]"
+    },
+    {
+        "source": {
+            "id": null,
+            "name": "TheStreet"
+        },
+        "author": "Moz Farooque",
+        "title": "Morgan Stanley issues shock take on the stock market",
+        "description": "The stock market\u2019s been on a long, confident run since late 2022, but Morgan Stanley\u2019s Andrew Slimmon feels we\u2019re moving swiftly towards the final act. The...",
+        "url": "https://www.thestreet.com/investing/morgan-stanley-issues-shock-take-on-the-stock-market",
+        "urlToImage": "https://media.zenfs.com/en/thestreet_881/1310b3b785262489c3ca0ab6e99395ae",
+        "publishedAt": "2025-11-03T18:47:00Z",
+        "content": "The stock markets been on a long, confident run since late 2022, but Morgan Stanleys Andrew Slimmon feels were moving swiftly towards the final act.\r\nThe tension hes alluding to fits the tape perfect\u2026 [+5342 chars]"
+    },
+    {
+        "source": {
+            "id": "business-insider",
+            "name": "Business Insider"
+        },
+        "author": "ddefrancesco@businessinsider.com (Dan DeFrancesco)",
+        "title": "How the job market could get ugly",
+        "description": "Amazon's massive layoffs spark fears of a broader reduction in the white-collar workforce, with AI being blamed.",
+        "url": "https://www.businessinsider.com/amazon-layoffs-spark-fears-of-widespread-ai-driven-job-cuts-2025-10",
+        "urlToImage": "https://i.insider.com/69036e030be9845f2dc56233?width=1200&format=jpeg",
+        "publishedAt": "2025-10-30T13:46:10Z",
+        "content": "Good morning! Moving to a new city is hard enough, let alone with a couple of young kids. But a stay-at-home mom told BI her children were the key to making friends in a Houston suburb\r\n. It's the fi\u2026 [+6588 chars]"
+    },
+    {
+        "source": {
+            "id": "the-verge",
+            "name": "The Verge"
+        },
+        "author": "Ash Parrish",
+        "title": "Halo on PlayStation might be what Xbox needs to survive",
+        "description": "Halo coming to PlayStation is one of those events that, five years ago, would have been the tell that \"something is not right here\" in a show about time travel or alternate universes. Looking at the state of Xbox with its layoffs, game cancellations, price hi\u2026",
+        "url": "https://www.theverge.com/entertainment/809053/halo-playstation-xbox-multiplatform-strategy",
+        "urlToImage": "https://platform.theverge.com/wp-content/uploads/sites/2/2025/10/ss_80a9ae89a66e1033d03966a60afb2749cc3d0451.jpg?quality=90&strip=all&crop=0%2C3.4613147178592%2C100%2C93.077370564282&w=1200",
+        "publishedAt": "2025-10-29T16:26:44Z",
+        "content": "<ul><li></li><li></li><li></li></ul>\r\nWe are all seeking to meet people where they are. Matt Booty.\r\nWe are all seeking to meet people where they are. Matt Booty.\r\nby\r\nAsh ParrishClose\r\nAsh Parrish\r\n\u2026 [+6912 chars]"
+    },
+    {
+        "source": {
+            "id": null,
+            "name": "Hipertextual"
+        },
+        "author": "Luis Miranda",
+        "title": "Alemania inicia su independencia de Microsoft con ayuda del software libre",
+        "description": "A unos meses de anunciar que abandonar\u00eda Microsoft, Alemania comenz\u00f3 la transici\u00f3n hacia el software libre. Un estado del pa\u00eds europeo complet\u00f3 la primera fase de su iniciativa para garantizar la soberan\u00eda digital en sus operaciones y manejo de datos. El gobi\u2026",
+        "url": "https://hipertextual.com/software/alemania-independencia-microsoft-software-libre/",
+        "urlToImage": "https://imgs.hipertextual.com/wp-content/uploads/2022/12/Tux-Linux-Windows-Laptop.jpg",
+        "publishedAt": "2025-10-15T17:40:35Z",
+        "content": "A unos meses de anunciar que abandonar\u00eda Microsoft, Alemania comenz\u00f3 la transici\u00f3n hacia el software libre. Un estado del pa\u00eds europeo complet\u00f3 la primera fase de su iniciativa para garantizar la sob\u2026 [+3325 chars]"
+    },
+    {
+        "source": {
+            "id": null,
+            "name": "Slashdot.org"
+        },
+        "author": "EditorDavid",
+        "title": "25 Years Ago Today: A PlayStation Shopping Frenzy - But Would Microsoft's Xbox Make It Obsolete?",
+        "description": "25 years ago today on Slashdot... \n\nHemos linked to a site called Joystick101 describing the\ncrowd camping out to buy the limited number of just-released PlayStation 2 consoles (and games). \"500,000 lucky members of the American gaming public are sneaking a f\u2026",
+        "url": "https://games.slashdot.org/story/25/10/25/2228255/25-years-ago-today-a-playstation-shopping-frenzy---but-would-microsofts-xbox-make-it-obsolete",
+        "urlToImage": "https://a.fsdn.com/sd/topics/playstation_64.png",
+        "publishedAt": "2025-10-26T07:34:00Z",
+        "content": "25 years ago today on Slashdot...Hemos linked to a site called Joystick101 describing the\r\ncrowd camping out to buy the limited number of just-released PlayStation 2 consoles (and games). \"500,000 lu\u2026 [+2692 chars]"
+    },
+    {
+        "source": {
+            "id": null,
+            "name": "Slashdot.org"
+        },
+        "author": "EditorDavid",
+        "title": "'Stratospheric' AI Spending By Four Wealthy Companies Reaches $360B Just For Data Centers",
+        "description": "\"Maybe you've heard that artificial intelligence is a bubble poised to burst,\" writes a Washington Post technology columnist. \"Maybe you have heard that it isn't. (No one really knows either way, but that won't stop the bros from jabbering about it constantly\u2026",
+        "url": "https://slashdot.org/story/25/11/08/0533205/stratospheric-ai-spending-by-four-wealthy-companies-reaches-360b-just-for-data-centers",
+        "urlToImage": "https://a.fsdn.com/sd/topics/ai_64.png",
+        "publishedAt": "2025-11-08T15:34:00Z",
+        "content": "\"Maybe you've heard that artificial intelligence is a bubble poised to burst,\" writes a Washington Post technology columnist. \"Maybe you have heard that it isn't. (No one really knows either way, but\u2026 [+2310 chars]"
+    },
+    {
+        "source": {
+            "id": null,
+            "name": "Gizmodo.com"
+        },
+        "author": "Matt Novak",
+        "title": "Amazon to Cut as Much as 9% of White Collar Workforce: Report",
+        "description": "The layoffs start Tuesday, according to Reuters.",
+        "url": "https://gizmodo.com/amazon-to-cut-as-much-as-9-of-white-collar-workforce-report-2000677605",
+        "urlToImage": "https://gizmodo.com/app/uploads/2024/12/Amazon-office-sign-sunnyvale-california.jpg",
+        "publishedAt": "2025-10-27T20:25:57Z",
+        "content": "Amazon plans to cut as many as 30,000 corporate jobs starting Tuesday morning, according to a new report from Reuters that cites three unnamed people familiar with the matter.\r\nAmazon has 1.5 million\u2026 [+2698 chars]"
+    },
+    {
+        "source": {
+            "id": null,
+            "name": "Gizmodo.com"
+        },
+        "author": "Lucas Ropek",
+        "title": "New Trump Administration Energy Rule Would Enable Data Centers with \u2018Large Loads\u2019",
+        "description": "The \"urgent\" regulatory amendment from the Energy Department would benefit AI companies.",
+        "url": "https://gizmodo.com/ai-large-loads-2000676957",
+        "urlToImage": "https://gizmodo.com/app/uploads/2025/10/data-center-1200x675.jpg",
+        "publishedAt": "2025-10-25T14:00:39Z",
+        "content": "Data centers are being built with unprecedented gusto all over the U.S. The reason for this is fairly well known: the AI business requires gargantuan amounts of electricity and computing power. Every\u2026 [+3194 chars]"
+    },
+    {
+        "source": {
+            "id": null,
+            "name": "Dpa-international.com"
+        },
+        "author": "DPA",
+        "title": "US\u00a0chip giant Nvidia becomes first $5 trillion company",
+        "description": "US chipmaker Nvidia on Wednesday became the first company in the world worth $5 trillion in market capitalization. Shares in the Silicon Valley-based firm...",
+        "url": "https://dpa-international.com/economics/urn:newsml:dpa.com:20090101:251029-99-476194/",
+        "urlToImage": "https://media.zenfs.com/en/dpa_international_526/919e888cd8a9d25b26025d072a0eda5d",
+        "publishedAt": "2025-10-29T15:06:18Z",
+        "content": "The logo of the chip company Nvidia pictured at the headquarters in Silicon Valley. Andrej Sokolow/dpa\r\nUS chipmaker Nvidia on Wednesday became the first company in the world worth $5 trillion in mar\u2026 [+1259 chars]"
+    },
+    {
+        "source": {
+            "id": null,
+            "name": "Slashdot.org"
+        },
+        "author": "msmash",
+        "title": "Microsoft Is Offering Rewards Points for Using Edge Instead of Google Chrome",
+        "description": "An anonymous reader shares a report: Microsoft employs various schemes to stop Edge users from switching to Chrome, and the latest includes financial rewards for sticking with the browser. As spotted by Windows Latest, select users who search on Bing within M\u2026",
+        "url": "https://it.slashdot.org/story/25/11/12/200220/microsoft-is-offering-rewards-points-for-using-edge-instead-of-google-chrome",
+        "urlToImage": "https://a.fsdn.com/sd/topics/microsoft_64100.png",
+        "publishedAt": "2025-11-12T20:05:00Z",
+        "content": "The Fine Print: The following comments are owned by whoever posted them. We are not responsible for them in any way."
+    },
+    {
+        "source": {
+            "id": null,
+            "name": "Yahoo Entertainment"
+        },
+        "author": "MATT O'BRIEN",
+        "title": "Anthropic, Microsoft announce new AI data center projects as industry's construction push continues",
+        "description": "Artificial intelligence company Anthropic announced a $50 billion investment in computing infrastructure on Wednesday that will include new data centers in...",
+        "url": "https://finance.yahoo.com/news/anthropic-announces-50b-investment-us-162152698.html",
+        "urlToImage": "https://s.yimg.com/ny/api/res/1.2/QQYAAfI3SGtZepkvVvdNKA--/YXBwaWQ9aGlnaGxhbmRlcjt3PTEyMDA7aD04MDA-/https://media.zenfs.com/en/ap.org/453dfcf13664aa401c414e220d7a4b9c",
+        "publishedAt": "2025-11-12T16:21:52Z",
+        "content": "Artificial intelligence company Anthropic announced a $50 billion investment in computing infrastructure on Wednesday that will include new data centers in Texas and New York.\r\nMicrosoft also on Wedn\u2026 [+2359 chars]"
+    },
+    {
+        "source": {
+            "id": null,
+            "name": "Wheresyoured.at"
+        },
+        "author": "Edward Zitron",
+        "title": "Big Tech Needs $2T in AI Revenue by 2030",
+        "description": "As I've established again and again, we are in an AI bubble, and no, I cannot tell you when the bubble will pop, because we're in the stupidest financial era since the great financial crisis \u2014 though, I hope, not quite as severe in its eventually apocalyptic \u2026",
+        "url": "https://www.wheresyoured.at/big-tech-2tr/",
+        "urlToImage": "https://www.wheresyoured.at/content/images/2024/01/wyea--1.jpeg",
+        "publishedAt": "2025-11-03T21:50:05Z",
+        "content": "As I've established again\r\n andagain\r\n, we are in an AI bubble, and no, I cannot tell you when the bubble will pop, because we're in the stupidest financial era since the great financial crisis thoug\u2026 [+5180 chars]"
+    },
+    {
+        "source": {
+            "id": null,
+            "name": "Windows Central"
+        },
+        "author": "samuelwtolbert@gmail.com (Samuel Tolbert) , Samuel Tolbert",
+        "title": "Xbox FY26 Q1 earnings: Game Pass lifts revenue as console sales plunge nearly 30%",
+        "description": "Xbox content and services revenue is up 1% for Microsoft's latest quarter, beating expectations through continued growth in Xbox Game Pass and third-party content.",
+        "url": "https://www.windowscentral.com/gaming/xbox/xbox-fy26-q1-earnings",
+        "urlToImage": "https://cdn.mos.cms.futurecdn.net/ejsk8a687CBkUNKppLNxXd-1590-80.jpg",
+        "publishedAt": "2025-10-29T21:02:56Z",
+        "content": "Microsoft shared its latest financial results on Wednesday, detailing the results for FY26 Q1, while revealing that Xbox content and services revenue was up 1% year-over-year for the quarter ending S\u2026 [+3893 chars]"
+    },
+    {
+        "source": {
+            "id": null,
+            "name": "Gizmodo.com"
+        },
+        "author": "AJ Dellinger",
+        "title": "OpenAI Ditches the \u2018Non\u2019 in \u2018Non-Profit\u2019",
+        "description": "The old OpenAI is dead. Now to Figure Out the Profit Part.",
+        "url": "https://gizmodo.com/openai-ditches-the-non-in-non-profit-2000678002",
+        "urlToImage": "https://gizmodo.com/app/uploads/2025/10/sam_altman_openAI-browser-1200x675.jpg",
+        "publishedAt": "2025-10-28T19:05:11Z",
+        "content": "OpenAI\u2019s \u201cwill they, won\u2019t they\u201d flirtation with becoming a for-profit corporation is over. On Tuesday, the company announced that it has completed its recapitalization process, turning its AI lab in\u2026 [+4982 chars]"
+    },
+    {
+        "source": {
+            "id": null,
+            "name": "Yahoo Entertainment"
+        },
+        "author": "Reuters",
+        "title": "Exclusive - China bans foreign AI chips from state-funded data centres, sources say",
+        "description": "(Reuters) - The Chinese government has issued guidance requiring new data centre projects that have received any state funds to only use domestically-made...",
+        "url": "https://finance.yahoo.com/news/exclusive-china-bans-foreign-ai-090709029.html",
+        "urlToImage": "https://media.zenfs.com/en/reuters.com/6eed3acb0429bb0d7a72ea730ca2a07b",
+        "publishedAt": "2025-11-05T09:07:09Z",
+        "content": "(Reuters) - The Chinese government has issued guidance requiring new data centre projects that have received any state funds to only use domestically-made artificial intelligence chips, two sources f\u2026 [+5295 chars]"
+    },
+    {
+        "source": {
+            "id": "business-insider",
+            "name": "Business Insider"
+        },
+        "author": "Henry Chandonnet",
+        "title": "Microsoft forms superintelligence team to rival Meta's, stresses 'humanist' focus",
+        "description": "\"We reject narratives about a race to AGI,\" Microsoft AI CEO Mustafa Suleyman said, announcing the MAI Superintelligence Team.",
+        "url": "https://www.businessinsider.com/microsoft-forms-mai-superintelligence-team-humanist-2025-11",
+        "urlToImage": "https://i.insider.com/690cecf721c3f142ebfc3be9?width=1200&format=jpeg",
+        "publishedAt": "2025-11-06T19:23:56Z",
+        "content": "Microsoft announced a new MAI Superintelligence Lab pursuing \"humanist superintelligence.\"Stephen Brashear/Getty Images\r\n<ul><li>Microsoft AI CEO Mustafa Suleyman announced the MAI Superintelligence \u2026 [+2990 chars]"
+    },
+    {
+        "source": {
+            "id": null,
+            "name": "Yahoo Entertainment"
+        },
+        "author": "Reuters",
+        "title": "Exclusive-China bans foreign AI chips from state-funded data centres, sources say",
+        "description": "(Reuters) -The Chinese government has issued guidance requiring new data centre projects that have received any state funds to only use domestically-made...",
+        "url": "https://ca.news.yahoo.com/exclusive-china-bans-foreign-ai-080808534.html",
+        "urlToImage": "https://media.zenfs.com/en/reuters.com/50835582b8a3c3702e5c36128c44d81a",
+        "publishedAt": "2025-11-05T08:08:08Z",
+        "content": "(Reuters) -The Chinese government has issued guidance requiring new data centre projects that have received any state funds to only use domestically-made artificial intelligence chips, two sources fa\u2026 [+5294 chars]"
+    },
+    {
+        "source": {
+            "id": null,
+            "name": "Gizmodo.com"
+        },
+        "author": "AJ Dellinger",
+        "title": "Small Towns Are Betting That the Data Center Boom Will Never End",
+        "description": "What do data centers bring? Short-term growth, and long-term questions.",
+        "url": "https://gizmodo.com/small-towns-are-betting-that-the-data-center-boom-will-never-end-2000681426",
+        "urlToImage": "https://gizmodo.com/app/uploads/2025/10/data-center-1200x675.jpg",
+        "publishedAt": "2025-11-04T20:53:28Z",
+        "content": "What happens when data centers come to town? A whole lot, wanted or not. Tech firms are promising to pour trillions of dollars into building new data centers to continue powering the rapid growth of \u2026 [+4647 chars]"
+    },
+    {
+        "source": {
+            "id": null,
+            "name": "9to5Mac"
+        },
+        "author": "Zac Hall",
+        "title": "Apple hits $4 trillion milestone ahead of earnings report after strong iPhone 17 launch",
+        "description": "Apple hit a company milestone on Tuesday as its valuation reached $4 trillion for the first time. However, unlike previous trillion dollar milestones, Apple isn\u2019t the first company to reach this record valuation.\n\n\n\n more\u2026",
+        "url": "https://9to5mac.com/2025/10/28/apple-hits-4-trillion-milestone-ahead-of-earnings-report-after-strong-iphone-17-launch/",
+        "urlToImage": "https://i0.wp.com/9to5mac.com/wp-content/uploads/sites/6/2025/09/iphone-17-pro0006.jpg?resize=1200%2C628&quality=82&strip=all&ssl=1",
+        "publishedAt": "2025-10-28T13:58:07Z",
+        "content": "Apple hit a company milestone on Tuesday as its valuation reached $4 trillion for the first time. However, unlike previous trillion dollar milestones, Apple isn\u2019t the first company to reach this reco\u2026 [+1004 chars]"
+    },
+    {
+        "source": {
+            "id": null,
+            "name": "Kotaku"
+        },
+        "author": "Joe Tilleli",
+        "title": "Microsoft Office Pro 2021 at Over 80% Off Feels Like Getting a Near-Free Lifetime License for Windows and Mac",
+        "description": "For a limited time, StackSocial has a Microsoft Office Professional 2021 lifetime license for up to 81% off.\nThe post Microsoft Office Pro 2021 at Over 80% Off Feels Like Getting a Near-Free Lifetime License for Windows and Mac appeared first on Kotaku.",
+        "url": "https://kotaku.com/pay-40-once-for-lifetime-access-to-the-full-microsoft-office-suite-2000644146",
+        "urlToImage": "https://kotaku.com/app/uploads/2025/11/MicrosoftOffice2021Pro.jpg",
+        "publishedAt": "2025-11-14T17:15:21Z",
+        "content": "It feels like everything these days comes with a subscription attached music, movies, cloud storage, even the software you need to use to get work done. Microsofts own site doesnt even sell its class\u2026 [+2282 chars]"
+    },
+    {
+        "source": {
+            "id": null,
+            "name": "Slashdot.org"
+        },
+        "author": "msmash",
+        "title": "OpenAI Signs $38 Billion Cloud Deal With Amazon",
+        "description": "OpenAI will pay Amazon $38 billion for computing power in a seven-year deal that marks the companies' first partnership. Amazon expects all of the computing capacity negotiated as part of the agreement will be available to OpenAI by the end of next year. The \u2026",
+        "url": "https://slashdot.org/story/25/11/03/1448202/openai-signs-38-billion-cloud-deal-with-amazon",
+        "urlToImage": "https://a.fsdn.com/sd/topics/ai_64.png",
+        "publishedAt": "2025-11-03T14:47:00Z",
+        "content": "I hope it is able to come up with it all.\r\n300b, 250b, 30b...almost 700b right there.\r\nGood luck!"
+    },
+    {
+        "source": {
+            "id": null,
+            "name": "Windows Central"
+        },
+        "author": "kevinokemwa@outlook.com (Kevin Okemwa) , Kevin Okemwa",
+        "title": "Microsoft is reportedly being less than truthful about its OpenAI dealings \u2014 hiding a $4.7 billion loss under \"other expenses\"",
+        "description": "Microsoft is trying to keep its dealings with OpenAI under wraps, seemingly burying a $4.7 billion loss by the ChatGPT maker in its latest annual report for the fiscal year ending June 30, 2025.",
+        "url": "https://www.windowscentral.com/artificial-intelligence/microsoft-is-reportedly-being-less-than-truthful-about-its-openai-dealings",
+        "urlToImage": "https://cdn.mos.cms.futurecdn.net/nZoaJHkLBorruaHjWbJdTk-2560-80.jpg",
+        "publishedAt": "2025-10-28T15:15:03Z",
+        "content": "Over the past few years, Microsoft has undoubtedly doubled down on its efforts on the generative AI front. Following its multi-billion-dollar partnership with OpenAI, the software giant has heavily i\u2026 [+4500 chars]"
+    },
+    {
+        "source": {
+            "id": null,
+            "name": "Yahoo Entertainment"
+        },
+        "author": "Nalak Das",
+        "title": "Buy 3 Tech Stocks on the Dip to Strengthen Your Portfolio in Q4",
+        "description": "DOCU, RDDT and FICO are trading well below their 52-week highs - three tech names poised for potential upside in Q4.",
+        "url": "https://finance.yahoo.com/news/buy-3-tech-stocks-dip-122200895.html",
+        "urlToImage": "https://media.zenfs.com/en/zacks.com/d43cb7b76527c97c59494165d3dffeae",
+        "publishedAt": "2025-10-16T12:22:00Z",
+        "content": "The recent bull market on Wall Street has shown no signs of abatement even after three years. Although most of the rally has been driven by an unprecedented adoption of generative artificial intellig\u2026 [+4884 chars]"
+    },
+    {
+        "source": {
+            "id": null,
+            "name": "Gizmodo.com"
+        },
+        "author": "Ece Yildirim",
+        "title": "AI Won\u2019t Replace Jobs, but Tech Bros Want You to Be Afraid It Will",
+        "description": "He also thinks the AI bubble burst is going to make 2008 feel like \"a golden age.\"",
+        "url": "https://gizmodo.com/ai-wont-replace-jobs-tech-bros-want-you-terrified-2000670808",
+        "urlToImage": "https://gizmodo.com/app/uploads/2025/06/Shutterstock-Image-1920x1081-1-1200x675.jpg",
+        "publishedAt": "2025-10-15T14:20:54Z",
+        "content": "AI is overrated, according to author Cory Doctorow.\r\n\u201cI don\u2019t think AI can do your job,\u201d Doctorow said, but despite that, bosses across industries are \u201cinsatiably horny\u201d about the idea that AI will r\u2026 [+7077 chars]"
+    },
+    {
+        "source": {
+            "id": "business-insider",
+            "name": "Business Insider"
+        },
+        "author": "Alistair Barr",
+        "title": "Did Sam Altman just announce an OpenAI cloud service?",
+        "description": "The CEO dropped a big hint about potential future \"AI cloud\" plans.",
+        "url": "https://www.businessinsider.com/sam-altman-openai-cloud-service-2025-11",
+        "urlToImage": "https://i.insider.com/690d1d6421c3f142ebfc4522?width=1200&format=jpeg",
+        "publishedAt": "2025-11-06T23:10:52Z",
+        "content": "OpenAI Sam Altman talking at the flagship Project Stargate data center in Abilene, Texas.USA TODAY Network via Reuters Connect\r\n<ul><li>OpenAI is seeking ways to \"directly sell compute capacity to ot\u2026 [+2933 chars]"
+    },
+    {
+        "source": {
+            "id": null,
+            "name": "Kotaku"
+        },
+        "author": "Kenneth Shepard",
+        "title": "Microsoft Confirms Halo Will Be On PlayStation \u2018Going Forward\u2019",
+        "description": "Master Chief is a multiplatform boy now\nThe post Microsoft Confirms Halo Will Be On PlayStation \u2018Going Forward\u2019 appeared first on Kotaku.",
+        "url": "https://kotaku.com/halo-remake-campaign-evolved-playstation-cross-play-2000638951",
+        "urlToImage": "https://kotaku.com/app/uploads/2025/10/apps.61344.14018605831064250.443-1-1200x675.jpg",
+        "publishedAt": "2025-10-24T21:09:51Z",
+        "content": "Today, Microsoft and Halo Studios announced they\u2019re remaking the original\u00a0Halo\u00a0again as\u00a0Halo: Campaign Evolved. The remake is sprucing up the shooter\u2019s campaign, adding three new prequel levels, and \u2026 [+1850 chars]"
+    },
+    {
+        "source": {
+            "id": "business-insider",
+            "name": "Business Insider"
+        },
+        "author": "Ashley Stewart",
+        "title": "Leaked Microsoft org chart reveals the top people in Mustafa Suleyman's AI team, including five ex-Googler hires",
+        "description": "Internal Microsoft organization charts show how Mustafa Suleyman's team has evolved since last year.",
+        "url": "https://www.businessinsider.com/microsoft-ai-ceo-mustafa-suleyman-org-chart-google-2025-10",
+        "urlToImage": "https://i.insider.com/6602a62d16bde8d4ead21531?width=1200&format=jpeg",
+        "publishedAt": "2025-10-29T09:00:01Z",
+        "content": "Mustafa Suleyman announced Microsoft is opening an AI hub in LondonPATRICK T. FALLON\r\n<ul><li>Microsoft AI CEO Mustafa Suleyman added nine direct reports, several from Google and DeepMind.</li><li>Su\u2026 [+8762 chars]"
+    },
+    {
+        "source": {
+            "id": null,
+            "name": "Boing Boing"
+        },
+        "author": "Boing Boing's Shop",
+        "title": "For only $40 you can make Q4 a hit with Microsoft Office Professional 2021",
+        "description": "TL;DR:\u00a0Microsoft Office Professional 2021 for Windows\u00a0is now $39.97 (MSRP $219.99).\nRamping up for the most important quarter of the year for many industries, you're going to want to be organized and efficient in your work and communication. For personal or p\u2026",
+        "url": "https://boingboing.net/2025/11/03/for-only-40-you-can-make-q4-a-hit-with-microsoft-office-professional-2021.html",
+        "urlToImage": "https://i0.wp.com/boingboing.net/wp-content/uploads/2025/10/Microsoft-Office-Professional-2021-for-Windows-2.jpg?fit=1200%2C800&quality=60&ssl=1",
+        "publishedAt": "2025-11-03T22:00:00Z",
+        "content": "TL;DR:\u00a0Microsoft Office Professional 2021 for Windows\u00a0is now $39.97 (MSRP $219.99).\r\nRamping up for the most important quarter of the year for many industries, you're going to want to be organized an\u2026 [+1692 chars]"
+    }
+]
