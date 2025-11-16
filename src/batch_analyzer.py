@@ -96,6 +96,13 @@ def chunk_text(text, max_words=200):
 
     return chunks
 
+def clean_json_response(response_text):
+    """
+    Cleans the model response to extract valid JSON.
+    Removes any markdown formatting or extraneous text.
+    """
+    return re.sub(r"^```json\s*|\s*```$", "", response_text, flags=re.MULTILINE).strip()
+
 def process_chunks(chunks):
     processed = []
     for chunk_text in chunks:
@@ -109,7 +116,7 @@ def process_chunks(chunks):
         "summary", "sentiment", "importance"
         """
         response = client.generate(model="gemma3:1b", prompt=prompt)
-        clean_text = re.sub(r"^```json\s*|\s*```$", "", response["response"], flags=re.MULTILINE).strip()
+        clean_text = clean_json_response(response['response'])
         data = json.loads(clean_text)
         processed.append(data)
     return processed
@@ -326,6 +333,8 @@ def generate_analysis():
         print(f"* Prompt Eval Duration: {nano_to_sec(prompt_eval_duration_ns)} seconds")
         print(f"* **Output Generation Duration:** {nano_to_sec(eval_duration_ns)} seconds")
         print(f"* **Inference Rate (Tokens/s):** {tokens_per_second}")
+    clean_text = clean_json_response(full_response)
+    return clean_text
 
 # query = "+Microsoft AND (investment OR earnings OR revenue OR stock OR shares OR profit OR loss OR forecast OR guidance OR outlook)"
 # # domains = "bloomber.com,wsj.com,reuters.com,ft.com,cnbc.com,economist.com,forbes.com,marketwatch.com,finance.yahoo.com,investopedia.com,barrons.com"
