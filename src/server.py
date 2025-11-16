@@ -3,6 +3,9 @@ from clients.sql_server import MySQLClient
 from flask_cors import CORS
 import requests
 import os
+import ollama
+from clients.qdrant_server import QdrantServerClient
+from batch_analyzer import BatchAnalyzer
 
 app = Flask(__name__)
 CORS(app)
@@ -12,6 +15,11 @@ CONTAINER_ROOT = '/app'
 # SECRETS
 logo_dev_token = os.getenv("LOGO_DEV_TOKEN")
 stock_token = os.getenv("ALPHAVANTAGE_TOKEN")
+
+# Initialize clients
+client = ollama.Client(host='http://localhost:11434')
+vector_db = QdrantServerClient()
+analyzer = BatchAnalyzer(vector_db, client)
 
 def get_db():
     """Returns a new database connection object for the current request context."""
@@ -203,3 +211,9 @@ def get_logo(ticker):
         # Catch any other general errors (e.g., file writing issues)
         print(f"❌ An unexpected error occurred for {ticker}: {e}")
         return jsonify({"error": str(e)}), 500
+    
+@app.route("/stock/analysis")
+def get_stock_analysis():
+    ticker = request.args.get("ticker", "").upper()
+    company = request.args.get("company", "")
+    analyzer.generate_analysis()

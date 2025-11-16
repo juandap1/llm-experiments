@@ -11,15 +11,15 @@ class QdrantServerClient:
         self.client = QdrantClient(host=host, port=port)
         self.model = SentenceTransformer("all-MiniLM-L6-v2")
 
-
-    def upsert_vectors(self, collection_name: str, vectors: list[str], payloads: list[object]):
+    def create_collection(self, collection_name: str, vector_size: int):
         # if collection does not exist, create it
         if not self.client.collection_exists(collection_name=collection_name):
             self.client.create_collection(
                 collection_name=collection_name,
-                vectors_config=VectorParams(size=len(vectors[0]), distance="Cosine"),
+                vectors_config=VectorParams(size=len(vector_size), distance="Cosine"),
             )
-        
+
+    def upsert_vectors(self, collection_name: str, vectors: list[str], payloads: list[object]):
         points = [
             PointStruct(
                 id=str(uuid.uuid4()), 
@@ -55,7 +55,7 @@ class QdrantServerClient:
         limit: int = 300,
         sort: bool = False
     ):
-        query_vector = self.model.encode(query_text).tolist()
+        query_vector = self.model.encode(query).tolist()
         # filter_clause = Filter(must=must_filters)
 
         # Query more if sorting
