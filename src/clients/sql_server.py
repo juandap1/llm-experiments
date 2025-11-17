@@ -1,5 +1,6 @@
 import pymysql
 from pymysql.cursors import DictCursor
+from datetime import datetime
 
 class MySQLClient:
     def __init__(self, host="mysql", user="my_user", password="my_password",
@@ -41,7 +42,7 @@ class MySQLClient:
         """Close the database connection."""
         if self.connection:
             self.connection.close()
-            print("🔌 MySQL connection closed.")
+            # print("🔌 MySQL connection closed.")
 
     def execute(self, query, params=None, commit=False):
         """
@@ -133,6 +134,19 @@ class MySQLClient:
             """
             cursor.execute(sql, (ticker, path, path)) 
             # self.connection.commit()
+            return 200
+        
+    def update_analysis(self, ticker, analysis):
+        self.ensure_connected()
+
+        with self.connection.cursor() as cursor:
+            now = datetime.now()
+            formatted_date = now.strftime('%Y-%m-%d')
+            sql = """
+                INSERT INTO tickers (ticker, analysis, analysis_updated) VALUES (%s, %s, %s)
+                ON DUPLICATE KEY UPDATE analysis=%s, analysis_updated=%s
+            """
+            cursor.execute(sql, (ticker, analysis, formatted_date, analysis, formatted_date))
             return 200
         
     def insert_many_prices(self, ticker, price_data_list):

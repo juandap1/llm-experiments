@@ -17,6 +17,8 @@ CREATE TABLE IF NOT EXISTS tickers(
     sector VARCHAR(255),
     industry VARCHAR(255),
     logo VARCHAR(100),
+    analysis MEDIUMTEXT,
+    analysis_updated DATE,
     latest_price FLOAT,
     latest_date DATE
 );

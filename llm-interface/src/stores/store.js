@@ -23,6 +23,10 @@ export const useStore = defineStore('counter', {
         .then((response) => {
           // console.log(response)
           this._loadedInfo[ticker] = response.data
+          if (!response.data.analysis) {
+            this._loadedInfo[ticker].analysis = 'loading...'
+            this.getStockAnalysis(ticker)
+          }
         })
         .catch(console.error)
     },
@@ -46,6 +50,21 @@ export const useStore = defineStore('counter', {
         .then((response) => {
           // console.log(response)
           this._history[ticker] = response.data
+        })
+        .catch(console.error)
+    },
+    getStockAnalysis(ticker) {
+      let loadedInfo = this.loadedInfo[ticker]
+      api
+        .get('/stock/analysis', {
+          params: {
+            ticker,
+            company: loadedInfo.name,
+          },
+        })
+        .then((response) => {
+          console.log(response)
+          this._loadedInfo[ticker].analysis = response.data
         })
         .catch(console.error)
     },

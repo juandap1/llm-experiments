@@ -59,13 +59,13 @@ class QdrantServerClient:
         # filter_clause = Filter(must=must_filters)
 
         # Query more if sorting
-        points = self.client.query_points(
+        response = self.client.query_points(
             collection_name=collection,
             query=query_vector,
-            limit=limit * 3 if sort else limit,
+            limit=limit * 3 if sorted else limit,
             with_payload=True,
             with_vectors=False,
-            filter=Filter(
+            query_filter=Filter(
                 must=[
                     {
                         "key": "importance",
@@ -76,6 +76,7 @@ class QdrantServerClient:
                 ]
             )
         )
+        points = response.points
         if sort:
             points = sorted(
                 points,

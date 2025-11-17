@@ -1,9 +1,10 @@
-from flask import Flask, request, jsonify, send_file, g
+from flask import Flask, request, jsonify, send_file, g, Response
 from clients.sql_server import MySQLClient
 from flask_cors import CORS
 import requests
 import os
 import ollama
+import json
 from clients.qdrant_server import QdrantServerClient
 from batch_analyzer import BatchAnalyzer
 
@@ -17,8 +18,8 @@ logo_dev_token = os.getenv("LOGO_DEV_TOKEN")
 stock_token = os.getenv("ALPHAVANTAGE_TOKEN")
 
 # Initialize clients
-client = ollama.Client(host='http://localhost:11434')
-vector_db = QdrantServerClient()
+client = ollama.Client(host='http://ollama:11434')
+vector_db = QdrantServerClient(host="qdrant")
 analyzer = BatchAnalyzer(vector_db, client)
 
 def get_db():
@@ -70,7 +71,7 @@ def get_stock_info(ticker):
     ticker = ticker.upper()
     try:
         db = get_db()
-        row = db.fetch_one("SELECT ticker, name, description, latest_price, sector, industry FROM tickers WHERE ticker = %s", (ticker,))
+        row = db.fetch_one("SELECT ticker, name, description, latest_price, sector, industry, analysis FROM tickers WHERE ticker = %s", (ticker,))
         if row and row["name"] and row["latest_price"]:
             return jsonify({
                 "ticker": ticker,
@@ -214,6 +215,15 @@ def get_logo(ticker):
     
 @app.route("/stock/analysis")
 def get_stock_analysis():
-    ticker = request.args.get("ticker", "").upper()
-    company = request.args.get("company", "")
-    analyzer.generate_analysis()
+    try:
+        db = get_db()
+        ticker = request.args.get("ticker", "").upper()
+        company = request.args.get("company", "")
+        analysis = analyzer.generate_analysis(ticker, company)
+        db.update_analysis(ticker, analysis)
+        j = json.loads(analysis)
+        return jsonify(j)
+    except Exception as e:
+        # Catch any other general errors (e.g., file writing issues)
+        print(f"❌ An unexpected error occurred for getting analysis for {ticker}: {e}")
+        return jsonify({"error": str(e)}), 500
