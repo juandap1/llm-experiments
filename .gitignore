@@ -9,3 +9,4 @@ background_video.mp4
 qdrant_storage/
 
 .env
+.DS_Store
