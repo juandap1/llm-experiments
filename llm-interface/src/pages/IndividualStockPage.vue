@@ -29,7 +29,7 @@
         <span class="tag">{{ stockInfo?.industry }}</span>
       </div>
     </div>
-    <history-widget />
+    <history-widget :transactions="stockTransactions" />
   </q-page>
 </template>
 
@@ -52,6 +52,9 @@ export default defineComponent({
     analysis() {
       if (!this.stockInfo?.analysis || this.stockInfo.analysis == 'loading...') return null
       return JSON.parse(this.stockInfo.analysis)
+    },
+    stockTransactions() {
+      return useStore().transactions?.filter((x) => x.ticker == 'MSFT')
     },
   },
 })

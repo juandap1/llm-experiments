@@ -7,8 +7,8 @@
         Add
       </button>
     </div>
-    <template v-if="store.transactions != null">
-      <history-item v-for="i in store.transactions" :key="i" v-bind="i" />
+    <template v-if="transactions != null">
+      <history-item v-for="i in transactions" :key="i" v-bind="i" />
     </template>
     <q-dialog v-model="addModal">
       <div class="modal">
@@ -69,7 +69,14 @@ import { useStore } from 'src/stores/store'
 export default defineComponent({
   components: { HistoryItem },
   name: 'HistoryWidget',
-  props: {},
+  props: {
+    transactions: {
+      type: Array,
+      default() {
+        return []
+      },
+    },
+  },
   setup() {
     return {
       store: useStore(),

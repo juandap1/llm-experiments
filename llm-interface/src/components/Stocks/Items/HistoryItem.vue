@@ -10,7 +10,7 @@
     </div>
     <div class="hist-row alt">
       <div>{{ date }}</div>
-      <div>{{ share_count }} shares at ${{ share_price }}</div>
+      <div>{{ share_count }} shares at ${{ share_price.toFixed(2) }}</div>
     </div>
     <hr />
   </div>
