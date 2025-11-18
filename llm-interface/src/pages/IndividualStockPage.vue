@@ -10,6 +10,17 @@
       </div>
     </div>
     <price-chart-widget />
+    <div class="analysis-widget" v-if="analysis">
+      <h6><q-icon name="fas fa-star-of-life" /> {{ analysis['general_headline'] }}</h6>
+      <div class="analysis-event" v-for="e in analysis['events']" :key="e">
+        <div class="ae-title">{{ e.headline }}</div>
+        <div class="ae-content">{{ e.summary }}</div>
+      </div>
+      <div class="analysis-event">
+        <div class="ae-title">Broader look: Market and sector context</div>
+        <div class="ae-content">{{ analysis['market_summary'] }}</div>
+      </div>
+    </div>
     <div class="q-my-md">
       <h6>Profile</h6>
       <div class="stock-desc">{{ stockInfo?.description }}</div>
@@ -37,6 +48,10 @@ export default defineComponent({
   computed: {
     stockInfo() {
       return useStore().loadedInfo['MSFT']
+    },
+    analysis() {
+      if (!this.stockInfo?.analysis || this.stockInfo.analysis == 'loading...') return null
+      return JSON.parse(this.stockInfo.analysis)
     },
   },
 })
@@ -78,5 +93,23 @@ export default defineComponent({
   font-weight: bold;
   color: #888;
   margin-bottom: 15px;
+}
+
+.analysis-event {
+  border-left: 3px solid #555;
+  margin: 15px 0px;
+  padding-left: 15px;
+
+  .ae-title {
+    color: #7cff7c;
+    margin-bottom: 5px;
+    font-weight: bold;
+    font-size: 16px;
+  }
+
+  .ae-content {
+    font-weight: 500;
+    color: #ccc;
+  }
 }
 </style>

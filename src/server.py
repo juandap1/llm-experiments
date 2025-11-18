@@ -79,7 +79,8 @@ def get_stock_info(ticker):
                 "description": row["description"],
                 "latest_price": row["latest_price"],
                 "sector": row["sector"],
-                "industry": row["industry"]
+                "industry": row["industry"],
+                "analysis": row["analysis"]
             })
         else:
             latest_price = row["latest_price"] if row else None
