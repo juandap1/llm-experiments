@@ -6,22 +6,26 @@
       </div>
       <div></div>
     </div>
-    <price-chart-widget />
-    <history-widget />
+    <!-- <price-chart-widget /> -->
+    <history-widget :transactions="allTransactions" />
   </q-page>
 </template>
 
 <script>
 import { defineComponent } from 'vue'
 import HistoryWidget from '../components/Stocks/HistoryWidget.vue'
-// import { useStore } from 'src/stores/store'
-import PriceChartWidget from '../components/Stocks/PriceChartWidget.vue'
+import { useStore } from 'src/stores/store'
+// import PriceChartWidget from '../components/Stocks/PriceChartWidget.vue'
 
 export default defineComponent({
   name: 'StocksPage',
-  components: { HistoryWidget, PriceChartWidget },
+  components: { HistoryWidget },
   mounted() {},
-  computed: {},
+  computed: {
+    allTransactions() {
+      return useStore().transactions
+    },
+  },
 })
 </script>
 <style lang="scss" scoped>

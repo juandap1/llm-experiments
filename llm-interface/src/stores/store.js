@@ -12,10 +12,49 @@ export const useStore = defineStore('counter', {
     transactions: (state) => state._transactions,
     loadedInfo: (state) => state._loadedInfo,
     history: (state) => state._history,
+    holding_map: (state) =>
+      state.transactions.reverse().reduce((acc, item) => {
+        if (acc[item.ticker] == null) {
+          acc[item.ticker] = [] // This will store an ordered list of 'lots'
+        }
+
+        // Handle BUYING (Adding a new lot)
+        if (item.buying) {
+          acc[item.ticker].push({
+            shares: item.share_count,
+            cost_per_share: item.share_price,
+          })
+        }
+        // Handle SELLING (Applying FIFO to remove lots)
+        else {
+          let shares_to_sell = item.share_count
+          const lots = acc[item.ticker]
+
+          while (shares_to_sell > 0 && lots.length > 0) {
+            // FIFO: Always take from the FIRST lot (lots[0])
+            const first_lot = lots[0]
+
+            if (first_lot.shares > shares_to_sell) {
+              // Case 1: The first lot has MORE shares than we are selling.
+              // Decrease the lot's shares and we're done with the sale.
+              first_lot.shares -= shares_to_sell
+              shares_to_sell = 0
+            } else {
+              // Case 2: The first lot has FEWER or EQUAL shares than we are selling.
+              // The entire lot is consumed (removed).
+              shares_to_sell -= first_lot.shares
+              lots.shift()
+            }
+          }
+        }
+
+        return acc
+      }, {}),
   },
 
   actions: {
-    getStockInfo(ticker) {
+    getStockInfo(ticker, refresh = false) {
+      if (this.loadedInfo[ticker] && !refresh) return
       api
         .get('/stock/' + ticker, {
           params: {},
@@ -30,6 +69,19 @@ export const useStore = defineStore('counter', {
         })
         .catch(console.error)
     },
+    batchStockInfoRequest(tickers) {
+      api
+        .post('/stock/batch', {
+          tickers,
+        })
+        .then((response) => {
+          // console.log(response.data)
+          Object.assign(this._loadedInfo, response.data)
+        })
+        .catch((error) => {
+          console.error('Error batch requesting stocks:', error)
+        })
+    },
     getTransactions() {
       api
         .get('/transactions', {
@@ -38,6 +90,8 @@ export const useStore = defineStore('counter', {
         .then((response) => {
           // console.log(response)
           this._transactions = response.data
+          let uniqueStocks = new Set(response.data.map((x) => x.ticker))
+          this.batchStockInfoRequest(Array.from(uniqueStocks))
         })
         .catch(console.error)
     },

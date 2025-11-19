@@ -7,6 +7,8 @@ import ollama
 import json
 from clients.qdrant_server import QdrantServerClient
 from batch_analyzer import BatchAnalyzer
+import asyncio
+import aiohttp
 
 app = Flask(__name__)
 CORS(app)
@@ -116,6 +118,121 @@ def get_stock_info(ticker):
     except Exception as e:
         print(f"Error pulling stock data: {e}")
         return jsonify({"error": str(e)}), 500
+    
+@app.route("/stock/batch", methods=["POST"])
+def get_stock_info_batch():
+    req = request.get_json()
+    tickers = [t.upper() for t in req.get("tickers", [])]
+
+    if not tickers:
+        return jsonify({"error": "tickers required"}), 400
+
+    db = get_db()
+
+    # --- 1. Load existing rows in a single query ---
+    placeholders = ",".join(["%s"] * len(tickers))
+    rows = db.fetch_all(
+        f"""
+        SELECT ticker, name, description, latest_price, latest_date,
+               sector, industry, analysis
+        FROM tickers
+        WHERE ticker IN ({placeholders})
+        """,
+        tuple(tickers),
+    )
+
+    rows_by_ticker = {r["ticker"]: r for r in rows}
+
+    # --- 2. Identify missing info ---
+    need_price = []
+    need_overview = []
+
+    for t in tickers:
+        row = rows_by_ticker.get(t)
+
+        if not row or not row["latest_price"]:
+            need_price.append(t)
+
+        if not row or not row["name"]:
+            need_overview.append(t)
+
+    # --- 3. Fetch missing info concurrently ---
+    async def fetch_missing():
+        tasks = []
+        async with aiohttp.ClientSession() as session:
+
+            # Missing prices
+            for t in need_price:
+                url = f'https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol={t}&apikey={stock_token}'
+                tasks.append(("price", t, session.get(url)))
+
+            # Missing overview
+            for t in need_overview:
+                url = f'https://www.alphavantage.co/query?function=OVERVIEW&symbol={t}&apikey={stock_token}'
+                tasks.append(("overview", t, session.get(url)))
+
+            results = []
+            for kind, ticker, coro in tasks:
+                try:
+                    resp = await coro
+                    data = await resp.json()
+                    results.append((kind, ticker, data))
+                except:
+                    results.append((kind, ticker, None))
+            return results
+
+    results = asyncio.run(fetch_missing())
+
+    # --- 4. Write updates to DB & merge results ---
+    for kind, ticker, data in results:
+        if not data:
+            continue
+
+        if kind == "price" and "Global Quote" in data:
+            price = data["Global Quote"]["05. price"]
+            date = data["Global Quote"]["07. latest trading day"]
+            db.update_stock_price(ticker, price, date)
+            if ticker not in rows_by_ticker:
+                rows_by_ticker[ticker] = {"ticker": ticker}
+            rows_by_ticker[ticker]["latest_price"] = price
+
+        elif kind == "overview" and "Name" in data:
+            db.update_company_data(
+                ticker,
+                data["Name"],
+                data["Description"],
+                data["Sector"],
+                data["Industry"],
+            )
+            if ticker not in rows_by_ticker:
+                rows_by_ticker[ticker] = {"ticker": ticker}
+            rows_by_ticker[ticker].update({
+                "name": data["Name"],
+                "description": data["Description"],
+                "sector": data["Sector"],
+                "industry": data["Industry"]
+            })
+
+    # --- 5. Build final response ---
+    final = {}
+
+    for t in tickers:
+        row = rows_by_ticker.get(t)
+        if not row:
+            # del final[t]
+            continue
+
+        final[t] = {
+            "ticker": t,
+            "name": row.get("name", ""),
+            "description": row.get("description", ""),
+            "latest_price": row.get("latest_price", -1),
+            "sector": row.get("sector", ""),
+            "industry": row.get("industry", ""),
+            "analysis": row.get("analysis", ""),
+        }
+
+    return jsonify(final)
 
 @app.route("/stock/history/<ticker>")
 def get_stock_history(ticker):
