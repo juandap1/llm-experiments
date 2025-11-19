@@ -4,8 +4,10 @@
       <div>{{ ticker }} market buy</div>
       <div>
         ${{ cost }}
-        <span v-if="priceChange >= 0" class="price-change positive">+{{ priceChange }}%</span>
-        <span v-else class="price-change negative">{{ priceChange }}%</span>
+        <span v-if="priceChange >= 0" class="price-change positive"
+          >+{{ priceChange.toFixed(2) }}%</span
+        >
+        <span v-else class="price-change negative">{{ priceChange.toFixed(2) }}%</span>
       </div>
     </div>
     <div class="hist-row alt">

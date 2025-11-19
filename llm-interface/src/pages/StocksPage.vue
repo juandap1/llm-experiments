@@ -1,11 +1,6 @@
 <template>
   <q-page class="basic-page">
-    <div class="stock-header">
-      <div class="stock-logo">
-        <img src="http://localhost:3141/logo/MSFT" alt="Stock ticker logo" />
-      </div>
-      <div></div>
-    </div>
+    <h6>My Portfolio</h6>
     <!-- <price-chart-widget /> -->
     <history-widget :transactions="allTransactions" />
   </q-page>
@@ -34,36 +29,5 @@ export default defineComponent({
   gap: 15px;
   align-items: center;
   margin-bottom: 25px;
-}
-
-.stock-logo {
-  width: 60px;
-  height: 60px;
-  overflow: hidden;
-  border-radius: 5px;
-  background-color: rgb(255, 255, 255, 0.05);
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: fill;
-  }
-}
-
-.stock-ticker {
-  font-size: 26px;
-  font-weight: bold;
-}
-
-.stock-name {
-  font-size: 18px;
-  font-weight: 500;
-  color: #aaa;
-}
-
-.stock-desc {
-  font-weight: bold;
-  color: #888;
-  margin-bottom: 15px;
 }
 </style>
