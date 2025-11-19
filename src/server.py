@@ -134,7 +134,7 @@ def get_stock_info_batch():
     rows = db.fetch_all(
         f"""
         SELECT ticker, name, description, latest_price, latest_date,
-               sector, industry, analysis
+               sector, industry, analysis, is_etf
         FROM tickers
         WHERE ticker IN ({placeholders})
         """,
@@ -230,6 +230,7 @@ def get_stock_info_batch():
             "sector": row.get("sector", ""),
             "industry": row.get("industry", ""),
             "analysis": row.get("analysis", ""),
+            "is_etf": row.get("is_etf", 0)
         }
 
     return jsonify(final)

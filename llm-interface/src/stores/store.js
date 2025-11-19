@@ -13,7 +13,7 @@ export const useStore = defineStore('counter', {
     loadedInfo: (state) => state._loadedInfo,
     history: (state) => state._history,
     holding_map: (state) =>
-      state.transactions.reverse().reduce((acc, item) => {
+      state.transactions?.reverse().reduce((acc, item) => {
         if (acc[item.ticker] == null) {
           acc[item.ticker] = [] // This will store an ordered list of 'lots'
         }
@@ -48,6 +48,20 @@ export const useStore = defineStore('counter', {
           }
         }
 
+        return acc
+      }, {}),
+    currently_holding: (state) => {
+      if (state.holding_map == null) return []
+      return Object.keys(state.holding_map).filter((x) => state.holding_map[x].length != 0)
+    },
+    value_map: (state) =>
+      state.currently_holding?.reduce((acc, item) => {
+        let asset = state.loadedInfo[item]
+        if (!asset?.latest_price || asset.latest_price == -1) return acc
+        let val = state.holding_map[item].reduce((value, transaction) => {
+          return value + transaction.shares * asset.latest_price
+        }, 0)
+        acc[item] = val
         return acc
       }, {}),
   },
