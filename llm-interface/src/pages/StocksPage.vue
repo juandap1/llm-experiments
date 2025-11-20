@@ -2,7 +2,8 @@
   <q-page class="basic-page">
     <h6>My Portfolio</h6>
     <!-- <price-chart-widget /> -->
-    <dashed-circle-chart />
+
+    <asset-chart-widget :holdings="holdings" />
     <history-widget :transactions="allTransactions" />
   </q-page>
 </template>
@@ -11,12 +12,11 @@
 import { defineComponent } from 'vue'
 import HistoryWidget from '../components/Stocks/HistoryWidget.vue'
 import { useStore } from 'src/stores/store'
-import DashedCircleChart from '../components/DashedCircleChart.vue'
-// import PriceChartWidget from '../components/Stocks/PriceChartWidget.vue'
+import AssetChartWidget from '../components/Stocks/AssetChartWidget.vue'
 
 export default defineComponent({
   name: 'StocksPage',
-  components: { HistoryWidget, DashedCircleChart },
+  components: { HistoryWidget, AssetChartWidget },
   setup() {
     return {
       store: useStore(),
@@ -27,6 +27,17 @@ export default defineComponent({
   computed: {
     allTransactions() {
       return useStore().transactions
+    },
+    holdings() {
+      if (!this.store.currently_holding) return []
+      return this.store.currently_holding
+        .map((x) => {
+          return {
+            ticker: x,
+            value: this.store.value_map?.[x] || 0,
+          }
+        })
+        .sort((a, b) => b.value - a.value)
     },
   },
 })
