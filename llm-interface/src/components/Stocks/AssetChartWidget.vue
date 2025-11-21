@@ -1,9 +1,23 @@
 <template>
   <div class="asset-chart">
-    <DashedCircleChart :data="holdings" :colors="colors" :totalValue="totalValue" />
+    <DashedCircleChart
+      :data="holdings"
+      :colors="colors"
+      :totalValue="totalValue"
+      v-model:hoveredTicker="hoveredTicker"
+    />
     <div class="asset-legend">
+      <div class="q-py-sm q-px-md">
+        <h6>My Holdings</h6>
+      </div>
       <q-scroll-area class="asset-legend-scroll" dark>
-        <div class="asset-legend-item" v-for="(item, index) in holdings" :key="index">
+        <div
+          class="asset-legend-item"
+          v-for="(item, index) in holdings"
+          :key="index"
+          @mouseenter="hoveredTicker = item.ticker"
+          @mouseleave="hoveredTicker = null"
+        >
           <q-icon name="fas fa-circle" :style="{ color: colors[index] }" />
           <div class="asset-item-main">
             <div class="item-lbl">{{ item.ticker }}</div>
@@ -18,13 +32,15 @@
   </div>
 </template>
 <script>
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
 import DashedCircleChart from 'src/components/Charts/DashedCircleChart.vue'
 
 export default defineComponent({
   name: 'AssetChartWidget',
   setup() {
+    const hoveredTicker = ref(null)
     return {
+      hoveredTicker,
       colors: [
         '#C44E52',
         '#D64646',
@@ -82,10 +98,12 @@ export default defineComponent({
   width: 300px;
   border-radius: 15px;
   background-color: rgb(255, 255, 255, 0.02);
+  display: flex;
+  flex-direction: column;
 }
 
 .asset-legend-scroll {
-  height: 100%;
+  flex: 1 1 auto;
 }
 
 .asset-legend-item {
@@ -93,6 +111,12 @@ export default defineComponent({
   align-items: center;
   gap: 10px;
   padding: 6px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.asset-legend-item:hover {
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 .asset-item-main {

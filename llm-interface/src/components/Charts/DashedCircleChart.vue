@@ -1,7 +1,22 @@
 <template>
   <div class="knob-container">
     <svg :width="size" :height="size" viewBox="0 0 100 100">
-      <g v-for="(item, index) in totalRects" :key="index">
+      <g
+        v-for="(item, index) in totalRects"
+        :key="index"
+        @mouseenter="$emit('update:hoveredTicker', processedData[index]?.ticker)"
+        @mouseleave="$emit('update:hoveredTicker', null)"
+      >
+        <!-- Invisible Hit Area (Wider and Taller) -->
+        <rect
+          :x="43.5"
+          :y="-2"
+          width="5"
+          height="10"
+          fill="transparent"
+          :transform="`rotate(${(360 / totalRects) * index + 90}, 50, 50)`"
+        />
+        <!-- Visible Dash -->
         <rect
           :x="45.5"
           :y="0"
@@ -9,17 +24,28 @@
           height="6"
           rx="0.5"
           ry="0.5"
+          pointer-events="none"
           :fill="colors[processedData[index]?.count]"
           :transform="`rotate(${(360 / totalRects) * index + 90}, 50, 50)`"
+          :style="{
+            opacity: hoveredTicker && processedData[index]?.ticker !== hoveredTicker ? 0.2 : 1,
+          }"
         />
       </g>
     </svg>
-    <div class="val-vis">{{ formatPriceCompact(totalValue) }}</div>
+    <div class="val-vis">
+      <div v-if="hoveredTicker && hoveredItem" class="column flex-center">
+        <div class="text-caption text-grey-5">{{ hoveredTicker }}</div>
+        <div>{{ formatPriceCompact(hoveredItem.value) }}</div>
+      </div>
+      <div v-else>{{ formatPriceCompact(totalValue) }}</div>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
+  emits: ['update:hoveredTicker'],
   setup() {
     return {}
   },
@@ -44,6 +70,10 @@ export default {
       type: Array,
       default: () => [],
     },
+    hoveredTicker: {
+      type: String,
+      default: null,
+    },
   },
   methods: {
     formatPriceCompact(price) {
@@ -59,6 +89,10 @@ export default {
     },
   },
   computed: {
+    hoveredItem() {
+      if (!this.hoveredTicker) return null
+      return this.data.find((x) => x.ticker === this.hoveredTicker)
+    },
     processedData() {
       let assignedRects = 0
       const totalRects = this.totalRects // e.g., 200
@@ -98,6 +132,7 @@ export default {
           finalRects.push(
             ...Array(item.count).fill({
               ticker: item.ticker,
+              value: item.value,
               count: rectIndex, // Use the item's position index in the chart
             }),
           )
