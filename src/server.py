@@ -1,17 +1,29 @@
-from flask import Flask, request, jsonify, send_file, g, Response
-from clients.sql_server import MySQLClient
-from flask_cors import CORS
-import requests
+from fastapi import FastAPI, Request, HTTPException, Depends, Response
+from fastapi.responses import FileResponse, JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+from typing import List, Optional
 import os
-import ollama
+import requests
 import json
-from clients.qdrant_server import QdrantServerClient
-from batch_analyzer import BatchAnalyzer
 import asyncio
 import aiohttp
+import ollama
 
-app = Flask(__name__)
-CORS(app)
+from clients.sql_server import MySQLClient
+from clients.qdrant_server import QdrantServerClient
+from batch_analyzer import BatchAnalyzer
+
+app = FastAPI()
+
+# CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Adjust this in production
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 CONTAINER_ROOT = '/app'
 
@@ -20,62 +32,63 @@ logo_dev_token = os.getenv("LOGO_DEV_TOKEN")
 stock_token = os.getenv("ALPHAVANTAGE_TOKEN")
 
 # Initialize clients
+# Note: In FastAPI, it's often better to initialize these in a startup event or as dependencies if they need to be closed.
+# For now, keeping them global as in the original script.
 client = ollama.Client(host='http://ollama:11434')
 vector_db = QdrantServerClient(host="qdrant")
 analyzer = BatchAnalyzer(vector_db, client)
 
+# Dependency
 def get_db():
-    """Returns a new database connection object for the current request context."""
-    if 'db' not in g:
-        # If no connection exists in the context, create a new one
-        g.db = MySQLClient()
-    return g.db
-
-@app.teardown_request
-def teardown_db(exception):
-    """Closes the connection when the request finishes."""
-    db_conn = g.pop('db', None)
-    if db_conn is not None:
-        db_conn.close()
-
-@app.route("/")
-def hello_world():
-    return "<p>HOT RELOAD 2!</p>"
-
-@app.route("/transactions")
-def sql():
-    db = get_db()
-    transactions = db.fetch_all("SELECT * FROM transactions ORDER BY transaction_date DESC, id DESC")
-    # print("All transactions:", transactions)
-    return jsonify(transactions), 200
-
-@app.route("/transaction", methods=["POST"])
-def add_transaction():
+    db = MySQLClient()
     try:
-        data = request.get_json()
-        # print(data)
-        ticker = data.get("ticker")
-        share_count = data.get("share_count")
-        share_price = data.get("share_price")
-        transaction_date = data.get("transaction_date")
-        buying = data.get("buying")
-        db = get_db()
-        id = db.insert_transaction(ticker, share_count, share_price, transaction_date, buying)
+        yield db
+    finally:
+        db.close()
 
-        return jsonify({"message": f"Transaction {id} added successfully", "new_id": id}), 201
+# Pydantic Models
+class TransactionCreate(BaseModel):
+    ticker: str
+    share_count: float
+    share_price: float
+    transaction_date: str
+    buying: bool
+
+class BatchStockRequest(BaseModel):
+    tickers: List[str]
+
+@app.get("/")
+def hello_world():
+    return Response(content="<p>HOT RELOAD 2!</p>", media_type="text/html")
+
+@app.get("/transactions")
+def sql(db: MySQLClient = Depends(get_db)):
+    transactions = db.fetch_all("SELECT * FROM transactions ORDER BY transaction_date DESC, id DESC")
+    return transactions
+
+@app.post("/transaction", status_code=201)
+def add_transaction(transaction: TransactionCreate, db: MySQLClient = Depends(get_db)):
+    try:
+        id = db.insert_transaction(
+            transaction.ticker, 
+            transaction.share_count, 
+            transaction.share_price, 
+            transaction.transaction_date, 
+            transaction.buying
+        )
+        return {"message": f"Transaction {id} added successfully", "new_id": id}
     except Exception as e:
         print(f"❌ Error inserting transaction: {e}")
-        return jsonify({"error": str(e)}), 500
-    
+        raise HTTPException(status_code=500, detail=str(e))
 
-@app.route("/stock/<ticker>")
-def get_stock_info(ticker):
+@app.get("/stock/{ticker}")
+def get_stock_info(ticker: str, db: MySQLClient = Depends(get_db)):
     ticker = ticker.upper()
     try:
-        db = get_db()
         row = db.fetch_one("SELECT ticker, name, description, latest_price, sector, industry, analysis FROM tickers WHERE ticker = %s", (ticker,))
+        
         if row and row["name"] and row["latest_price"]:
-            return jsonify({
+            return {
                 "ticker": ticker,
                 "name": row["name"],
                 "description": row["description"],
@@ -83,54 +96,71 @@ def get_stock_info(ticker):
                 "sector": row["sector"],
                 "industry": row["industry"],
                 "analysis": row["analysis"]
-            })
+            }
         else:
             latest_price = row["latest_price"] if row else None
             if not row or not latest_price:
                 url = f'https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol={ticker}&apikey={stock_token}'
                 r = requests.get(url)
                 data = r.json()
-                latest_price = data["Global Quote"]["05. price"]
-                latest_date = data["Global Quote"]["07. latest trading day"]
-                db.update_stock_price(ticker, latest_price, latest_date)
+                # Handle potential API errors or empty responses
+                if "Global Quote" in data and "05. price" in data["Global Quote"]:
+                    latest_price = float(data["Global Quote"]["05. price"])
+                    latest_date = data["Global Quote"]["07. latest trading day"]
+                    db.update_stock_price(ticker, latest_price, latest_date)
+                else:
+                    # Fallback or error handling if price not found
+                    pass 
+
             if not row or not row["name"]:
                 url = f'https://www.alphavantage.co/query?function=OVERVIEW&symbol={ticker}&apikey={stock_token}'
                 r = requests.get(url)
                 data = r.json()
-                db.update_company_data(ticker, data["Name"], data["Description"], data["Sector"], data["Industry"])
-                return jsonify({
-                    "ticker": ticker,
-                    "name": data["Name"],
-                    "description": data["Description"],
-                    "latest_price": latest_price,
-                    "sector": data["Sector"],
-                    "industry": data["Industry"]
-                })
+                # Check if data is valid
+                if "Name" in data:
+                    db.update_company_data(ticker, data["Name"], data["Description"], data["Sector"], data["Industry"])
+                    return {
+                        "ticker": ticker,
+                        "name": data["Name"],
+                        "description": data["Description"],
+                        "latest_price": latest_price,
+                        "sector": data["Sector"],
+                        "industry": data["Industry"]
+                    }
+                else:
+                     # Return what we have if API fails
+                    return {
+                        "ticker": ticker,
+                        "name": row["name"] if row else "",
+                        "description": row["description"] if row else "",
+                        "latest_price": latest_price,
+                        "sector": row["sector"] if row else "",
+                        "industry": row["industry"] if row else ""
+                    }
             else:
-                return jsonify({
+                return {
                     "ticker": ticker,
                     "name": row["name"],
                     "description": row["description"],
                     "latest_price": latest_price,
                     "sector": row["sector"],
                     "industry": row["industry"]
-                })
+                }
     except Exception as e:
         print(f"Error pulling stock data: {e}")
-        return jsonify({"error": str(e)}), 500
-    
-@app.route("/stock/batch", methods=["POST"])
-def get_stock_info_batch():
-    req = request.get_json()
-    tickers = [t.upper() for t in req.get("tickers", [])]
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/stock/batch")
+def get_stock_info_batch(req: BatchStockRequest, db: MySQLClient = Depends(get_db)):
+    tickers = [t.upper() for t in req.tickers]
 
     if not tickers:
-        return jsonify({"error": "tickers required"}), 400
-
-    db = get_db()
+        raise HTTPException(status_code=400, detail="tickers required")
 
     # --- 1. Load existing rows in a single query ---
     placeholders = ",".join(["%s"] * len(tickers))
+    # Note: MySQLClient.fetch_all might need adjustment if it doesn't support dynamic placeholders easily with list
+    # But assuming it handles the tuple correctly as per original code.
     rows = db.fetch_all(
         f"""
         SELECT ticker, name, description, latest_price, latest_date,
@@ -181,6 +211,9 @@ def get_stock_info_batch():
                     results.append((kind, ticker, None))
             return results
 
+    # Since we are in a sync route, we use asyncio.run. 
+    # Ideally, the whole route should be async, but db calls are sync.
+    # We can keep it this way for now or make the route async and wrap db calls.
     results = asyncio.run(fetch_missing())
 
     # --- 4. Write updates to DB & merge results ---
@@ -189,12 +222,14 @@ def get_stock_info_batch():
             continue
 
         if kind == "price" and "Global Quote" in data:
-            price = data["Global Quote"]["05. price"]
-            date = data["Global Quote"]["07. latest trading day"]
-            db.update_stock_price(ticker, price, date)
-            if ticker not in rows_by_ticker:
-                rows_by_ticker[ticker] = {"ticker": ticker}
-            rows_by_ticker[ticker]["latest_price"] = price
+            price = data["Global Quote"].get("05. price")
+            date = data["Global Quote"].get("07. latest trading day")
+            if price:
+                price = float(price)
+                db.update_stock_price(ticker, price, date)
+                if ticker not in rows_by_ticker:
+                    rows_by_ticker[ticker] = {"ticker": ticker}
+                rows_by_ticker[ticker]["latest_price"] = price
 
         elif kind == "overview" and "Name" in data:
             db.update_company_data(
@@ -219,7 +254,6 @@ def get_stock_info_batch():
     for t in tickers:
         row = rows_by_ticker.get(t)
         if not row:
-            # del final[t]
             continue
 
         final[t] = {
@@ -233,21 +267,20 @@ def get_stock_info_batch():
             "is_etf": row.get("is_etf", 0)
         }
 
-    return jsonify(final)
+    return final
 
-@app.route("/stock/history/<ticker>")
-def get_stock_history(ticker):
+@app.get("/stock/history/{ticker}")
+def get_stock_history(ticker: str, db: MySQLClient = Depends(get_db)):
     ticker = ticker.upper()
     try:
-        db = get_db()
         history = db.fetch_all("""
             SELECT date, open_price, close_price, low, high 
             FROM price_history 
             WHERE ticker = %s 
             ORDER BY date ASC
-        """, ticker)
+        """, (ticker,)) # Pass as tuple
         if history:
-            return jsonify(history), 200
+            return history
 
         url = f'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={ticker}&apikey={stock_token}&outputsize=full'
         r = requests.get(url)
@@ -258,41 +291,32 @@ def get_stock_history(ticker):
             try:
                 record = (
                     ticker,
-                    # open_price
                     float(daily_data['1. open']), 
-                    # close_price
                     float(daily_data['4. close']), 
-                    # low
                     float(daily_data['3. low']), 
-                    # high
                     float(daily_data['2. high']), 
-                    # date (formatted as string)
                     date_str 
                 )
                 records_to_insert.append(record)
-            except KeyError as e:
-                # Handle cases where a key might be missing
-                print(f"Skipping record for {date_str}: Missing key {e}")
-                continue
-            except ValueError as e:
-                # Handle cases where data is not a valid number
-                print(f"Skipping record for {date_str}: Invalid numeric value {e}")
+            except (KeyError, ValueError) as e:
+                print(f"Skipping record for {date_str}: {e}")
                 continue
         if records_to_insert:
             rows_inserted = db.insert_many_prices(ticker, records_to_insert)
             print(f"✅ Successfully inserted {rows_inserted} price records for {ticker}.")
-            return jsonify(records_to_insert), 200
+            # Convert tuples back to dicts or list of lists for JSON response if needed, 
+            # but returning list of tuples is also valid JSON (list of lists)
+            return records_to_insert
+        return []
     except Exception as e:
         print(f"Error pulling stock history: {e}")
-        return jsonify({"error": str(e)}), 500
+        raise HTTPException(status_code=500, detail=str(e))
 
-@app.route("/logo/<ticker>")
-def get_logo(ticker):
+@app.get("/logo/{ticker}")
+def get_logo(ticker: str, db: MySQLClient = Depends(get_db)):
     ticker = ticker.upper()
     try:
-        db = get_db()
         row = db.fetch_one("SELECT logo FROM tickers WHERE ticker = %s", (ticker,))
-        # Check if row exists AND logo path is defined
         if row and row['logo']:
             db_path = row['logo']
             if not os.path.isabs(db_path):
@@ -300,49 +324,49 @@ def get_logo(ticker):
             else:
                 logo_path = db_path
             print(f"Database entry found for {ticker}. Logo path is: {logo_path}")
-            # Check if the file exists locally
             if os.path.exists(logo_path):
                 print(f"Serving local file: {logo_path}")
-                return send_file(logo_path, mimetype='image/jpeg')
-            # If path is in DB but file is missing, we proceed to download
+                return FileResponse(logo_path, media_type='image/jpeg')
             print(f"Warning: File missing on disk, proceeding to download.")
     except Exception as e:
         print(f"Database/Check failure for {ticker}: {e}. Attempting download.")
+
     try:
         save_directory = os.path.join(CONTAINER_ROOT, "logos")
         filename = f"{ticker}.jpg"
         full_path = os.path.join(save_directory, filename)
         os.makedirs(save_directory, exist_ok=True)
+        
         response = requests.get(f"https://img.logo.dev/ticker/{ticker}?token={logo_dev_token}", stream=True)
         response.raise_for_status()
+        
         with open(full_path, 'wb') as file:
             for chunk in response.iter_content(chunk_size=8192):
                 if chunk: 
                     file.write(chunk)
-        # Update the database with the new path
+        
         db.update_logo(ticker, full_path)
         print(f"✅ Image successfully saved and DB updated for {ticker} at: {full_path}")
-        return send_file(full_path, mimetype='image/jpeg')
+        return FileResponse(full_path, media_type='image/jpeg')
     except requests.exceptions.RequestException as e:
-        # Handle errors related to the HTTP request (network, 404, etc.)
         print(f"❌ Failed to download logo for {ticker}: {e}")
-        return jsonify({"error": f"Logo not found or download failed for {ticker}."}), 404
+        raise HTTPException(status_code=404, detail=f"Logo not found or download failed for {ticker}.")
     except Exception as e:
-        # Catch any other general errors (e.g., file writing issues)
         print(f"❌ An unexpected error occurred for {ticker}: {e}")
-        return jsonify({"error": str(e)}), 500
-    
-@app.route("/stock/analysis")
-def get_stock_analysis():
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/stock/analysis")
+def get_stock_analysis(ticker: str = "", company: str = "", db: MySQLClient = Depends(get_db)):
     try:
-        db = get_db()
-        ticker = request.args.get("ticker", "").upper()
-        company = request.args.get("company", "")
+        ticker = ticker.upper()
         analysis = analyzer.generate_analysis(ticker, company)
         db.update_analysis(ticker, analysis)
         j = json.loads(analysis)
-        return jsonify(j)
+        return j
     except Exception as e:
-        # Catch any other general errors (e.g., file writing issues)
         print(f"❌ An unexpected error occurred for getting analysis for {ticker}: {e}")
-        return jsonify({"error": str(e)}), 500
+        raise HTTPException(status_code=500, detail=str(e))
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=5000)

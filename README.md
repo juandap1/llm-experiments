@@ -1,4 +1,5 @@
 .\venv\Scripts\activate
+pyenv activate llmenv
 
 using 3.10
 model: microsoft/Phi-4-mini-instruct
@@ -19,3 +20,7 @@ python ./llama.cpp/convert_hf_to_gguf.py ./llm-experiments/model --outtype f16
 ### Use Ollama Container Console
 
 `docker exec -it ollama /bin/bash`
+
+### Run FastAPI Server
+
+`uvicorn server:app --reload`
