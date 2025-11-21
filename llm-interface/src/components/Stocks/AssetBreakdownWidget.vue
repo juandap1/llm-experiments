@@ -2,19 +2,27 @@
   <div class="asset-widget">
     <h6>Assets</h6>
     <!--Switch out bar for dashed bar-->
-    <div class="bar-cont">
+    <div class="bar-cont" @mouseleave="hovered = null">
       <div
         class="bar-seg"
-        v-for="i in Object.keys(assetBreakdown)"
+        v-for="(type, i) in segments"
         :key="i"
+        @mouseenter="hovered = type"
         :style="{
-          width: `${assetRatio[i]}%`,
-          'background-color': colors[i],
+          'background-color': colors[type],
+          opacity: hovered && hovered !== type ? 0.2 : 1,
         }"
       ></div>
     </div>
     <div class="asset-list">
-      <div class="asset-item" v-for="i in Object.keys(assetBreakdown)" :key="i">
+      <div
+        class="asset-item"
+        v-for="i in Object.keys(assetBreakdown)"
+        :key="i"
+        @mouseenter="hovered = i"
+        @mouseleave="hovered = null"
+        :style="{ opacity: hovered && hovered !== i ? 0.2 : 1 }"
+      >
         <div class="asset-name">
           <div class="color-key" :style="{ 'background-color': colors[i] }"></div>
           <div>{{ capitalizeFirst(i) }}</div>
@@ -29,18 +37,20 @@
 </template>
 
 <script>
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
 import { useStore } from 'src/stores/store'
 
 export default defineComponent({
   name: 'AssetBreakdownWidget',
   setup() {
+    const hovered = ref(null)
     return {
       store: useStore(),
+      hovered,
       colors: {
-        stocks: '#A7C7E7', // pastel blue
-        etfs: '#F7C8A0', // pastel peach/orange
-        cash: '#A8E6A3', // pastel green
+        stocks: '#3b82f6', // Blue
+        etfs: '#a855f7', // Purple
+        cash: '#22c55e', // Green
       },
     }
   },
@@ -88,8 +98,27 @@ export default defineComponent({
           largestKey = key
         }
       }
-      props[largestKey] -= sum - 100
+      if (largestKey) {
+        props[largestKey] -= sum - 100
+      }
       return props
+    },
+    segments() {
+      const ratios = this.assetRatio
+      const keys = Object.keys(ratios)
+      let cumulative = 0
+      const thresholds = keys.map((key) => {
+        cumulative += ratios[key]
+        return { key, threshold: cumulative }
+      })
+
+      const segs = []
+      for (let i = 0; i < 50; i++) {
+        const midpoint = i * 2 + 1
+        const match = thresholds.find((t) => midpoint <= t.threshold)
+        segs.push(match ? match.key : keys[keys.length - 1])
+      }
+      return segs
     },
   },
 })
@@ -104,17 +133,17 @@ export default defineComponent({
 
 .bar-cont {
   margin: 20px 0px;
-  border-radius: 50px;
   width: 100%;
-  height: 10px;
-  background-color: rgb(255, 255, 255, 0.1);
+  height: 12px;
   display: flex;
-  overflow: hidden;
+  gap: 2px;
 }
 
 .bar-seg {
+  flex: 1;
   height: 100%;
   transition: all 0.3s;
+  border-radius: 2px;
 }
 
 .asset-item {

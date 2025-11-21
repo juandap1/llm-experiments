@@ -2,7 +2,7 @@
   <q-page class="basic-page">
     <h6>My Portfolio</h6>
     <!-- <price-chart-widget /> -->
-
+    <asset-breakdown-widget :holdings="holdings" />
     <asset-chart-widget :holdings="holdings" />
     <history-widget :transactions="allTransactions" />
   </q-page>
@@ -13,10 +13,11 @@ import { defineComponent } from 'vue'
 import HistoryWidget from '../components/Stocks/HistoryWidget.vue'
 import { useStore } from 'src/stores/store'
 import AssetChartWidget from '../components/Stocks/AssetChartWidget.vue'
+import AssetBreakdownWidget from '../components/Stocks/AssetBreakdownWidget.vue'
 
 export default defineComponent({
   name: 'StocksPage',
-  components: { HistoryWidget, AssetChartWidget },
+  components: { HistoryWidget, AssetChartWidget, AssetBreakdownWidget },
   setup() {
     return {
       store: useStore(),
