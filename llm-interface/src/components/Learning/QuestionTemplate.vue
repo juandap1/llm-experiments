@@ -26,7 +26,7 @@
 <script>
 import { defineComponent } from 'vue'
 import MultipleChoice from './QuestionTypes/MultipleChoice.vue'
-import { useExamStore } from 'src/stores/examination'
+// import { useExamStore } from 'src/stores/examination'
 // import { api } from 'src/boot/axios'
 // import { useUserStore } from 'src/stores/user'
 // import FreeResponse from './QuestionTypes/FreeResponse.vue'
@@ -35,10 +35,10 @@ import { useExamStore } from 'src/stores/examination'
 export default defineComponent({
   name: 'mbti-modal',
   setup() {
-    const store = useExamStore()
+    // const store = useExamStore()
     // const question = computed(() => store.questions[store.index])
     return {
-      store,
+      // store,
       question: {
         id: 'e3ca23ac-83e5-4044-92cb-8b1106843009',
         question: 'Which word in the pair appeals to you more?',
@@ -76,16 +76,16 @@ export default defineComponent({
       }
     },
     next() {
-      if (useExamStore().questions.length > useExamStore().index + 1) {
-        useExamStore().index++
-        if (useExamStore().index > useExamStore().maxInd)
-          useExamStore().maxInd = useExamStore().index
-        /*this.$router.push(
-          `/exam/${useExamStore()._id}/${useExamStore().index}`
-        );*/
-      } else {
-        this.submit()
-      }
+      // if (useExamStore().questions.length > useExamStore().index + 1) {
+      //   useExamStore().index++
+      //   if (useExamStore().index > useExamStore().maxInd)
+      //     useExamStore().maxInd = useExamStore().index
+      //   /*this.$router.push(
+      //     `/exam/${useExamStore()._id}/${useExamStore().index}`
+      //   );*/
+      // } else {
+      //   this.submit()
+      // }
     },
     processResponses(res) {
       let clone = structuredClone(res)
@@ -105,13 +105,13 @@ export default defineComponent({
   mounted() {},
   components: { MultipleChoice },
   watch: {
-    $route(to) {
-      if (to.params.ind != useExamStore().index) {
-        if (useExamStore().backtrack) {
-          useExamStore().index = parseInt(to.params.ind)
-        }
-      }
-    },
+    // $route(to) {
+    //   // if (to.params.ind != useExamStore().index) {
+    //   //   if (useExamStore().backtrack) {
+    //   //     useExamStore().index = parseInt(to.params.ind)
+    //   //   }
+    //   // }
+    // },
   },
 })
 </script>

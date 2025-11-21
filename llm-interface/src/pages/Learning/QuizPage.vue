@@ -3,7 +3,7 @@
     <default-navbar />
     <div class="layout-main">
       <default-sidebar>
-        <question-item />
+        <!-- <question-item /> -->
       </default-sidebar>
       <div class="content-container">
         <progress-bar :percent="45" />
@@ -23,7 +23,7 @@
         <div class="main-cont">
           <div class="test-shell">
             <div class="test-cont shadow-6">
-              <question-template />
+              <!-- <question-template /> -->
             </div>
             <div class="cont-fade-1 shadow-6"></div>
             <div class="cont-fade-2 shadow-6"></div>
@@ -38,15 +38,15 @@
 import { defineComponent, ref, onMounted } from 'vue'
 import DefaultNavbar from 'src/components/Learning/DefaultNavbar.vue'
 import DefaultSidebar from 'src/components/Learning/DefaultSidebar.vue'
-import ProgressBar from 'src/components/ProgressBar.vue'
-import QuestionTemplate from 'src/components/Learning/QuestionTemplate.vue'
-import QuestionItem from 'src/components/Learning/QuestionItem.vue'
+import ProgressBar from 'src/components/Learning/ProgressBar.vue'
+// import QuestionTemplate from 'src/components/Learning/QuestionTemplate.vue'
+// import QuestionItem from 'src/components/Learning/QuestionItem.vue'
 import { useLearningStore } from 'src/stores/learning'
 import { llmService } from 'src/services/llm'
 
 export default defineComponent({
   name: 'QuizPage',
-  components: { DefaultNavbar, DefaultSidebar, ProgressBar, QuestionTemplate, QuestionItem },
+  components: { DefaultNavbar, DefaultSidebar, ProgressBar },
   setup() {
     const store = useLearningStore()
     const questions = ref([])
@@ -61,6 +61,7 @@ export default defineComponent({
     })
 
     return {
+      store,
       questions,
       loading,
     }

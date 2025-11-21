@@ -1,42 +1,42 @@
 <template>
   <div class="sidenav-wrapper">
-    <router-link to="/" exact>
+    <router-link to="/learning" exact>
       <div class="sidenav-btn" title="Notes">
         <img src="/awsLogo.png" />
       </div>
     </router-link>
-    <router-link to="/search">
+    <router-link to="/learning/search">
       <div class="sidenav-btn" title="Search Notes">
         <q-icon name="fas fa-search" />
       </div>
     </router-link>
-    <router-link to="/topics">
+    <router-link to="/learning/topics">
       <div class="sidenav-btn" title="Topic Breakdown">
         <q-icon name="fas fa-rectangle-list" />
       </div>
     </router-link>
-    <router-link to="/quiz">
+    <router-link to="/learning/quiz">
       <div class="sidenav-btn" title="Quiz">
         <q-icon name="fas fa-list-check" />
       </div>
     </router-link>
-    <router-link to="/flashcards">
+    <router-link to="/learning/flashcards">
       <div class="sidenav-btn" title="Flashcards">
         <q-icon name="fas fa-layer-group" />
       </div>
     </router-link>
-    <router-link to="/analytics">
+    <router-link to="/learning/analytics">
       <div class="sidenav-btn" title="Analytics">
         <q-icon name="fas fa-chart-pie" />
       </div>
     </router-link>
-    <router-link to="/graph">
+    <router-link to="/learning/graph">
       <div class="sidenav-btn" title="Graph View">
         <q-icon name="fas fa-diagram-project" />
       </div>
     </router-link>
     <div class="side-filler"></div>
-    <router-link to="/settings">
+    <router-link to="/learning/settings">
       <div class="sidenav-btn" title="Settings">
         <q-icon name="fas fa-cog" />
       </div>

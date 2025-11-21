@@ -82,11 +82,11 @@ A number is a mathematical object used to count, measure, and label.
     })
   },
 
-  async generateQuizQuestion(topic, difficulty) {
-    // ...
-  },
+  // async generateQuizQuestion(topic, difficulty) {
+  //   // ...
+  // },
 
-  async chat(context, message) {
-    // ...
-  },
+  // async chat(context, message) {
+  //   // ...
+  // },
 }
