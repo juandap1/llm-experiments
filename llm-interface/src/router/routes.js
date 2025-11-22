@@ -22,7 +22,7 @@ const routes = [
       { path: 'chat', component: () => import('pages/Learning/ChatPage.vue') },
       { path: 'search', component: () => import('pages/Learning/IndexPage.vue') }, // Placeholder
       { path: 'flashcards', component: () => import('pages/Learning/IndexPage.vue') }, // Placeholder
-      { path: 'graph', component: () => import('pages/Learning/IndexPage.vue') }, // Placeholder
+      { path: 'graph', component: () => import('pages/Learning/GraphPage.vue') }, // Placeholder
       { path: 'settings', component: () => import('pages/Learning/IndexPage.vue') }, // Placeholder
     ],
   },

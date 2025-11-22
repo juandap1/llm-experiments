@@ -100,4 +100,9 @@ A number is a mathematical object used to count, measure, and label.
     const response = await api.post('/curriculum', json)
     return response.data
   },
+
+  async getGraphData() {
+    const response = await api.get('/curriculum/graph')
+    return response.data
+  },
 }

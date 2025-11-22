@@ -13,6 +13,7 @@ import ollama
 from clients.sql_server import MySQLClient
 from clients.qdrant_server import QdrantServerClient
 from batch_analyzer import BatchAnalyzer
+from clients.neo4j_client import Neo4jClient
 
 app = FastAPI()
 
@@ -43,6 +44,7 @@ stock_token = os.getenv("ALPHAVANTAGE_TOKEN")
 client = ollama.Client(host='http://ollama:11434')
 vector_db = QdrantServerClient(host="qdrant")
 analyzer = BatchAnalyzer(vector_db, client)
+neo4j_client = Neo4jClient()
 
 # Dependency
 def get_db():
@@ -388,6 +390,15 @@ def save_curriculum(curriculum: dict):
         return {"message": "Curriculum saved successfully"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/curriculum/graph")
+def get_curriculum_graph():
+    try:
+        graph = neo4j_client.get_graph_data()
+        return graph
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 
 if __name__ == "__main__":
     import uvicorn
