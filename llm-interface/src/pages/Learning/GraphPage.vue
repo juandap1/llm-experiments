@@ -67,13 +67,25 @@ export default defineComponent({
       Course: '#aaaaaa',
     }
 
+    const nodeSizes = {
+      Course: 40,
+      Unit: 30,
+      Concept: 20,
+      Rule: 15,
+      Skill: 10,
+      Unknown: 10,
+    }
+
     const nodesObject = computed(() => {
       const obj = {}
       nodes.value.forEach((n) => {
         const label = n.labels && n.labels.length > 0 ? n.labels[0] : 'Unknown'
+        // Handle the case where 'Unknown' might be used if label is not found in nodeColors
+        // But here we want to map label to color/size directly
         obj[n.id] = {
           name: n.properties.name || n.id,
-          color: nodeColors[label] || nodeColors.Unknown,
+          color: nodeColors[label] || nodeColors.Course, // Default to Course color if unknown
+          radius: nodeSizes[label] || nodeSizes.Unknown,
           ...n.properties,
         }
       })
@@ -99,7 +111,7 @@ export default defineComponent({
       node: {
         normal: {
           type: 'circle',
-          radius: 20,
+          radius: (node) => node.radius,
           color: (node) => node.color,
         },
         label: {
@@ -155,7 +167,15 @@ export default defineComponent({
 
         // Run d3 simulation
         if (nodes.value.length > 0) {
-          const simulationNodes = nodes.value.map((n) => ({ id: n.id, ...initialLayouts[n.id] }))
+          // Map nodes to include radius for collision detection
+          const simulationNodes = nodes.value.map((n) => {
+            const label = n.labels && n.labels.length > 0 ? n.labels[0] : 'Unknown'
+            return {
+              id: n.id,
+              radius: nodeSizes[label] || nodeSizes.Unknown,
+              ...initialLayouts[n.id],
+            }
+          })
           const simulationEdges = edges.value.map((e) => ({ source: e.source, target: e.target }))
 
           d3.forceSimulation(simulationNodes)
@@ -168,7 +188,10 @@ export default defineComponent({
             ) // Increased distance
             .force('charge', d3.forceManyBody().strength(-3000)) // Increased repulsion
             .force('center', d3.forceCenter(0, 0))
-            .force('collide', d3.forceCollide(50)) // Prevent overlap
+            .force(
+              'collide',
+              d3.forceCollide((d) => d.radius + 10),
+            ) // Dynamic collision radius with padding
             .on('tick', () => {
               const newLayouts = {}
               simulationNodes.forEach((n) => {
