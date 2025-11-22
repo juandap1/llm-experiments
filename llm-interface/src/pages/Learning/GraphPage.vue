@@ -1,10 +1,5 @@
 <template>
   <div class="graph-page">
-    <div class="header-row">
-      <div class="text-h4">Curriculum Graph</div>
-      <q-btn flat icon="refresh" @click="loadGraph" :loading="loading" color="white" />
-    </div>
-
     <div v-if="loading" class="loading-container">
       <q-spinner size="50px" color="secondary" />
     </div>
@@ -17,6 +12,7 @@
         :edges="edgesObject"
         :layouts="layouts"
         :configs="configs"
+        :event-handlers="eventHandlers"
       >
         <template #edge-label="{ edge, ...slotProps }">
           <v-edge-label
@@ -36,6 +32,53 @@
           <span class="label-text">{{ label }}</span>
         </div>
       </div>
+
+      <!-- Node Preview Card -->
+      <transition name="fade">
+        <div v-if="selectedNode" class="node-preview">
+          <div class="preview-header">
+            <span class="preview-title">{{ selectedNode.name }}</span>
+            <q-btn flat round icon="close" size="xs" @click="selectedNode = null" />
+          </div>
+          <div class="preview-body">
+            <div class="preview-row">
+              <span class="label">Type:</span>
+              <span class="value" :style="{ color: selectedNode.color }">{{
+                selectedNode.labels ? selectedNode.labels[0] : 'Unknown'
+              }}</span>
+            </div>
+            <div v-for="(value, key) in selectedNode" :key="key">
+              <div
+                v-if="!['name', 'color', 'radius', 'labels', 'id', 'x', 'y'].includes(key)"
+                class="preview-row"
+              >
+                <span class="label">{{ key }}:</span>
+                <span class="value">{{ value }}</span>
+              </div>
+            </div>
+
+            <!-- Relationships Section -->
+            <div v-if="selectedNodeRelationships.length > 0" class="relationships-section">
+              <div class="section-title">Relationships</div>
+              <div class="relationship-list">
+                <div
+                  v-for="(rel, index) in selectedNodeRelationships"
+                  :key="index"
+                  class="relationship-item"
+                >
+                  <span class="rel-direction" :class="rel.direction.toLowerCase()">{{
+                    rel.direction === 'Outgoing' ? '→' : '←'
+                  }}</span>
+                  <span class="rel-type">{{ rel.type }}</span>
+                  <span class="rel-target" :style="{ color: rel.otherNodeColor }">{{
+                    rel.otherNodeName
+                  }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </transition>
     </div>
   </div>
 </template>
@@ -58,6 +101,7 @@ export default defineComponent({
     const nodes = ref([])
     const edges = ref([])
     const layouts = ref({ nodes: {} })
+    const selectedNode = ref(null)
 
     const nodeColors = {
       Unit: '#ff7f50', // Coral
@@ -80,12 +124,12 @@ export default defineComponent({
       const obj = {}
       nodes.value.forEach((n) => {
         const label = n.labels && n.labels.length > 0 ? n.labels[0] : 'Unknown'
-        // Handle the case where 'Unknown' might be used if label is not found in nodeColors
-        // But here we want to map label to color/size directly
         obj[n.id] = {
+          id: n.id,
           name: n.properties.name || n.id,
-          color: nodeColors[label] || nodeColors.Course, // Default to Course color if unknown
+          color: nodeColors[label] || nodeColors.Course,
           radius: nodeSizes[label] || nodeSizes.Unknown,
+          labels: n.labels,
           ...n.properties,
         }
       })
@@ -104,6 +148,15 @@ export default defineComponent({
       return obj
     })
 
+    const eventHandlers = {
+      'node:click': ({ node }) => {
+        selectedNode.value = nodesObject.value[node]
+      },
+      'view:click': () => {
+        selectedNode.value = null
+      },
+    }
+
     const configs = ref({
       view: {
         autoPanAndZoomOnLoad: 'fit-content',
@@ -113,6 +166,11 @@ export default defineComponent({
           type: 'circle',
           radius: (node) => node.radius,
           color: (node) => node.color,
+        },
+        hover: {
+          radius: (node) => node.radius + 2,
+          strokeWidth: 2,
+          strokeColor: '#ffffff',
         },
         label: {
           visible: true,
@@ -176,7 +234,10 @@ export default defineComponent({
               ...initialLayouts[n.id],
             }
           })
-          const simulationEdges = edges.value.map((e) => ({ source: e.source, target: e.target }))
+          const simulationEdges = edges.value.map((e) => ({
+            source: e.source,
+            target: e.target,
+          }))
 
           d3.forceSimulation(simulationNodes)
             .force(
@@ -211,6 +272,24 @@ export default defineComponent({
       loadGraph()
     })
 
+    const selectedNodeRelationships = computed(() => {
+      if (!selectedNode.value) return []
+      const nodeId = selectedNode.value.id
+      return edges.value
+        .filter((e) => e.source === nodeId || e.target === nodeId)
+        .map((e) => {
+          const isSource = e.source === nodeId
+          const otherNodeId = isSource ? e.target : e.source
+          const otherNode = nodesObject.value[otherNodeId]
+          return {
+            type: e.type,
+            direction: isSource ? 'Outgoing' : 'Incoming',
+            otherNodeName: otherNode ? otherNode.name : otherNodeId,
+            otherNodeColor: otherNode ? otherNode.color : '#888',
+          }
+        })
+    })
+
     return {
       loading,
       nodes,
@@ -221,6 +300,9 @@ export default defineComponent({
       layouts,
       loadGraph,
       nodeColors,
+      selectedNode,
+      selectedNodeRelationships,
+      eventHandlers,
     }
   },
 })
@@ -249,7 +331,7 @@ export default defineComponent({
   border-radius: 8px;
   overflow: hidden;
   background-color: #1e1e1e;
-  position: relative; /* For legend positioning */
+  position: relative; /* For legend and preview positioning */
 }
 
 .graph {
@@ -278,6 +360,7 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   gap: 8px;
+  z-index: 10;
 }
 
 .legend-item {
@@ -295,5 +378,121 @@ export default defineComponent({
 .label-text {
   font-size: 0.9em;
   color: #eee;
+}
+
+.node-preview {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 300px;
+  background-color: rgba(30, 30, 30, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 15px;
+  z-index: 20;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px);
+}
+
+.preview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 8px;
+}
+
+.preview-title {
+  font-size: 1.1em;
+  font-weight: bold;
+  color: #fff;
+}
+
+.preview-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.preview-row {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.preview-row .label {
+  font-size: 0.8em;
+  color: #888;
+  text-transform: uppercase;
+}
+
+.preview-row .value {
+  font-size: 0.95em;
+  color: #ddd;
+  word-break: break-word;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.relationships-section {
+  margin-top: 15px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 10px;
+}
+
+.section-title {
+  font-size: 0.9em;
+  font-weight: bold;
+  color: #aaa;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.relationship-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+.relationship-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9em;
+}
+
+.rel-direction {
+  font-weight: bold;
+  color: #888;
+}
+
+.rel-direction.outgoing {
+  color: #ff7f50;
+}
+
+.rel-direction.incoming {
+  color: #87cefa;
+}
+
+.rel-type {
+  color: #bbb;
+  font-style: italic;
+  font-size: 0.85em;
+}
+
+.rel-target {
+  color: #eee;
+  font-weight: 500;
 }
 </style>
