@@ -60,7 +60,7 @@
             <!-- Relationships Section -->
             <div v-if="selectedNodeRelationships.length > 0" class="relationships-section">
               <div class="section-title">Relationships</div>
-              <div class="relationship-list">
+              <q-scroll-area class="relationship-list" dark>
                 <div
                   v-for="(rel, index) in selectedNodeRelationships"
                   :key="index"
@@ -74,7 +74,7 @@
                     rel.otherNodeName
                   }}</span>
                 </div>
-              </div>
+              </q-scroll-area>
             </div>
           </div>
         </div>
@@ -461,8 +461,7 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   gap: 6px;
-  max-height: 150px;
-  overflow-y: auto;
+  height: 150px;
 }
 
 .relationship-item {
