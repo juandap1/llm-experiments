@@ -32,6 +32,7 @@ export const useStore = defineStore('counter', {
 
           while (shares_to_sell > 0 && lots.length > 0) {
             // FIFO: Always take from the FIRST lot (lots[0])
+            if (lots.length == 0) break
             const first_lot = lots[0]
 
             if (first_lot.shares > shares_to_sell) {
@@ -46,6 +47,9 @@ export const useStore = defineStore('counter', {
               lots.shift()
             }
           }
+          if (lots.length == 1 && lots[0].shares * lots[0].cost_per_share < 1) lots.shift()
+          // No longer holding this stock
+          if (lots.length == 0) delete acc[item.ticker]
         }
 
         return acc
@@ -89,7 +93,7 @@ export const useStore = defineStore('counter', {
           tickers,
         })
         .then((response) => {
-          console.log(response.data)
+          // console.log(response.data)
           Object.assign(this._loadedInfo, response.data)
         })
         .catch((error) => {
