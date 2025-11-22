@@ -63,9 +63,7 @@ import { defineComponent, ref, onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useLearningStore } from 'src/stores/learning'
 import { llmService } from 'src/services/llm'
-import { marked } from 'marked' // Assuming marked is available or we need to install it.
-// If marked is not installed, we might need to use a simple text display or install it.
-// For now, I'll assume we might need to handle markdown rendering.
+// import { marked } from 'marked'
 
 export default defineComponent({
   name: 'LessonPage',

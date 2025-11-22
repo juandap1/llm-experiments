@@ -1,0 +1,310 @@
+{
+  "units_content": [
+    {
+      "unit": "Limits and Foundations",
+      "order": 0,
+      "data": {
+        "concepts": [
+          {
+            "name": "Introduction to Limits",
+            "rules": [
+              {
+                "name": "Limit Definition (\u03b5-\u03b4 definition)",
+                "skills": [
+                  {
+                    "name": "Understanding \u03b5 and \u03b4",
+                    "description": "Define \u03b5 (epsilon) as a small positive number representing a desired level of accuracy. Define \u03b4 as a small positive number ensuring the function f(x) is within \u03b5 of the limit L when x is near c."
+                  },
+                  {
+                    "name": "Formal Limit Definition",
+                    "description": "For a limit to exist, for every \u03b5 > 0, there must exist a \u03b4 > 0 such that if 0 < |x - c| < \u03b4, then |f(x) - L| < \u03b5."
+                  }
+                ]
+              },
+              {
+                "name": "Graphical Interpretation of Limits",
+                "skills": [
+                  {
+                    "name": "Reading Graphs",
+                    "description": "Analyze graphs of functions to determine the value of a limit as x approaches a specific value."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Limit Laws",
+            "rules": [
+              {
+                "name": "Constant Rule",
+                "skills": [
+                  {
+                    "name": "Applying the Constant Rule",
+                    "description": "The limit of a constant is the constant itself.  If f(x) = c, then lim (x\u2192c) f(x) = c."
+                  }
+                ]
+              },
+              {
+                "name": "Power Rule",
+                "skills": [
+                  {
+                    "name": "Applying the Power Rule",
+                    "description": "The limit of x^n as x\u2192c is c^n, provided the function is continuous at x=c.  For example, lim (x\u21922) x^2 = 2^2 = 4."
+                  }
+                ]
+              },
+              {
+                "name": "Product Rule for Limits",
+                "skills": [
+                  {
+                    "name": "Calculating Limits of Products",
+                    "description": "If lim (x\u2192c) f(x) and lim (x\u2192c) g(x) exist, then lim (x\u2192c) [f(x)g(x)] = [lim (x\u2192c) f(x)] * [lim (x\u2192c) g(x)]."
+                  }
+                ]
+              },
+              {
+                "name": "Quotient Rule for Limits",
+                "skills": [
+                  {
+                    "name": "Calculating Limits of Quotients",
+                    "description": "If lim (x\u2192c) f(x) and lim (x\u2192c) g(x) exist and g(c) \u2260 0, then lim (x\u2192c) [f(x)/g(x)] = [lim (x\u2192c) f(x)] / [lim (x\u2192c) g(x)]."
+                  }
+                ]
+              },
+              {
+                "name": "Sum and Difference Rules for Limits",
+                "skills": [
+                  {
+                    "name": "Applying Sum and Difference Rules",
+                    "description": "The limit of a sum or difference of functions is the sum or difference of their limits.  lim (x\u2192c) [f(x) \u00b1 g(x)] = [lim (x\u2192c) f(x)] \u00b1 [lim (x\u2192c) g(x)]."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "One-Sided Limits",
+            "rules": [
+              {
+                "name": "Definition of One-Sided Limits",
+                "skills": [
+                  {
+                    "name": "Understanding One-Sided Limits",
+                    "description": "Left-hand limit: lim (x\u2192c\u207b) f(x) (approaching c from the left). Right-hand limit: lim (x\u2192c\u207a) f(x) (approaching c from the right)."
+                  },
+                  {
+                    "name": "Checking for Existence of Limit",
+                    "description": "A limit exists if and only if the left-hand limit and the right-hand limit exist and are equal."
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "unit": "Differentiation Rules and Techniques",
+      "order": 1,
+      "data": {
+        "concepts": [
+          {
+            "name": "The Limit Definition",
+            "rules": [
+              {
+                "name": "Limit Definition (\u03b5-\u03b4)",
+                "skills": [
+                  {
+                    "name": "Understanding the \u03b5-\u03b4 definition of a limit.",
+                    "description": "This is the fundamental definition of a limit.  It states that for every \u03b5 > 0, there exists a \u03b4 > 0 such that if 0 < |x - c| < \u03b4, then |f(x) - L| < \u03b5.  Focus on interpreting the meaning of each component of the definition."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "The Power Rule of Differentiation",
+            "rules": [
+              {
+                "name": "Power Rule",
+                "skills": [
+                  {
+                    "name": "Differentiating x^n (where n is a real number)",
+                    "description": "If f(x) = x^n, then f'(x) = n * x^(n-1).  This is a fundamental rule and will be used extensively.  Practice applying this rule with various exponents."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Constant Rule",
+            "rules": [
+              {
+                "name": "Constant Rule",
+                "skills": [
+                  {
+                    "name": "Differentiating a constant",
+                    "description": "If f(x) = c (where c is a constant), then f'(x) = 0.  This represents the rate of change of a constant function is zero."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "The Constant Multiple Rule",
+            "rules": [
+              {
+                "name": "Constant Multiple Rule",
+                "skills": [
+                  {
+                    "name": "Differentiating a constant multiplied by a function",
+                    "description": "If f(x) = c * g(x), then f'(x) = c * g'(x).  This rule simplifies differentiation of functions that are constant multiples of other functions."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "The Sum and Difference Rule",
+            "rules": [
+              {
+                "name": "Sum and Difference Rule",
+                "skills": [
+                  {
+                    "name": "Differentiating the sum or difference of two functions",
+                    "description": "If f(x) = u(x) \u00b1 v(x), then f'(x) = u'(x) \u00b1 v'(x).  Apply this rule when differentiating expressions with additions or subtractions."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "The Product Rule",
+            "rules": [
+              {
+                "name": "Product Rule",
+                "skills": [
+                  {
+                    "name": "Differentiating the product of two functions",
+                    "description": "If f(x) = u(x) * v(x), then f'(x) = u'(x) * v(x) + u(x) * v'(x).  This is crucial for differentiating products of functions."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "The Quotient Rule",
+            "rules": [
+              {
+                "name": "Quotient Rule",
+                "skills": [
+                  {
+                    "name": "Differentiating the quotient of two functions",
+                    "description": "If f(x) = u(x) / v(x), then f'(x) = [u'(x) * v(x) - u(x) * v'(x)] / [v(x)]\u00b2.  Practice applying this rule carefully."
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "source": "Understanding \u03b5 and \u03b4",
+      "target": "Formal Limit Definition",
+      "reason": "The formal limit definition relies on a solid understanding of \u03b5 (delta) and \u03b4 (epsilon) for precise definition of convergence."
+    },
+    {
+      "source": "Formal Limit Definition",
+      "target": "Calculating Limits of Products",
+      "reason": "Calculating limits of products requires applying the limit definition involving multiplication."
+    },
+    {
+      "source": "Formal Limit Definition",
+      "target": "Calculating Limits of Quotients",
+      "reason": "Calculating limits of quotients requires applying the limit definition involving division."
+    },
+    {
+      "source": "Formal Limit Definition",
+      "target": "Calculating Limits of Products",
+      "reason": "Calculating limits of quotients requires applying the limit definition involving division."
+    },
+    {
+      "source": "Formal Limit Definition",
+      "target": "Checking for Existence of Limit",
+      "reason": "Determining the existence of a limit requires applying the limit definition to examine the behavior of the function as the variable approaches the specified value."
+    },
+    {
+      "source": "Understanding One-Sided Limits",
+      "target": "Checking for Existence of Limit",
+      "reason": "Checking for the existence of a limit requires examining both one-sided limits."
+    },
+    {
+      "source": "Applying the Constant Rule",
+      "target": "Calculating Limits of Products",
+      "reason": "The Constant Rule is a fundamental rule used in calculating limits of products."
+    },
+    {
+      "source": "Applying the Constant Rule",
+      "target": "Calculating Limits of Quotients",
+      "reason": "The Constant Rule is a fundamental rule used in calculating limits of quotients."
+    },
+    {
+      "source": "Applying the Power Rule",
+      "target": "Calculating Limits of Products",
+      "reason": "The Power Rule is a fundamental rule used in calculating limits of products."
+    },
+    {
+      "source": "Applying the Power Rule",
+      "target": "Calculating Limits of Quotients",
+      "reason": "The Power Rule is a fundamental rule used in calculating limits of quotients."
+    },
+    {
+      "source": "Applying the Power Rule",
+      "target": "Calculating Limits of Products",
+      "reason": "The Power Rule is a fundamental rule used in calculating limits of products."
+    },
+    {
+      "source": "Differentiating x^n (where n is a real number)",
+      "target": "Calculating Limits of Products",
+      "reason": "Applying the power rule of differentiation involves limits."
+    },
+    {
+      "source": "Differentiating x^n (where n is a real number)",
+      "target": "Calculating Limits of Quotients",
+      "reason": "Applying the power rule of differentiation involves limits."
+    },
+    {
+      "source": "Differentiating a constant",
+      "target": "Calculating Limits of Products",
+      "reason": "The derivative of a constant is zero, used within the limit product calculation."
+    },
+    {
+      "source": "Differentiating a constant multiplied by a function",
+      "target": "Calculating Limits of Products",
+      "reason": "Applying the constant derivative rule when calculating limits of products."
+    },
+    {
+      "source": "Differentiating the sum or difference of two functions",
+      "target": "Calculating Limits of Products",
+      "reason": "Calculating the limit of the sum/difference of functions within a product limit."
+    },
+    {
+      "source": "Differentiating the product of two functions",
+      "target": "Calculating Limits of Products",
+      "reason": "Applying the product rule of differentiation."
+    },
+    {
+      "source": "Differentiating the quotient of two functions",
+      "target": "Calculating Limits of Products",
+      "reason": "The quotient rule of differentiation utilizes limits."
+    },
+    {
+      "source": "Formal Limit Definition",
+      "target": "Understanding the \u03b5-\u03b4 definition of a limit.",
+      "reason": "The \u03b5-\u03b4 definition relies on the formal limit definition."
+    }
+  ]
+}

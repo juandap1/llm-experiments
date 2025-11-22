@@ -1,4 +1,5 @@
 // src/services/llm.js
+import { api } from 'src/boot/axios'
 
 // This service abstracts the LLM calls.
 // In a real implementation, this would call an API (OpenAI, Gemini, etc.)
@@ -89,4 +90,14 @@ A number is a mathematical object used to count, measure, and label.
   // async chat(context, message) {
   //   // ...
   // },
+
+  async getCurriculumJson() {
+    const response = await api.get('/curriculum')
+    return response.data
+  },
+
+  async saveCurriculumJson(json) {
+    const response = await api.post('/curriculum', json)
+    return response.data
+  },
 }

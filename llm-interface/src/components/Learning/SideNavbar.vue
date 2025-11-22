@@ -15,6 +15,11 @@
         <q-icon name="fas fa-rectangle-list" />
       </div>
     </router-link>
+    <router-link to="/learning/curriculum">
+      <div class="sidenav-btn" title="Curriculum JSON">
+        <q-icon name="fas fa-file-code" />
+      </div>
+    </router-link>
     <router-link to="/learning/quiz">
       <div class="sidenav-btn" title="Quiz">
         <q-icon name="fas fa-list-check" />

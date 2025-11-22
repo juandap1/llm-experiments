@@ -13,6 +13,7 @@ const routes = [
     component: () => import('layouts/LearningLayout.vue'),
     children: [
       { path: '', component: () => import('pages/Learning/IndexPage.vue') },
+      { path: 'curriculum', component: () => import('pages/Learning/CurriculumPage.vue') },
       { path: 'topics', component: () => import('pages/Learning/TopicsPage.vue') },
       { path: 'lesson/:topicId', component: () => import('pages/Learning/LessonPage.vue') },
       { path: 'quiz', component: () => import('pages/Learning/QuizPage.vue') },

@@ -374,6 +374,21 @@ def get_stock_analysis(ticker: str = "", company: str = "", db: MySQLClient = De
         print(f"❌ An unexpected error occurred for getting analysis for {ticker}: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
+@app.get("/curriculum")
+def get_curriculum():
+    with open("sample-2-unit-curriculum.json", 'r') as f:
+        curriculum = json.load(f)
+    return curriculum
+
+@app.post("/curriculum")
+def save_curriculum(curriculum: dict):
+    try:
+        with open("src/sample-2-unit-curriculum.json", 'w') as f:
+            json.dump(curriculum, f, indent=2)
+        return {"message": "Curriculum saved successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=5000)
