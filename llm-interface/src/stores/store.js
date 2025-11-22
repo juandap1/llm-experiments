@@ -89,7 +89,7 @@ export const useStore = defineStore('counter', {
           tickers,
         })
         .then((response) => {
-          // console.log(response.data)
+          console.log(response.data)
           Object.assign(this._loadedInfo, response.data)
         })
         .catch((error) => {

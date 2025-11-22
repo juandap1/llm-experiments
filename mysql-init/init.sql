@@ -20,7 +20,8 @@ CREATE TABLE IF NOT EXISTS tickers(
     analysis MEDIUMTEXT,
     analysis_updated DATE,
     latest_price FLOAT,
-    latest_date DATE
+    latest_date DATE,
+    is_etf BOOLEAN
 );
 
 CREATE TABLE IF NOT EXISTS price_history(

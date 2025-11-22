@@ -4,7 +4,7 @@ services:
   api:
     build: .
     container_name: api_server
-    command: sh -c "sleep 5 && cd src && uvicorn server:app --host=0.0.0.0 --port=3141"
+    command: sh -c "sleep 5 && cd src && uvicorn server:app --reload --host=0.0.0.0 --port=3141"
     environment:
       - LOGO_DEV_TOKEN=${LOGO_DEV_TOKEN}
     ports:

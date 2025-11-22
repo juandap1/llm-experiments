@@ -19,7 +19,13 @@ app = FastAPI()
 # CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Adjust this in production
+    allow_origins=[
+        "http://localhost:9000",
+        "http://127.0.0.1:9000",
+        "http://localhost:8080",
+        "http://127.0.0.1:8080",
+        "http://localhost:3000",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -59,7 +65,7 @@ class BatchStockRequest(BaseModel):
 
 @app.get("/")
 def hello_world():
-    return Response(content="<p>HOT RELOAD 2!</p>", media_type="text/html")
+    return Response(content="<p>HOT RELOAD 4!</p>", media_type="text/html")
 
 @app.get("/transactions")
 def sql(db: MySQLClient = Depends(get_db)):
@@ -85,7 +91,7 @@ def add_transaction(transaction: TransactionCreate, db: MySQLClient = Depends(ge
 def get_stock_info(ticker: str, db: MySQLClient = Depends(get_db)):
     ticker = ticker.upper()
     try:
-        row = db.fetch_one("SELECT ticker, name, description, latest_price, sector, industry, analysis FROM tickers WHERE ticker = %s", (ticker,))
+        row = db.fetch_one("SELECT ticker, name, description, latest_price, sector, industry, analysis, is_etf FROM tickers WHERE ticker = %s", (ticker,))
         
         if row and row["name"] and row["latest_price"]:
             return {
@@ -95,7 +101,8 @@ def get_stock_info(ticker: str, db: MySQLClient = Depends(get_db)):
                 "latest_price": row["latest_price"],
                 "sector": row["sector"],
                 "industry": row["industry"],
-                "analysis": row["analysis"]
+                "analysis": row["analysis"],
+                "is_etf": row["is_etf"]
             }
         else:
             latest_price = row["latest_price"] if row else None

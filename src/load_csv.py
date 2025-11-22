@@ -61,3 +61,11 @@ df.to_sql("transactions", engine, if_exists="append", index=False)
 #         f.write(line + "\n")
 
 # print("Cleaned CSV written to:", output_path)
+
+
+### MARK ETFS IN TABLE ###
+# SET SQL_SAFE_UPDATES = 0;
+
+# UPDATE tickers
+# SET is_etf = 1
+# WHERE UPPER(ticker) IN ('SCHD', 'VOO', 'QQQM', 'FDVV', 'SPMO');
