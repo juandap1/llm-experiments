@@ -11,7 +11,7 @@ def clean_money(x):
     x = x.replace(",", "")
     return float(x)
 
-df = pd.read_csv("csv/cleaned.csv", quotechar='"', escapechar='\\', engine="python")
+df = pd.read_csv("csv/cleaned_etfs.csv", quotechar='"', escapechar='\\', engine="python")
 df = df[df["Trans Code"].isin(["Buy", "Sell"])]
 df["Activity Date"] = pd.to_datetime(df["Activity Date"], format="%m/%d/%Y")
 
@@ -35,8 +35,8 @@ engine = create_engine("mysql+pymysql://my_user:my_password@localhost/my_databas
 
 df.to_sql("transactions", engine, if_exists="append", index=False)
 
-# input_path = "csv/f680dbd8-35d3-51d0-b120-96d5f01943cd.csv"
-# output_path = "csv/cleaned.csv"
+# input_path = "csv/65633315-02fa-5ce1-bfc5-52777a202ae3.csv"
+# output_path = "csv/cleaned_etfs.csv"
 
 # cleaned_lines = []
 # buffer = ""
