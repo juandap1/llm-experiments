@@ -7,6 +7,7 @@ __pycache__/
 .cache/
 background_video.mp4
 qdrant_storage/
+neo4j_data/
 
 .env
 .DS_Store
