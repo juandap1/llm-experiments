@@ -13,6 +13,20 @@
       <div class="sidebar-header">
         <div class="logo">Thrive</div>
       </div>
+      <div class="sidebar-content">
+        <router-link to="/stocks" active-class="active">
+          <div class="sidebar-item"><q-icon name="mdi-home" /> My Dashboard</div>
+        </router-link>
+        <router-link to="/stocks/assets" active-class="active">
+          <div class="sidebar-item"><q-icon name="mdi-bank" /> My Assets</div>
+        </router-link>
+        <router-link to="/stocks/news" active-class="active">
+          <div class="sidebar-item"><q-icon name="mdi-newspaper" /> News/Media</div>
+        </router-link>
+        <router-link to="/stocks/history" active-class="active">
+          <div class="sidebar-item"><q-icon name="mdi-history" /> History</div>
+        </router-link>
+      </div>
     </q-drawer>
 
     <q-page-container>
@@ -57,6 +71,32 @@ export default defineComponent({
     background: transparent;
     outline: none;
     border: none;
+    color: white;
+  }
+}
+
+.sidebar-content {
+  padding: 20px 5px;
+
+  .sidebar-item {
+    padding: 10px;
+    color: #ccc;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    border-radius: 5px;
+    font-weight: 500;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+  }
+
+  .active .sidebar-item {
+    background-color: rgba(255, 255, 255, 0.1);
     color: white;
   }
 }

@@ -219,8 +219,9 @@ def get_stock_info_batch(req: BatchStockRequest, db: MySQLClient = Depends(get_d
         if not row or not row["latest_price"]:
             need_price.append(t)
 
-        if not row or not row["name"] or not row["book_value"] and not row["is_etf"]:
-            need_overview.append(t)
+        if not row or not row["name"] or not row["book_value"]:
+            if not row["is_etf"]:
+                need_overview.append(t)
     print(need_overview)
     # --- 3. Fetch missing info concurrently ---
     async def fetch_missing():
@@ -326,6 +327,42 @@ def get_stock_info_batch(req: BatchStockRequest, db: MySQLClient = Depends(get_d
         }
 
     return final
+
+def get_dividend_history(ticker: str, db: MySQLClient = Depends(get_db)):
+    ticker = ticker.upper()
+    try:
+        history = db.fetch_all("""
+            SELECT declaration_date, amount 
+            FROM dividend_history 
+            WHERE ticker = %s 
+            ORDER BY declaration_date ASC
+        """, (ticker,)) # Pass as tuple
+        if history:
+            return history
+
+        url = f'https://www.alphavantage.co/query?function=DIVIDEND&symbol={ticker}&apikey={stock_token}'
+        r = requests.get(url)
+        data = r.json()
+        dividend_history = data.get("data", [])
+        records_to_insert = []
+        for d in dividend_history:
+            try:
+                record = (
+                    ticker,
+                    float(d['amount']), 
+                    float(d['declaration_date']), 
+                    float(d['ex_dividend_date']), 
+                    float(d['payment_date'])
+                )
+                records_to_insert.append(record)
+            except (KeyError, ValueError) as e:
+                print(f"Skipping record for {date_str}: {e}")
+                continue
+        if records_to_insert:
+            rows_inserted = db.insert_many_prices(ticker, records_to_insert)
+            print(f"✅ Successfully inserted {rows_inserted} price records for {ticker}.")
+    except Exception as e:
+        print(f"Failed to fetch dividend history for {ticker}: {e}")
 
 @app.get("/stock/history/{ticker}")
 def get_stock_history(ticker: str, db: MySQLClient = Depends(get_db)):

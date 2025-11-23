@@ -25,9 +25,9 @@ CREATE TABLE IF NOT EXISTS tickers(
     earnings_per_share FLOAT,
     revenue_per_share FLOAT,
     dividend_per_share FLOAT,
-    shares_outstanding FLOAT,
+    shares_outstanding BIGINT,
     analyst_target_price FLOAT,
-    ebitda FLOAT,
+    ebitda DOUBLE,
     is_etf BOOLEAN
 );
 
