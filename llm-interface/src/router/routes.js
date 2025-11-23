@@ -4,11 +4,14 @@ const routes = [
     component: () => import('layouts/MainLayout.vue'),
     children: [
       { path: '', component: () => import('pages/IndexPage.vue') },
-      { path: 'stocks', component: () => import('pages/StocksPage.vue') },
-      { path: 'stocks/assets', component: () => import('pages/StocksPage.vue') },
-      { path: 'stocks/news', component: () => import('pages/StocksPage.vue') },
-      { path: 'stocks/history', component: () => import('pages/StocksPage.vue') },
-      { path: 'stocks/ticker/:ticker', component: () => import('pages/IndividualStockPage.vue') },
+      { path: 'stocks', component: () => import('pages/Stocks/StocksPage.vue') },
+      { path: 'stocks/assets', component: () => import('pages/Stocks/StockAssetPage.vue') },
+      { path: 'stocks/news', component: () => import('pages/Stocks/StocksPage.vue') },
+      { path: 'stocks/history', component: () => import('pages/Stocks/StocksPage.vue') },
+      {
+        path: 'stocks/ticker/:ticker',
+        component: () => import('pages/Stocks/IndividualStockPage.vue'),
+      },
     ],
   },
   {

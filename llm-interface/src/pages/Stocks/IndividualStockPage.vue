@@ -35,9 +35,9 @@
 
 <script>
 import { defineComponent } from 'vue'
-import HistoryWidget from '../components/Stocks/HistoryWidget.vue'
+import HistoryWidget from 'src/components/Stocks/HistoryWidget.vue'
 import { useStore } from 'src/stores/store'
-import PriceChartWidget from '../components/Stocks/PriceChartWidget.vue'
+import PriceChartWidget from 'src/components/Stocks/PriceChartWidget.vue'
 
 export default defineComponent({
   name: 'IndividualStockPage',

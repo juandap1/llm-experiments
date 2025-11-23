@@ -87,6 +87,33 @@ def add_transaction(transaction: TransactionCreate, db: MySQLClient = Depends(ge
         print(f"❌ Error inserting transaction: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
+def clean_data_dictionary(data: dict) -> dict:
+    """
+    Iterates through ALL key-value pairs in the dictionary.
+    If a value is a string that represents missing data (e.g., 'None', 'N/A'),
+    it is converted to the Python None object.
+    """
+    cleaned_data = {}
+    for key, value in data.items():
+        if isinstance(value, str):
+            raw_value = value.strip()
+            
+            # Check for common missing value indicators (case-insensitive)
+            if raw_value.lower() in ("none", "null", "n/a", ""):
+                cleaned_data[key] = None  # Convert to the Python None object
+            else:
+                # OPTIONAL: Try to convert numeric-looking strings to float
+                # ONLY do this if you are sure ALL non-string columns should be floats
+                try:
+                    cleaned_data[key] = float(raw_value)
+                except ValueError:
+                    cleaned_data[key] = raw_value  # Keep as string if conversion fails
+        
+        else:
+            cleaned_data[key] = value # Keep non-string values as they are (e.g., int, None)
+            
+    return cleaned_data
+
 @app.get("/stock/{ticker}")
 def get_stock_info(ticker: str, db: MySQLClient = Depends(get_db)):
     ticker = ticker.upper()
@@ -222,7 +249,7 @@ def get_stock_info_batch(req: BatchStockRequest, db: MySQLClient = Depends(get_d
         if not row or not row["name"] or not row["book_value"]:
             if not row["is_etf"]:
                 need_overview.append(t)
-    print(need_overview)
+    # print(need_overview)
     # --- 3. Fetch missing info concurrently ---
     async def fetch_missing():
         tasks = []
@@ -258,7 +285,7 @@ def get_stock_info_batch(req: BatchStockRequest, db: MySQLClient = Depends(get_d
         if not data or "Note" in data:
             print(f"Failed to fetch {kind} for {ticker}: {data}")
             continue
-
+        data = clean_data_dictionary(data)
         if kind == "price" and "Global Quote" in data:
             price = data["Global Quote"].get("05. price")
             date = data["Global Quote"].get("07. latest trading day")
@@ -270,6 +297,7 @@ def get_stock_info_batch(req: BatchStockRequest, db: MySQLClient = Depends(get_d
                 rows_by_ticker[ticker]["latest_price"] = price
 
         elif kind == "overview" and "Name" in data:
+            # print(data)
             db.update_company_data(
                 ticker,
                 data["Name"],
