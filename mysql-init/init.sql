@@ -21,6 +21,13 @@ CREATE TABLE IF NOT EXISTS tickers(
     analysis_updated DATE,
     latest_price FLOAT,
     latest_date DATE,
+    book_value FLOAT,
+    earnings_per_share FLOAT,
+    revenue_per_share FLOAT,
+    dividend_per_share FLOAT,
+    shares_outstanding FLOAT,
+    analyst_target_price FLOAT,
+    ebitda FLOAT,
     is_etf BOOLEAN
 );
 
@@ -32,5 +39,15 @@ CREATE TABLE IF NOT EXISTS price_history(
     high FLOAT,
     low FLOAT,
     date DATE,
+    FOREIGN KEY (ticker) REFERENCES tickers(ticker)
+);
+
+CREATE TABLE IF NOT EXISTS dividend_history(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    ticker VARCHAR(100),
+    amount FLOAT,
+    declaration_date DATE,
+    ex_dividend_date DATE,
+    payment_date DATE,
     FOREIGN KEY (ticker) REFERENCES tickers(ticker)
 );

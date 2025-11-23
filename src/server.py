@@ -91,7 +91,7 @@ def add_transaction(transaction: TransactionCreate, db: MySQLClient = Depends(ge
 def get_stock_info(ticker: str, db: MySQLClient = Depends(get_db)):
     ticker = ticker.upper()
     try:
-        row = db.fetch_one("SELECT ticker, name, description, latest_price, sector, industry, analysis, is_etf FROM tickers WHERE ticker = %s", (ticker,))
+        row = db.fetch_one("SELECT * FROM tickers WHERE ticker = %s", (ticker,))
         
         if row and row["name"] and row["latest_price"]:
             return {
@@ -102,6 +102,12 @@ def get_stock_info(ticker: str, db: MySQLClient = Depends(get_db)):
                 "sector": row["sector"],
                 "industry": row["industry"],
                 "analysis": row["analysis"],
+                "book_value": row["book_value"],
+                "earnings_per_share": row["earnings_per_share"],
+                "revenue_per_share": row["revenue_per_share"],
+                "dividend_per_share": row["dividend_per_share"],
+                "shares_outstanding": row["shares_outstanding"],
+                "analyst_target_price": row["analyst_target_price"],
                 "is_etf": row["is_etf"]
             }
         else:
@@ -119,20 +125,28 @@ def get_stock_info(ticker: str, db: MySQLClient = Depends(get_db)):
                     # Fallback or error handling if price not found
                     pass 
 
-            if not row or not row["name"]:
+            if not row or not row["name"] or not row["earnings_per_share"]:
                 url = f'https://www.alphavantage.co/query?function=OVERVIEW&symbol={ticker}&apikey={stock_token}'
                 r = requests.get(url)
                 data = r.json()
                 # Check if data is valid
                 if "Name" in data:
-                    db.update_company_data(ticker, data["Name"], data["Description"], data["Sector"], data["Industry"])
+                    db.update_company_data(ticker, data["Name"], data["Description"], data["Sector"], data["Industry"], data["BookValue"], data["DilutedEPSTTM"], data["RevenuePerShareTTM"], data["DividendPerShare"], data["SharesOutstanding"], data["AnalystTargetPrice"], data["EBITDA"])
                     return {
                         "ticker": ticker,
                         "name": data["Name"],
                         "description": data["Description"],
                         "latest_price": latest_price,
                         "sector": data["Sector"],
-                        "industry": data["Industry"]
+                        "industry": data["Industry"],
+                        "analysis": row["analysis"],
+                        "book_value": data["BookValue"],
+                        "earnings_per_share": data["DilutedEPSTTM"],
+                        "revenue_per_share": data["RevenuePerShareTTM"],
+                        "dividend_per_share": data["DividendPerShare"],
+                        "shares_outstanding": data["SharesOutstanding"],
+                        "analyst_target_price": data["AnalystTargetPrice"],
+                        "ebitda": data["EBITDA"]
                     }
                 else:
                      # Return what we have if API fails
@@ -142,7 +156,15 @@ def get_stock_info(ticker: str, db: MySQLClient = Depends(get_db)):
                         "description": row["description"] if row else "",
                         "latest_price": latest_price,
                         "sector": row["sector"] if row else "",
-                        "industry": row["industry"] if row else ""
+                        "industry": row["industry"] if row else "",
+                        "analysis": row["analysis"] if row else "",
+                        "book_value": row["book_value"] if row else "",
+                        "earnings_per_share": row["earnings_per_share"] if row else "",
+                        "revenue_per_share": row["revenue_per_share"] if row else "",
+                        "dividend_per_share": row["dividend_per_share"] if row else "",
+                        "shares_outstanding": row["shares_outstanding"] if row else "",
+                        "analyst_target_price": row["analyst_target_price"] if row else "",
+                        "ebitda": row["ebitda"] if row else ""
                     }
             else:
                 return {
@@ -151,7 +173,15 @@ def get_stock_info(ticker: str, db: MySQLClient = Depends(get_db)):
                     "description": row["description"],
                     "latest_price": latest_price,
                     "sector": row["sector"],
-                    "industry": row["industry"]
+                    "industry": row["industry"],
+                    "analysis": row["analysis"],
+                    "book_value": row["book_value"],
+                    "earnings_per_share": row["earnings_per_share"],
+                    "revenue_per_share": row["revenue_per_share"],
+                    "dividend_per_share": row["dividend_per_share"],
+                    "shares_outstanding": row["shares_outstanding"],
+                    "analyst_target_price": row["analyst_target_price"],
+                    "ebitda": row["ebitda"]
                 }
     except Exception as e:
         print(f"Error pulling stock data: {e}")
@@ -170,8 +200,7 @@ def get_stock_info_batch(req: BatchStockRequest, db: MySQLClient = Depends(get_d
     # But assuming it handles the tuple correctly as per original code.
     rows = db.fetch_all(
         f"""
-        SELECT ticker, name, description, latest_price, latest_date,
-               sector, industry, analysis, is_etf
+        SELECT *
         FROM tickers
         WHERE ticker IN ({placeholders})
         """,
@@ -190,9 +219,9 @@ def get_stock_info_batch(req: BatchStockRequest, db: MySQLClient = Depends(get_d
         if not row or not row["latest_price"]:
             need_price.append(t)
 
-        if not row or not row["name"]:
+        if not row or not row["name"] or not row["book_value"] and not row["is_etf"]:
             need_overview.append(t)
-
+    print(need_overview)
     # --- 3. Fetch missing info concurrently ---
     async def fetch_missing():
         tasks = []
@@ -225,7 +254,8 @@ def get_stock_info_batch(req: BatchStockRequest, db: MySQLClient = Depends(get_d
 
     # --- 4. Write updates to DB & merge results ---
     for kind, ticker, data in results:
-        if not data:
+        if not data or "Note" in data:
+            print(f"Failed to fetch {kind} for {ticker}: {data}")
             continue
 
         if kind == "price" and "Global Quote" in data:
@@ -245,6 +275,13 @@ def get_stock_info_batch(req: BatchStockRequest, db: MySQLClient = Depends(get_d
                 data["Description"],
                 data["Sector"],
                 data["Industry"],
+                data["BookValue"],
+                data["DilutedEPSTTM"],
+                data["RevenuePerShareTTM"],
+                data["DividendPerShare"],
+                data["SharesOutstanding"],
+                data["AnalystTargetPrice"],
+                data["EBITDA"]
             )
             if ticker not in rows_by_ticker:
                 rows_by_ticker[ticker] = {"ticker": ticker}
@@ -252,7 +289,14 @@ def get_stock_info_batch(req: BatchStockRequest, db: MySQLClient = Depends(get_d
                 "name": data["Name"],
                 "description": data["Description"],
                 "sector": data["Sector"],
-                "industry": data["Industry"]
+                "industry": data["Industry"],
+                "book_value": data["BookValue"],
+                "earnings_per_share": data["DilutedEPSTTM"],
+                "revenue_per_share": data["RevenuePerShareTTM"],
+                "dividend_per_share": data["DividendPerShare"],
+                "shares_outstanding": data["SharesOutstanding"],
+                "analyst_target_price": data["AnalystTargetPrice"],
+                "ebitda": data["EBITDA"]
             })
 
     # --- 5. Build final response ---
@@ -271,6 +315,13 @@ def get_stock_info_batch(req: BatchStockRequest, db: MySQLClient = Depends(get_d
             "sector": row.get("sector", ""),
             "industry": row.get("industry", ""),
             "analysis": row.get("analysis", ""),
+            "book_value": row.get("book_value", -1),
+            "earnings_per_share": row.get("earnings_per_share", -1),
+            "revenue_per_share": row.get("revenue_per_share", -1),
+            "dividend_per_share": row.get("dividend_per_share", -1),
+            "shares_outstanding": row.get("shares_outstanding", -1),
+            "analyst_target_price": row.get("analyst_target_price", -1),
+            "ebitda": row.get("ebitda", -1),
             "is_etf": row.get("is_etf", 0)
         }
 

@@ -13,47 +13,50 @@ export const useStore = defineStore('counter', {
     loadedInfo: (state) => state._loadedInfo,
     history: (state) => state._history,
     holding_map: (state) =>
-      state.transactions?.reverse().reduce((acc, item) => {
-        if (acc[item.ticker] == null) {
-          acc[item.ticker] = [] // This will store an ordered list of 'lots'
-        }
-
-        // Handle BUYING (Adding a new lot)
-        if (item.buying) {
-          acc[item.ticker].push({
-            shares: item.share_count,
-            cost_per_share: item.share_price,
-          })
-        }
-        // Handle SELLING (Applying FIFO to remove lots)
-        else {
-          let shares_to_sell = item.share_count
-          const lots = acc[item.ticker]
-
-          while (shares_to_sell > 0 && lots.length > 0) {
-            // FIFO: Always take from the FIRST lot (lots[0])
-            if (lots.length == 0) break
-            const first_lot = lots[0]
-
-            if (first_lot.shares > shares_to_sell) {
-              // Case 1: The first lot has MORE shares than we are selling.
-              // Decrease the lot's shares and we're done with the sale.
-              first_lot.shares -= shares_to_sell
-              shares_to_sell = 0
-            } else {
-              // Case 2: The first lot has FEWER or EQUAL shares than we are selling.
-              // The entire lot is consumed (removed).
-              shares_to_sell -= first_lot.shares
-              lots.shift()
-            }
+      state.transactions
+        ?.slice()
+        .reverse()
+        .reduce((acc, item) => {
+          if (acc[item.ticker] == null) {
+            acc[item.ticker] = [] // This will store an ordered list of 'lots'
           }
-          if (lots.length == 1 && lots[0].shares * lots[0].cost_per_share < 1) lots.shift()
-          // No longer holding this stock
-          if (lots.length == 0) delete acc[item.ticker]
-        }
 
-        return acc
-      }, {}),
+          // Handle BUYING (Adding a new lot)
+          if (item.buying) {
+            acc[item.ticker].push({
+              shares: item.share_count,
+              cost_per_share: item.share_price,
+            })
+          }
+          // Handle SELLING (Applying FIFO to remove lots)
+          else {
+            let shares_to_sell = item.share_count
+            const lots = acc[item.ticker]
+
+            while (shares_to_sell > 0 && lots.length > 0) {
+              // FIFO: Always take from the FIRST lot (lots[0])
+              if (lots.length == 0) break
+              const first_lot = lots[0]
+
+              if (first_lot.shares > shares_to_sell) {
+                // Case 1: The first lot has MORE shares than we are selling.
+                // Decrease the lot's shares and we're done with the sale.
+                first_lot.shares -= shares_to_sell
+                shares_to_sell = 0
+              } else {
+                // Case 2: The first lot has FEWER or EQUAL shares than we are selling.
+                // The entire lot is consumed (removed).
+                shares_to_sell -= first_lot.shares
+                lots.shift()
+              }
+            }
+            if (lots.length == 1 && lots[0].shares * lots[0].cost_per_share < 1) lots.shift()
+            // No longer holding this stock
+            if (lots.length == 0) delete acc[item.ticker]
+          }
+
+          return acc
+        }, {}),
     currently_holding: (state) => {
       if (state.holding_map == null) return []
       return Object.keys(state.holding_map).filter((x) => state.holding_map[x].length != 0)
@@ -93,7 +96,7 @@ export const useStore = defineStore('counter', {
           tickers,
         })
         .then((response) => {
-          // console.log(response.data)
+          console.log(response.data)
           Object.assign(this._loadedInfo, response.data)
         })
         .catch((error) => {

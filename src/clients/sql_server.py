@@ -102,14 +102,14 @@ class MySQLClient:
             inserted_id = cursor.lastrowid
             return inserted_id
 
-    def update_company_data(self, ticker, name, description, sector, industry):
+    def update_company_data(self, ticker, name, description, sector, industry, book_value, earnings_per_share, revenue_per_share, dividend_per_share, shares_outstanding, analyst_target_price, ebitda):
         self.ensure_connected()
         with self.connection.cursor() as cursor:
             sql = """
-                INSERT INTO tickers (ticker, name, description, sector, industry) VALUES (%s, %s, %s, %s, %s)
-                ON DUPLICATE KEY UPDATE name=%s, description=%s, sector=%s, industry=%s
+                INSERT INTO tickers (ticker, name, description, sector, industry, book_value, earnings_per_share, revenue_per_share, dividend_per_share, shares_outstanding, analyst_target_price, ebitda) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                ON DUPLICATE KEY UPDATE name=%s, description=%s, sector=%s, industry=%s, book_value=%s, earnings_per_share=%s, revenue_per_share=%s, dividend_per_share=%s, shares_outstanding=%s, analyst_target_price=%s, ebitda=%s
             """
-            cursor.execute(sql, (ticker, name, description, sector, industry, name, description, sector, industry)) 
+            cursor.execute(sql, (ticker, name, description, sector, industry, book_value, earnings_per_share, revenue_per_share, dividend_per_share, shares_outstanding, analyst_target_price, ebitda, name, description, sector, industry, book_value, earnings_per_share, revenue_per_share, dividend_per_share, shares_outstanding, analyst_target_price, ebitda)) 
             # self.connection.commit()
             return 200
         
