@@ -1,39 +1,53 @@
 <template>
-  <q-page class="basic-page">
-    <h6>My Portfolio</h6>
-    <div>
-      <h6>Portfolio Balance</h6>
-      {{ portfolioBalance }}
-    </div>
-    <div>
-      <h6>Invested</h6>
-      {{ store.invested }}
-    </div>
-    <div class="basic-widget">
-      <h5 class="q-pa-md">My Holdings</h5>
-      <q-scroll-area dark style="height: 300px">
-        <table class="full-width stock-table">
-          <thead>
-            <tr>
-              <th class="text-left">Asset</th>
-              <th class="text-right">Price</th>
-              <th class="text-right">Shares</th>
-              <th class="text-right">Avg Cost</th>
-              <th class="text-right">Value</th>
-              <th class="text-right">Return</th>
-              <th class="text-right">Allocation</th>
-            </tr>
-          </thead>
-          <tbody>
-            <stock-holding-item
-              v-for="holding in holdings"
-              :key="holding.ticker"
-              v-bind="holding"
-              :totalValue="portfolioBalance"
-            />
-          </tbody>
-        </table>
-      </q-scroll-area>
+  <q-page class="basic-page q-pa-md">
+    <div class="row q-col-gutter-lg">
+      <!-- Left Column: Stats & Dividends -->
+      <div class="col-12 col-md-4">
+        <div class="column q-gutter-y-lg">
+          <!-- Portfolio Summary Card -->
+          <div class="summary-card">
+            <h6>Portfolio Balance</h6>
+            <div class="balance-value">${{ portfolioBalance.toFixed(2) }}</div>
+            <div class="invested-row">
+              <span class="label">Invested:</span>
+              <span class="value">${{ store.invested.toFixed(2) }}</span>
+            </div>
+          </div>
+
+          <!-- Dividend Widget -->
+          <dividend-widget />
+        </div>
+      </div>
+
+      <!-- Right Column: Holdings Table -->
+      <div class="col-12 col-md-8">
+        <div class="basic-widget full-height">
+          <h5 class="q-pa-md">My Holdings</h5>
+          <q-scroll-area dark style="height: 600px">
+            <table class="full-width stock-table">
+              <thead>
+                <tr>
+                  <th class="text-left">Asset</th>
+                  <th class="text-right">Price</th>
+                  <th class="text-right">Shares</th>
+                  <th class="text-right">Avg Cost</th>
+                  <th class="text-right">Value</th>
+                  <th class="text-right">Return</th>
+                  <th class="text-right">Allocation</th>
+                </tr>
+              </thead>
+              <tbody>
+                <stock-holding-item
+                  v-for="holding in holdings"
+                  :key="holding.ticker"
+                  v-bind="holding"
+                  :totalValue="portfolioBalance"
+                />
+              </tbody>
+            </table>
+          </q-scroll-area>
+        </div>
+      </div>
     </div>
   </q-page>
 </template>
@@ -42,10 +56,11 @@
 import { defineComponent } from 'vue'
 import { useStore } from 'src/stores/store'
 import StockHoldingItem from 'src/components/Stocks/Items/StockHoldingItem.vue'
+import DividendWidget from 'src/components/Stocks/DividendWidget.vue'
 
 export default defineComponent({
   name: 'StocksPage',
-  components: { StockHoldingItem },
+  components: { StockHoldingItem, DividendWidget },
   setup() {
     return {
       store: useStore(),
@@ -83,11 +98,48 @@ export default defineComponent({
 }
 
 .basic-widget {
-  margin-top: 25px;
-  border-radius: 10px;
+  border-radius: 16px;
   border: 1px solid var(--border-color);
   background: rgba(255, 255, 255, 0.02);
   overflow: hidden;
+  backdrop-filter: blur(10px);
+}
+
+.summary-card {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01));
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 24px;
+  backdrop-filter: blur(10px);
+
+  h6 {
+    margin: 0 0 10px 0;
+    font-size: 1rem;
+    color: #888;
+    font-weight: 500;
+  }
+}
+
+.balance-value {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.1;
+  margin-bottom: 15px;
+}
+
+.invested-row {
+  display: flex;
+  gap: 8px;
+  font-size: 0.9rem;
+
+  .label {
+    color: #888;
+  }
+  .value {
+    color: #ddd;
+    font-weight: 600;
+  }
 }
 
 .stock-table {
