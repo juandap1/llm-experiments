@@ -11,6 +11,10 @@
             <div class="invested-row">
               <span class="label">Invested:</span>
               <span class="value">${{ store.invested.toFixed(2) }}</span>
+              <span :class="portfolioBalance - store.invested > 0 ? 'positive' : 'negative'">
+                {{ portfolioBalance - store.invested > 0 ? '+' : '' }}
+                {{ ((portfolioBalance - store.invested) / store.invested).toFixed(2) * 100 }}%
+              </span>
             </div>
           </div>
 
