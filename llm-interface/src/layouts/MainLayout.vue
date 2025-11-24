@@ -36,6 +36,7 @@
 </template>
 
 <script>
+import { useStore } from 'src/stores/store'
 import { defineComponent } from 'vue'
 
 export default defineComponent({
@@ -50,6 +51,9 @@ export default defineComponent({
     return {
       showSidebar: true,
     }
+  },
+  mounted() {
+    useStore().getTransactions()
   },
 })
 </script>

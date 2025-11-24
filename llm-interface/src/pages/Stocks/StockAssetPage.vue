@@ -4,20 +4,20 @@
     <!-- <price-chart-widget /> -->
     <asset-breakdown-widget :holdings="holdings" />
     <asset-chart-widget :holdings="holdings" />
-    <history-widget :transactions="allTransactions" />
+    <dividend-widget />
   </q-page>
 </template>
 
 <script>
 import { defineComponent } from 'vue'
-import HistoryWidget from 'src/components/Stocks/HistoryWidget.vue'
 import { useStore } from 'src/stores/store'
 import AssetChartWidget from 'src/components/Stocks/AssetChartWidget.vue'
 import AssetBreakdownWidget from 'src/components/Stocks/AssetBreakdownWidget.vue'
+import DividendWidget from 'src/components/Stocks/DividendWidget.vue'
 
 export default defineComponent({
   name: 'StockAssetPage',
-  components: { HistoryWidget, AssetChartWidget, AssetBreakdownWidget },
+  components: { AssetChartWidget, AssetBreakdownWidget, DividendWidget },
   setup() {
     return {
       store: useStore(),
@@ -26,9 +26,6 @@ export default defineComponent({
 
   mounted() {},
   computed: {
-    allTransactions() {
-      return useStore().transactions
-    },
     holdings() {
       if (!this.store.currently_holding) return []
       return this.store.currently_holding

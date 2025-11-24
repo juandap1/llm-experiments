@@ -4,6 +4,8 @@
   --primary: #111;
   --secondary: #06d671;
   --txt-color: #eee;
+  --positive: #06d671;
+  --negative: #ff3b3b;
 }
 
 body {
@@ -116,4 +118,14 @@ h6 {
 
 a {
   text-decoration: none;
+}
+
+.positive {
+  color: var(--positive) !important;
+  border-color: var(--positive) !important;
+}
+
+.negative {
+  color: var(--negative) !important;
+  border-color: var(--negative) !important;
 }

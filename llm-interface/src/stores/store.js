@@ -71,6 +71,14 @@ export const useStore = defineStore('counter', {
         acc[item] = val
         return acc
       }, {}),
+    invested() {
+      return this.currently_holding.reduce((acc, item) => {
+        acc += this.holding_map[item].reduce((value, transaction) => {
+          return value + transaction.shares * transaction.cost_per_share
+        }, 0)
+        return acc
+      }, 0)
+    },
   },
 
   actions: {
