@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import { useStore } from 'src/stores/store'
+import { useNotesStore } from 'src/stores/notes'
 import { defineComponent } from 'vue'
 
 export default defineComponent({
@@ -31,7 +31,7 @@ export default defineComponent({
   components: {},
   setup() {
     return {
-      store: useStore(),
+      store: useNotesStore(),
     }
   },
   data() {
@@ -41,7 +41,7 @@ export default defineComponent({
   mounted() {},
   computed: {
     isActive() {
-      return useStore()._activeNote === this.id
+      return useNotesStore()._activeNote === this.id
     },
   },
 })

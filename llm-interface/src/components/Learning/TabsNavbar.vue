@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import { useStore } from 'src/stores/store'
+import { useNotesStore } from 'src/stores/notes'
 import { defineComponent } from 'vue'
 
 export default defineComponent({
@@ -37,7 +37,7 @@ export default defineComponent({
   components: {},
   setup() {
     return {
-      store: useStore(),
+      store: useNotesStore(),
     }
   },
   data() {
@@ -48,6 +48,25 @@ export default defineComponent({
 })
 </script>
 <style scoped>
+.navbar-wrapper {
+  height: 35px;
+  background-color: #333;
+  display: flex;
+}
+
+.navbar-left-sect {
+  width: 250px;
+  height: 100%;
+}
+
+.navbar-main {
+  flex: 1 1 auto;
+  height: 100%;
+  padding: 0px 10px;
+  gap: 3px;
+  display: flex;
+}
+
 .nav-tab {
   display: flex;
   align-items: center;

@@ -1,39 +1,27 @@
 <template>
   <div class="layout-container">
-    <default-navbar />
+    <tabs-navbar />
     <div class="layout-main">
-      <default-sidebar>
-        <div class="q-pa-md text-white">
-          <div class="text-h6 q-mb-sm">Folders</div>
-          <q-tree :nodes="folders" node-key="label" dark default-expand-all />
-        </div>
-      </default-sidebar>
+      <inspector-sidebar />
       <div class="content-container">
         <q-scroll-area style="height: calc(100vh - 35px)" dark>
           <div class="editor-wrapper">
-            <div class="row items-center justify-between q-mb-md">
-              <input v-if="editMode" class="note-title" type="text" v-model="title" />
-              <div v-else class="note-title">{{ title }}</div>
-
-              <div>
-                <q-btn
-                  color="secondary"
-                  icon="auto_awesome"
-                  label="Ask AI"
-                  @click="askAI"
-                  class="q-mr-sm"
-                />
-                <q-btn
-                  :color="editMode ? 'primary' : 'grey'"
-                  :label="editMode ? 'Save' : 'Edit'"
-                  @click="toggleEditMode"
-                />
-              </div>
-            </div>
-
-            <div id="editor"></div>
+            <input
+              v-if="editMode"
+              id="note-title-inp"
+              class="note-title"
+              type="text"
+              v-model="title"
+              @keyup="titleInpHandler"
+            />
+            <div v-else class="note-title">{{ title }}</div>
+            <div class="toastui-editor-dark hide-toolbar" id="editor" @click="focusEditor"></div>
           </div>
         </q-scroll-area>
+        <div class="edit-toggle">
+          <button v-if="!editMode" @click="toggleEditMode" class="btn">Edit Note</button>
+          <button v-else @click="toggleEditMode" class="btn">Save Changes</button>
+        </div>
       </div>
     </div>
   </div>
@@ -43,15 +31,17 @@
 import { defineComponent } from 'vue'
 import '@toast-ui/editor/dist/toastui-editor.css'
 import '@toast-ui/editor/dist/theme/toastui-editor-dark.css'
-import DefaultNavbar from 'src/components/Learning/DefaultNavbar.vue'
-import DefaultSidebar from 'src/components/Learning/DefaultSidebar.vue'
+// https://nhn.github.io/tui.editor/latest/ToastUIEditorCore
+// https://ui.toast.com/tui-editor
+import TabsNavbar from 'src/components/Learning/TabsNavbar.vue'
+import InspectorSidebar from 'src/components/Learning/InspectorSidebar.vue'
+
 import Editor from '@toast-ui/editor'
-// import { useLearningStore } from 'src/stores/learning'
-// import { llmService } from 'src/services/llm'
+import { useNotesStore } from 'src/stores/notes'
 
 export default defineComponent({
   name: 'MarkdownEditorPage',
-  components: { DefaultNavbar, DefaultSidebar },
+  components: { TabsNavbar, InspectorSidebar },
   setup() {
     return {
       editor: null,
@@ -59,32 +49,20 @@ export default defineComponent({
   },
   data() {
     return {
-      title: 'New Note',
+      title: 'Note Name',
       editorEl: null,
       previewEl: null,
-      editMode: true,
-      folders: [
-        {
-          label: 'Math',
-          children: [
-            { label: 'Algebra', icon: 'note' },
-            { label: 'Geometry', icon: 'note' },
-          ],
-        },
-        {
-          label: 'Science',
-          children: [{ label: 'Physics', icon: 'note' }],
-        },
-      ],
+      editMode: false,
     }
   },
   mounted() {
     this.editor = new Editor({
       el: document.querySelector('#editor'),
-      height: '70vh',
+      height: 'auto',
       initialEditType: 'markdown',
-      previewStyle: 'vertical',
-      theme: 'dark',
+      previewStyle: 'tab',
+      hideModeSwitch: true,
+      previewHighlight: false,
     })
 
     this.editor.getMarkdown()
@@ -92,26 +70,77 @@ export default defineComponent({
     this.editorEl = el.mdEditor
     this.previewEl = el.mdPreview
 
-    // Default content
-    this.editor.setMarkdown('# My Notes\nStart typing or ask AI for help...')
+    document.querySelector('.ProseMirror').addEventListener('keydown', this.onEditorKeyUp)
+    if (this.noteData) {
+      this.loadNoteData()
+    }
+    this.editorEl.style.display = 'none'
+    this.previewEl.style.display = 'block'
   },
   methods: {
-    async askAI() {
-      const currentContent = this.editor.getMarkdown()
-      // Mock AI suggestion
-      const suggestion = `\n\n## AI Suggestion\nHere is a summary of the key points:\n- Point 1\n- Point 2`
-      this.editor.setMarkdown(currentContent + suggestion)
+    titleInpHandler(event) {
+      if (event.key === 'ArrowDown' || event.key === 'Enter' || event.key === 'Tab') {
+        event.preventDefault()
+        this.editor.focus()
+      }
+    },
+    onEditorKeyUp(e) {
+      if (e.key === 'ArrowUp') {
+        const selection = this.editor.getSelection()
+        if (selection[0][0] === 1 && selection[0][1] === 1 && selection[1][0] === selection[1][1]) {
+          e.preventDefault()
+          document.querySelector('#note-title-inp').focus()
+        }
+      }
+    },
+    loadNoteData() {
+      this.title = this.noteData.name
+      this.editor.reset()
+      this.editor.setMarkdown(this.noteData.content || '')
+      this.editor.moveCursorToStart()
     },
     toggleEditMode() {
       this.editMode = !this.editMode
+      if (this.editMode) {
+        this.editorEl.style.display = 'block'
+        this.previewEl.style.display = 'none'
+        this.editor.focus()
+      } else {
+        this.editorEl.style.display = 'none'
+        this.previewEl.style.display = 'block'
+        this.saveNoteChanges()
+      }
     },
   },
   computed: {
-    // ...
+    noteData() {
+      return useNotesStore().activeNoteData
+    },
+  },
+  watch: {
+    'noteData.id': function () {
+      this.loadNoteData()
+    },
   },
 })
 </script>
 <style scoped>
+.layout-container {
+  flex: 1 1 auto;
+  display: flex;
+  flex-flow: column;
+}
+
+.layout-main {
+  display: flex;
+  height: calc(100vh - 30px);
+}
+
+.content-container {
+  flex: 1 1 auto;
+  background-color: #111;
+}
+
 .editor-wrapper {
   padding: 20px 40px;
 }
