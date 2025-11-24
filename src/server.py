@@ -403,8 +403,8 @@ def get_etf_info(ticker: str, db: MySQLClient = Depends(get_db)):
         url = f'https://www.alphavantage.co/query?function=ETF_PROFILE&symbol={ticker}&apikey={stock_token}'
         r = requests.get(url)
         data = r.json()
-        db.update_etf_info(ticker, data.get("dividend_per_share", 0))
-        return data.get("dividend_per_share", 0)
+        db.update_etf_info(ticker, data.get("dividend_yield", 0))
+        return data.get("dividend_yield", 0)
     except Exception as e:
         print(f"Failed to fetch etf info for {ticker}: {e}")
 
