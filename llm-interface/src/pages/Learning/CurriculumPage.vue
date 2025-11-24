@@ -62,8 +62,10 @@
         <DependencyEditor
           v-if="activeTab === 'dependencies'"
           :dependencies="curriculum.dependencies"
+          :skills="allSkills"
           @add-dependency="addDependency"
           @remove-dependency="removeDependency"
+          @update-dependency="updateDependency"
         />
 
         <!-- JSON Tab -->
@@ -229,8 +231,21 @@ export default defineComponent({
     removeSkill(rule, index) {
       rule.skills.splice(index, 1)
     },
-    addDependency() {
-      this.curriculum.dependencies.push({ source: '', target: '', reason: '' })
+    addDependency(payload) {
+      if (payload && payload.source && payload.target) {
+        this.curriculum.dependencies.push({
+          source: payload.source,
+          target: payload.target,
+          reason: payload.reason || '',
+        })
+      } else {
+        this.curriculum.dependencies.push({ source: '', target: '', reason: '' })
+      }
+    },
+    updateDependency({ index, reason }) {
+      if (this.curriculum.dependencies[index]) {
+        this.curriculum.dependencies[index].reason = reason
+      }
     },
     removeDependency(index) {
       this.curriculum.dependencies.splice(index, 1)
@@ -254,6 +269,31 @@ export default defineComponent({
     selectedConcept() {
       if (!this.selectedUnit || this.selectedConceptIndex === null) return null
       return this.selectedUnit.data.concepts[this.selectedConceptIndex]
+    },
+    allSkills() {
+      const skills = []
+      if (!this.curriculum.units_content) return skills
+
+      this.curriculum.units_content.forEach((unit) => {
+        if (!unit.data || !unit.data.concepts) return
+        unit.data.concepts.forEach((concept) => {
+          if (!concept.rules) return
+          concept.rules.forEach((rule) => {
+            if (!rule.skills) return
+            rule.skills.forEach((skill) => {
+              skills.push({
+                id: skill.name,
+                name: skill.name,
+                description: skill.description,
+                unit: unit.unit,
+                concept: concept.name,
+                rule: rule.name,
+              })
+            })
+          })
+        })
+      })
+      return skills
     },
   },
 })
