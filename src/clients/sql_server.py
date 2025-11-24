@@ -122,6 +122,17 @@ class MySQLClient:
             """
             cursor.execute(sql, (ticker, price, date, price, date))
             # self.connection.commit()
+            return
+
+    def update_etf_info(self, ticker, dividend_per_share):
+        self.ensure_connected()
+        with self.connection.cursor() as cursor:
+            sql = """
+                INSERT INTO tickers (ticker, dividend_per_share) VALUES (%s, %s)
+                ON DUPLICATE KEY UPDATE dividend_per_share=%s
+            """
+            cursor.execute(sql, (ticker, dividend_per_share, dividend_per_share))
+            # self.connection.commit()
             return 
         
     def update_logo(self, ticker, path):

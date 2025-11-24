@@ -249,6 +249,11 @@ def get_stock_info_batch(req: BatchStockRequest, db: MySQLClient = Depends(get_d
         if not row or not row["name"] or not row["book_value"]:
             if not row["is_etf"]:
                 need_overview.append(t)
+        
+        if not row or not row["dividend_per_share"]:
+            if row["is_etf"]:
+                dividend_per_share = get_etf_info(t)
+                rows_by_ticker[t]["dividend_per_share"] = dividend_per_share
     # print(need_overview)
     # --- 3. Fetch missing info concurrently ---
     async def fetch_missing():
@@ -391,6 +396,17 @@ def get_dividend_history(ticker: str, db: MySQLClient = Depends(get_db)):
             print(f"✅ Successfully inserted {rows_inserted} price records for {ticker}.")
     except Exception as e:
         print(f"Failed to fetch dividend history for {ticker}: {e}")
+
+def get_etf_info(ticker: str, db: MySQLClient = Depends(get_db)):
+    ticker = ticker.upper()
+    try:
+        url = f'https://www.alphavantage.co/query?function=ETF_PROFILE&symbol={ticker}&apikey={stock_token}'
+        r = requests.get(url)
+        data = r.json()
+        db.update_etf_info(ticker, data.get("dividend_per_share", 0))
+        return data.get("dividend_per_share", 0)
+    except Exception as e:
+        print(f"Failed to fetch etf info for {ticker}: {e}")
 
 @app.get("/stock/history/{ticker}")
 def get_stock_history(ticker: str, db: MySQLClient = Depends(get_db)):
