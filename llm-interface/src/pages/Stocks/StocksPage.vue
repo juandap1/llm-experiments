@@ -20,6 +20,9 @@
 
           <!-- Dividend Widget -->
           <dividend-widget />
+
+          <!-- Sector Breakdown Widget -->
+          <sector-breakdown-widget />
         </div>
       </div>
 
@@ -61,10 +64,11 @@ import { defineComponent } from 'vue'
 import { useStore } from 'src/stores/store'
 import StockHoldingItem from 'src/components/Stocks/Items/StockHoldingItem.vue'
 import DividendWidget from 'src/components/Stocks/DividendWidget.vue'
+import SectorBreakdownWidget from 'src/components/Stocks/SectorBreakdownWidget.vue'
 
 export default defineComponent({
   name: 'StocksPage',
-  components: { StockHoldingItem, DividendWidget },
+  components: { StockHoldingItem, DividendWidget, SectorBreakdownWidget },
   setup() {
     return {
       store: useStore(),
