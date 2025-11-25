@@ -252,7 +252,7 @@ def get_stock_info_batch(req: BatchStockRequest, db: MySQLClient = Depends(get_d
         
         if not row or not row["dividend_per_share"]:
             if row["is_etf"]:
-                dividend_per_share = get_etf_info(t)
+                dividend_per_share = get_etf_info(t, row["latest_price"], db)
                 rows_by_ticker[t]["dividend_per_share"] = dividend_per_share
     # print(need_overview)
     # --- 3. Fetch missing info concurrently ---
@@ -397,16 +397,29 @@ def get_dividend_history(ticker: str, db: MySQLClient = Depends(get_db)):
     except Exception as e:
         print(f"Failed to fetch dividend history for {ticker}: {e}")
 
-def get_etf_info(ticker: str, db: MySQLClient = Depends(get_db)):
+def get_etf_info(ticker: str, price: float, db: MySQLClient):
     ticker = ticker.upper()
+    print(f"Fetching etf info for {ticker} with price {price}")
     try:
         url = f'https://www.alphavantage.co/query?function=ETF_PROFILE&symbol={ticker}&apikey={stock_token}'
         r = requests.get(url)
         data = r.json()
-        db.update_etf_info(ticker, data.get("dividend_yield", 0))
-        return data.get("dividend_yield", 0)
+        # Safely parse dividend_yield which may be a string
+        raw_yield = data.get("dividend_yield", 0)
+        try:
+            div_yield = float(raw_yield)
+        except (ValueError, TypeError):
+            div_yield = 0.0
+        try:
+            price_val = float(price)
+        except (ValueError, TypeError):
+            price_val = 0.0
+        dividend_per_share = div_yield * price_val
+        db.update_etf_info(ticker, dividend_per_share)
+        return dividend_per_share
     except Exception as e:
         print(f"Failed to fetch etf info for {ticker}: {e}")
+        return None
 
 @app.get("/stock/history/{ticker}")
 def get_stock_history(ticker: str, db: MySQLClient = Depends(get_db)):
