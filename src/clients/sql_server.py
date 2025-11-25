@@ -25,7 +25,7 @@ class MySQLClient:
                 cursorclass=DictCursor,
                 autocommit=True
             )
-            print("✅ Connected to MySQL successfully.")
+            # print("✅ Connected to MySQL successfully.")
         except Exception as e:
             print("❌ Failed to connect to MySQL:", e)
 

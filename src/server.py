@@ -246,14 +246,13 @@ def get_stock_info_batch(req: BatchStockRequest, db: MySQLClient = Depends(get_d
         if not row or not row["latest_price"]:
             need_price.append(t)
 
-        if not row or not row["name"] or not row["book_value"]:
-            if not row["is_etf"]:
-                need_overview.append(t)
+        if not row or not row["name"] or (not row["book_value"] and not row["is_etf"]):
+            print("need overview for", t)
+            need_overview.append(t)
         
-        if not row or not row["dividend_per_share"]:
-            if row["is_etf"]:
-                dividend_per_share = get_etf_info(t, row["latest_price"], db)
-                rows_by_ticker[t]["dividend_per_share"] = dividend_per_share
+        if row and not row["dividend_per_share"] and row["is_etf"]:
+            dividend_per_share = get_etf_info(t, row["latest_price"], db)
+            rows_by_ticker[t]["dividend_per_share"] = dividend_per_share
     # print(need_overview)
     # --- 3. Fetch missing info concurrently ---
     async def fetch_missing():
@@ -475,11 +474,11 @@ def get_logo(ticker: str, db: MySQLClient = Depends(get_db)):
                 logo_path = os.path.join(CONTAINER_ROOT, db_path)
             else:
                 logo_path = db_path
-            print(f"Database entry found for {ticker}. Logo path is: {logo_path}")
+            # print(f"Database entry found for {ticker}. Logo path is: {logo_path}")
             if os.path.exists(logo_path):
-                print(f"Serving local file: {logo_path}")
+                # print(f"Serving local file: {logo_path}")
                 return FileResponse(logo_path, media_type='image/jpeg')
-            print(f"Warning: File missing on disk, proceeding to download.")
+            # print(f"Warning: File missing on disk, proceeding to download.")
     except Exception as e:
         print(f"Database/Check failure for {ticker}: {e}. Attempting download.")
 

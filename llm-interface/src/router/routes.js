@@ -7,7 +7,7 @@ const routes = [
       { path: 'stocks', component: () => import('pages/Stocks/StocksPage.vue') },
       { path: 'stocks/assets', component: () => import('pages/Stocks/StockAssetPage.vue') },
       { path: 'stocks/news', component: () => import('pages/Stocks/StocksPage.vue') },
-      { path: 'stocks/history', component: () => import('pages/Stocks/StocksPage.vue') },
+      { path: 'stocks/history', component: () => import('pages/Stocks/HistoryPage.vue') },
       {
         path: 'stocks/ticker/:ticker',
         component: () => import('pages/Stocks/IndividualStockPage.vue'),
