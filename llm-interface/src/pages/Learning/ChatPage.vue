@@ -1,90 +1,123 @@
 <template>
-  <div class="layout-container">
-    <default-navbar />
-    <div class="layout-main">
-      <default-sidebar />
-      <div class="content-container q-pa-md flex column">
-        <div class="text-h4 q-mb-md">AI Helper</div>
+  <div class="chat-page-container">
+    <!-- Left Sidebar: Lesson Progression -->
+    <div class="left-sidebar">
+      <lesson-progression :current-step="currentStep" @change-step="handleStepChange" />
+    </div>
 
-        <q-scroll-area class="col q-mb-md bg-grey-2 rounded-borders q-pa-sm">
-          <div v-for="(msg, idx) in messages" :key="idx" class="q-mb-sm">
-            <q-chat-message
-              :text="[msg.text]"
-              :sent="msg.isUser"
-              :bg-color="msg.isUser ? 'primary' : 'white'"
-              :text-color="msg.isUser ? 'white' : 'black'"
-            />
-          </div>
-          <div v-if="loading" class="q-ml-md">
-            <q-spinner-dots size="2em" />
-          </div>
-        </q-scroll-area>
+    <!-- Main Content Area -->
+    <div class="main-content">
+      <div class="content-scroll-area">
+        <transition name="fade" mode="out-in">
+          <component :is="currentContentComponent" />
+        </transition>
+      </div>
+    </div>
 
-        <div class="row q-col-gutter-sm">
-          <div class="col">
-            <q-input
-              outlined
-              v-model="input"
-              label="Ask for help..."
-              @keyup.enter="sendMessage"
-              dense
-            />
-          </div>
-          <div class="col-auto">
-            <q-btn color="primary" icon="send" @click="sendMessage" round />
-          </div>
-        </div>
+    <!-- Right Sidebar: Chat Interface -->
+    <div class="right-sidebar" :class="{ closed: !isChatOpen }">
+      <chat-interface v-if="isChatOpen" @close="isChatOpen = false" />
+      <div v-else class="chat-toggle-btn" @click="isChatOpen = true" title="Open Chat">
+        <q-icon name="chat" />
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { defineComponent, ref } from 'vue'
-import DefaultNavbar from 'src/components/Learning/DefaultNavbar.vue'
-import DefaultSidebar from 'src/components/Learning/DefaultSidebar.vue'
-// import { llmService } from 'src/services/llm'
+import { defineComponent, ref, computed } from 'vue'
+import { useQuasar } from 'quasar'
+import LessonProgression from 'src/components/Learning/LessonProgression.vue'
+import ChatInterface from 'src/components/Learning/ChatInterface.vue'
+import LessonContent from 'src/components/Learning/LessonContent.vue'
+import QuizContent from 'src/components/Learning/QuizContent.vue'
 
 export default defineComponent({
   name: 'ChatPage',
-  components: { DefaultNavbar, DefaultSidebar },
+  components: { LessonProgression, ChatInterface, LessonContent, QuizContent },
   setup() {
-    const messages = ref([
-      { text: 'Hello! I am your learning assistant. How can I help you today?', isUser: false },
-    ])
-    const input = ref('')
-    const loading = ref(false)
-
-    async function sendMessage() {
-      if (!input.value.trim()) return
-
-      const userMsg = input.value
-      messages.value.push({ text: userMsg, isUser: true })
-      input.value = ''
-      loading.value = true
-
-      // Mock response
-      setTimeout(() => {
-        messages.value.push({
-          text: `I can help you with that! You asked: "${userMsg}"`,
-          isUser: false,
-        })
-        loading.value = false
-      }, 1000)
+    const $q = useQuasar()
+    $q.dark.set(true)
+    const currentStep = ref(1)
+    const isChatOpen = ref(true)
+    const currentContentComponent = computed(() => {
+      switch (currentStep.value) {
+        case 1:
+        case 2:
+          return 'LessonContent'
+        case 3:
+          return 'QuizContent'
+        case 4:
+          return 'LessonContent' // placeholder for review component
+        default:
+          return 'LessonContent'
+      }
+    })
+    const handleStepChange = (stepId) => {
+      currentStep.value = stepId
     }
-
-    return {
-      messages,
-      input,
-      loading,
-      sendMessage,
-    }
+    return { currentStep, isChatOpen, currentContentComponent, handleStepChange }
   },
 })
 </script>
 
 <style scoped>
-.content-container {
-  height: calc(100vh - 50px); /* Adjust based on navbar height */
+.chat-page-container {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+  background-color: #121212;
+  overflow: hidden;
+}
+.left-sidebar {
+  width: 300px;
+  min-width: 300px;
+  height: 100%;
+  transition: all 0.3s ease;
+}
+.main-content {
+  flex: 1;
+  height: 100%;
+  position: relative;
+  background-color: #121212;
+}
+.content-scroll-area {
+  height: 100%;
+  overflow-y: auto;
+  padding: 40px;
+}
+.right-sidebar {
+  width: 350px;
+  min-width: 350px;
+  height: 100%;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+.right-sidebar.closed {
+  width: 60px;
+  min-width: 60px;
+}
+.chat-toggle-btn {
+  width: 100%;
+  height: 100%;
+  border-left: 1px solid #333;
+  display: flex;
+  justify-content: center;
+  padding-top: 20px;
+  cursor: pointer;
+  color: #888;
+  background-color: #1e1e1e;
+}
+.chat-toggle-btn:hover {
+  color: white;
+  background-color: #2a2a2a;
+}
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>

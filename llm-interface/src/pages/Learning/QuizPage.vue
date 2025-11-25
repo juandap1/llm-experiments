@@ -15,6 +15,9 @@
       </div>
     </div>
     <div class="main-cont">
+      <h1>
+        Try to consolidate to less pages, show a progression in lessons with understanding checks
+      </h1>
       <div class="test-shell" v-if="loading">
         <div class="test-cont shadow-6 flex flex-center" style="min-height: 300px">
           <q-spinner size="50px" color="secondary" />
