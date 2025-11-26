@@ -131,10 +131,86 @@ export const useStore = defineStore('counter', {
           params: {},
         })
         .then((response) => {
-          // console.log(response)
+          console.log('history for ' + ticker)
+          console.log(response)
+          console.log('----------------')
           this._history[ticker] = response.data
         })
         .catch(console.error)
+    },
+    async batchStockHistoryRequest(tickers) {
+      // Filter out tickers that already have history
+      const tickersToFetch = tickers.filter((ticker) => this._history[ticker] == null)
+
+      if (tickersToFetch.length === 0) {
+        console.log('All stock histories already loaded')
+        return
+      }
+
+      console.log(`Attempting to fetch history for ${tickersToFetch.length} stocks...`)
+
+      // PHASE 1: Try all requests at once (cached requests will succeed instantly)
+      const failedTickers = []
+      const promises = tickersToFetch.map((ticker) => {
+        return api
+          .get('/stock/history/' + ticker, {
+            params: {},
+          })
+          .then((response) => {
+            console.log(`✅ Loaded history for ${ticker}`)
+            this._history[ticker] = response.data
+          })
+          .catch((error) => {
+            console.log(`⏳ ${ticker} needs rate-limited fetch ${error}`)
+            failedTickers.push(ticker)
+          })
+      })
+
+      await Promise.all(promises)
+
+      // PHASE 2: If any failed (rate limited), process them in batches
+      if (failedTickers.length === 0) {
+        console.log('✅ All stock histories loaded from cache')
+        return
+      }
+
+      console.log(`📦 Queueing ${failedTickers.length} stocks for rate-limited batch processing`)
+
+      const BATCH_SIZE = 5
+      const DELAY_MS = 60000 // 60 seconds
+
+      for (let i = 0; i < failedTickers.length; i += BATCH_SIZE) {
+        const batch = failedTickers.slice(i, i + BATCH_SIZE)
+
+        console.log(
+          `Processing batch ${Math.floor(i / BATCH_SIZE) + 1}/${Math.ceil(failedTickers.length / BATCH_SIZE)}: ${batch.join(', ')}`,
+        )
+
+        // Fetch all in current batch simultaneously
+        const batchPromises = batch.map((ticker) => {
+          return api
+            .get('/stock/history/' + ticker, {
+              params: {},
+            })
+            .then((response) => {
+              console.log(`✅ Loaded history for ${ticker}`)
+              this._history[ticker] = response.data
+            })
+            .catch((error) => {
+              console.error(`❌ Failed to load history for ${ticker}:`, error)
+            })
+        })
+
+        await Promise.all(batchPromises)
+
+        // Wait before next batch (unless this was the last batch)
+        if (i + BATCH_SIZE < failedTickers.length) {
+          console.log(`⏸️  Waiting 60 seconds before next batch...`)
+          await new Promise((resolve) => setTimeout(resolve, DELAY_MS))
+        }
+      }
+
+      console.log('✅ All stock histories loaded')
     },
     getStockAnalysis(ticker) {
       let loadedInfo = this.loadedInfo[ticker]

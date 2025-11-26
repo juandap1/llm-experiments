@@ -28,7 +28,7 @@
 
       <!-- Right Column: Holdings Table -->
       <div class="col-12 col-md-8">
-        <div class="basic-widget">
+        <div class="basic-widget price-chart-widget">
           <price-chart-widget />
         </div>
         <div class="basic-widget">
@@ -79,7 +79,9 @@ export default defineComponent({
     }
   },
 
-  mounted() {},
+  mounted() {
+    this.store.batchStockHistoryRequest(this.store.currently_holding)
+  },
   computed: {
     allTransactions() {
       return useStore().transactions
@@ -166,5 +168,10 @@ export default defineComponent({
     border-bottom: 1px solid var(--border-color);
     white-space: nowrap;
   }
+}
+
+.price-chart-widget {
+  padding: 25px;
+  padding-bottom: 0;
 }
 </style>

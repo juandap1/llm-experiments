@@ -323,7 +323,7 @@ export default defineComponent({
     },
   },
   mounted() {
-    this.store.getStockHistory('MSFT')
+    // this.store.getStockHistory('MSFT')
     this.genChart()
   },
   computed: {
