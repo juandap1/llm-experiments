@@ -28,7 +28,10 @@
 
       <!-- Right Column: Holdings Table -->
       <div class="col-12 col-md-8">
-        <div class="basic-widget full-height">
+        <div class="basic-widget">
+          <price-chart-widget />
+        </div>
+        <div class="basic-widget">
           <h5 class="q-pa-md">My Holdings</h5>
           <q-scroll-area dark style="height: 600px">
             <table class="full-width stock-table">
@@ -65,10 +68,11 @@ import { useStore } from 'src/stores/store'
 import StockHoldingItem from 'src/components/Stocks/Items/StockHoldingItem.vue'
 import DividendWidget from 'src/components/Stocks/DividendWidget.vue'
 import SectorBreakdownWidget from 'src/components/Stocks/SectorBreakdownWidget.vue'
+import PriceChartWidget from 'src/components/Stocks/PriceChartWidget.vue'
 
 export default defineComponent({
   name: 'StocksPage',
-  components: { StockHoldingItem, DividendWidget, SectorBreakdownWidget },
+  components: { StockHoldingItem, DividendWidget, SectorBreakdownWidget, PriceChartWidget },
   setup() {
     return {
       store: useStore(),

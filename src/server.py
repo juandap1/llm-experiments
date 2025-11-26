@@ -8,7 +8,9 @@ import requests
 import json
 import asyncio
 import aiohttp
+from massive import RESTClient
 import ollama
+import datetime
 
 from clients.sql_server import MySQLClient
 from clients.qdrant_server import QdrantServerClient
@@ -36,6 +38,7 @@ CONTAINER_ROOT = '/app'
 # SECRETS
 logo_dev_token = os.getenv("LOGO_DEV_TOKEN")
 stock_token = os.getenv("ALPHAVANTAGE_TOKEN")
+massive_token = os.getenv("MASSIVE_TOKEN")
 
 # Initialize clients
 # Note: In FastAPI, it's often better to initialize these in a startup event or as dependencies if they need to be closed.
@@ -246,7 +249,7 @@ def get_stock_info_batch(req: BatchStockRequest, db: MySQLClient = Depends(get_d
         if not row or not row["latest_price"]:
             need_price.append(t)
 
-        if not row or not row["name"] or (not row["book_value"] and not row["is_etf"]):
+        if not row or (not row["name"] and not row["is_etf"]) or (not row["book_value"] and not row["is_etf"]):
             print("need overview for", t)
             need_overview.append(t)
         
@@ -432,33 +435,50 @@ def get_stock_history(ticker: str, db: MySQLClient = Depends(get_db)):
         """, (ticker,)) # Pass as tuple
         if history:
             return history
-
-        url = f'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={ticker}&apikey={stock_token}&outputsize=full'
-        r = requests.get(url)
-        data = r.json()
-        price_history = data.get("Time Series (Daily)", {})
+        client = RESTClient(massive_token)
+        aggs = []
+        for a in client.list_aggs(ticker, 1, "day", "2023-12-31", "2025-11-26"):
+            aggs.append(a)
         records_to_insert = []
-        for date_str, daily_data in price_history.items():
-            try:
-                record = (
-                    ticker,
-                    float(daily_data['1. open']), 
-                    float(daily_data['4. close']), 
-                    float(daily_data['3. low']), 
-                    float(daily_data['2. high']), 
-                    date_str 
-                )
-                records_to_insert.append(record)
-            except (KeyError, ValueError) as e:
-                print(f"Skipping record for {date_str}: {e}")
-                continue
+        json_response = []
+        for a in aggs:
+            record = (
+                ticker,
+                float(a.open), 
+                float(a.close), 
+                float(a.low), 
+                float(a.high), 
+                datetime.datetime.fromtimestamp(a.timestamp / 1000).strftime('%Y-%m-%d') 
+            )
+            records_to_insert.append(record)
+            json_response.append({
+                "date": datetime.datetime.fromtimestamp(a.timestamp / 1000).strftime('%Y-%m-%d'),
+                "open_price": float(a.open),
+                "close_price": float(a.close),
+                "low": float(a.low),
+                "high": float(a.high)
+            })
         if records_to_insert:
             rows_inserted = db.insert_many_prices(ticker, records_to_insert)
             print(f"✅ Successfully inserted {rows_inserted} price records for {ticker}.")
-            # Convert tuples back to dicts or list of lists for JSON response if needed, 
-            # but returning list of tuples is also valid JSON (list of lists)
-            return records_to_insert
+            return json_response
         return []
+        # url = f'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={ticker}&apikey={stock_token}&outputsize=full'
+        # r = requests.get(url)
+        # data = r.json()
+        # print(data)
+        # price_history = data.get("Time Series (Daily)", {})
+        # records_to_insert = []
+        # for date_str, daily_data in price_history.items():
+        #     try:
+        #         record = (
+        #             ticker,
+        #             float(daily_data['1. open']), 
+        #             float(daily_data['4. close']), 
+        #             float(daily_data['3. low']), 
+        #             float(daily_data['2. high']), 
+        #             date_str 
+        #         )
     except Exception as e:
         print(f"Error pulling stock history: {e}")
         raise HTTPException(status_code=500, detail=str(e))
