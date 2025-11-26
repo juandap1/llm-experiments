@@ -2,7 +2,7 @@
   <div class="q-mb-md">
     <div class="widget-header">
       <div class="price-wrapper">
-        <h4>${{ stockInfo?.latest_price.toFixed(2) }}</h4>
+        <h4>${{ history.at(-1)?.value.toFixed(2) }}</h4>
         <span v-if="priceChange >= 0" class="price-change positive">+{{ priceChange }}%</span>
         <span v-else class="price-change negative">{{ priceChange }}%</span>
       </div>
@@ -34,7 +34,13 @@ import Chart from 'chart.js/auto'
 export default defineComponent({
   components: {},
   name: 'PriceChartWidget',
-  props: {},
+  props: {
+    history: {
+      type: Array,
+      required: true,
+      default: () => [],
+    },
+  },
   setup() {
     return {
       store: useStore(),
@@ -64,7 +70,7 @@ export default defineComponent({
         datasets: [
           {
             label: 'MSFT',
-            data: reduced?.map((x) => x.close_price),
+            data: reduced?.map((x) => x.value),
             backgroundColor: '#06d671',
             borderColor: '#06d671',
             pointRadius: 0,
@@ -327,18 +333,15 @@ export default defineComponent({
     this.genChart()
   },
   computed: {
-    stockInfo() {
-      return this.store.loadedInfo['MSFT']
-    },
-    history() {
-      if (this.store.history?.['MSFT'] == null) return []
-      return this.store.history['MSFT']
-    },
+    // history() {
+    //   if (this.store.history?.['MSFT'] == null) return []
+    //   return this.store.history['MSFT']
+    // },
     priceChange() {
       if (this.history.length == 0) return 0
       let reduced = this.reduceDateRange()
-      let first = reduced[0].open_price
-      let last = reduced.at(-1).close_price
+      let first = reduced[0].value
+      let last = reduced.at(-1).value
       let change = ((last - first) / first) * 100
       return Math.round(change * 100) / 100
     },

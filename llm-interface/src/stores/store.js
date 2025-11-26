@@ -79,6 +79,88 @@ export const useStore = defineStore('counter', {
         return acc
       }, 0)
     },
+    portfolioHistory(state) {
+      if (!state._transactions || !state._history) return []
+
+      // Get all unique dates from all price histories
+      const allDates = new Set()
+      Object.values(state._history).forEach((history) => {
+        if (history && Array.isArray(history)) {
+          history.forEach((entry) => {
+            if (entry.date) allDates.add(entry.date)
+          })
+        }
+      })
+
+      const sortedDates = Array.from(allDates).sort()
+
+      // Build portfolio value for each date
+      const portfolioData = sortedDates.map((date) => {
+        let totalValue = 0
+
+        // Replay transactions up to this date to get holdings
+        const holdingsAtDate = {}
+        const transactionsUpToDate = state._transactions
+          .filter((t) => t.transaction_date <= date)
+          .sort((a, b) => new Date(a.transaction_date) - new Date(b.transaction_date))
+
+        // Apply FIFO logic to build holdings at this date
+        transactionsUpToDate.forEach((transaction) => {
+          const ticker = transaction.ticker
+          if (!holdingsAtDate[ticker]) {
+            holdingsAtDate[ticker] = []
+          }
+
+          if (transaction.buying) {
+            // Add shares
+            holdingsAtDate[ticker].push({
+              shares: transaction.share_count,
+              cost_per_share: transaction.share_price,
+            })
+          } else {
+            // Sell shares using FIFO
+            let sharesToSell = transaction.share_count
+            const lots = holdingsAtDate[ticker]
+
+            while (sharesToSell > 0 && lots.length > 0) {
+              const firstLot = lots[0]
+
+              if (firstLot.shares > sharesToSell) {
+                firstLot.shares -= sharesToSell
+                sharesToSell = 0
+              } else {
+                sharesToSell -= firstLot.shares
+                lots.shift()
+              }
+            }
+
+            if (lots.length === 0) delete holdingsAtDate[ticker]
+          }
+        })
+
+        // Calculate total value for this date
+        Object.keys(holdingsAtDate).forEach((ticker) => {
+          const lots = holdingsAtDate[ticker]
+          const totalShares = lots.reduce((sum, lot) => sum + lot.shares, 0)
+
+          // Find price for this ticker on this date
+          const history = state._history[ticker]
+          if (history && Array.isArray(history)) {
+            const priceEntry = history.find((entry) => entry.date === date)
+            if (priceEntry && priceEntry.close_price) {
+              totalValue += totalShares * priceEntry.close_price
+            }
+          }
+        })
+
+        return {
+          date,
+          value: totalValue,
+        }
+      })
+
+      return portfolioData
+    },
   },
 
   actions: {
@@ -104,7 +186,7 @@ export const useStore = defineStore('counter', {
           tickers,
         })
         .then((response) => {
-          console.log(response.data)
+          // console.log(response.data)
           Object.assign(this._loadedInfo, response.data)
         })
         .catch((error) => {
@@ -146,9 +228,6 @@ export const useStore = defineStore('counter', {
         console.log('All stock histories already loaded')
         return
       }
-
-      console.log(`Attempting to fetch history for ${tickersToFetch.length} stocks...`)
-
       // PHASE 1: Try all requests at once (cached requests will succeed instantly)
       const failedTickers = []
       const promises = tickersToFetch.map((ticker) => {
@@ -157,7 +236,7 @@ export const useStore = defineStore('counter', {
             params: {},
           })
           .then((response) => {
-            console.log(`✅ Loaded history for ${ticker}`)
+            // console.log(`✅ Loaded history for ${ticker}`)
             this._history[ticker] = response.data
           })
           .catch((error) => {
@@ -193,7 +272,7 @@ export const useStore = defineStore('counter', {
               params: {},
             })
             .then((response) => {
-              console.log(`✅ Loaded history for ${ticker}`)
+              // console.log(`✅ Loaded history for ${ticker}`)
               this._history[ticker] = response.data
             })
             .catch((error) => {

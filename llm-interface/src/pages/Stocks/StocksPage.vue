@@ -29,7 +29,7 @@
       <!-- Right Column: Holdings Table -->
       <div class="col-12 col-md-8">
         <div class="basic-widget price-chart-widget">
-          <price-chart-widget />
+          <price-chart-widget :history="store.portfolioHistory" />
         </div>
         <div class="basic-widget">
           <h5 class="q-pa-md">My Holdings</h5>
@@ -80,6 +80,7 @@ export default defineComponent({
   },
 
   mounted() {
+    console.log(this.store)
     this.store.batchStockHistoryRequest(this.store.currently_holding)
   },
   computed: {
@@ -99,6 +100,13 @@ export default defineComponent({
     },
     portfolioBalance() {
       return this.holdings.reduce((acc, x) => acc + x.value, 0)
+    },
+  },
+  watch: {
+    'holdings.length': {
+      handler() {
+        this.store.batchStockHistoryRequest(this.store.currently_holding)
+      },
     },
   },
 })
