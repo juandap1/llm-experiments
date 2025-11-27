@@ -71,12 +71,12 @@ export const useStore = defineStore('counter', {
         acc[item] = val
         return acc
       }, {}),
-    invested() {
-      return this.currently_holding.reduce((acc, item) => {
-        acc += this.holding_map[item].reduce((value, transaction) => {
-          return value + transaction.shares * transaction.cost_per_share
-        }, 0)
-        return acc
+    invested: (state) => {
+      return state.transactions?.reduce((acc, item) => {
+        let skip = new Set(['SPMO', 'SCHD', 'VOO', 'QQQM', 'COF', 'FDVV'])
+        if (skip.has(item.ticker)) return acc
+        if (item.buying) return acc + item.share_count * item.share_price
+        else return acc - item.share_count * item.share_price
       }, 0)
     },
     portfolioHistory(state) {
@@ -160,6 +160,96 @@ export const useStore = defineStore('counter', {
       })
 
       return portfolioData
+    },
+    profitLossOverTime(state) {
+      if (!state._transactions || !state._history) return []
+
+      // Get all unique dates from all price histories
+      const allDates = new Set()
+      Object.values(state._history).forEach((history) => {
+        if (history && Array.isArray(history)) {
+          history.forEach((entry) => {
+            if (entry.date) allDates.add(entry.date)
+          })
+        }
+      })
+
+      const sortedDates = Array.from(allDates).sort()
+
+      // Build profit/loss for each date
+      const profitLossData = sortedDates.map((date) => {
+        let totalValue = 0
+        let totalInvested = 0
+
+        // Replay transactions up to this date to get holdings and invested amount
+        const holdingsAtDate = {}
+        const transactionsUpToDate = state._transactions
+          .filter((t) => t.transaction_date <= date)
+          .sort((a, b) => new Date(a.transaction_date) - new Date(b.transaction_date))
+
+        // Apply FIFO logic to build holdings at this date
+        transactionsUpToDate.forEach((transaction) => {
+          const ticker = transaction.ticker
+          if (!holdingsAtDate[ticker]) {
+            holdingsAtDate[ticker] = []
+          }
+
+          // Track invested amount
+          if (transaction.buying) {
+            totalInvested += transaction.share_count * transaction.share_price
+            // Add shares
+            holdingsAtDate[ticker].push({
+              shares: transaction.share_count,
+              cost_per_share: transaction.share_price,
+            })
+          } else {
+            totalInvested -= transaction.share_count * transaction.share_price
+            // Sell shares using FIFO
+            let sharesToSell = transaction.share_count
+            const lots = holdingsAtDate[ticker]
+
+            while (sharesToSell > 0 && lots.length > 0) {
+              const firstLot = lots[0]
+
+              if (firstLot.shares > sharesToSell) {
+                firstLot.shares -= sharesToSell
+                sharesToSell = 0
+              } else {
+                sharesToSell -= firstLot.shares
+                lots.shift()
+              }
+            }
+
+            if (lots.length === 0) delete holdingsAtDate[ticker]
+          }
+        })
+
+        // Calculate total value for this date
+        Object.keys(holdingsAtDate).forEach((ticker) => {
+          const lots = holdingsAtDate[ticker]
+          const totalShares = lots.reduce((sum, lot) => sum + lot.shares, 0)
+
+          // Find price for this ticker on this date
+          const history = state._history[ticker]
+          if (history && Array.isArray(history)) {
+            const priceEntry = history.find((entry) => entry.date === date)
+            if (priceEntry && priceEntry.close_price) {
+              totalValue += totalShares * priceEntry.close_price
+            }
+          }
+        })
+
+        return {
+          date,
+          value: totalValue,
+          invested: totalInvested,
+          profitLoss: totalValue - totalInvested,
+          profitLossPercent:
+            totalInvested > 0 ? ((totalValue - totalInvested) / totalInvested) * 100 : 0,
+        }
+      })
+
+      return profitLossData
     },
   },
 

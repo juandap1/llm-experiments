@@ -10,7 +10,7 @@
             <div class="balance-value">${{ portfolioBalance.toFixed(2) }}</div>
             <div class="invested-row">
               <span class="label">Invested:</span>
-              <span class="value">${{ store.invested.toFixed(2) }}</span>
+              <span class="value">${{ store.invested?.toFixed(2) }}</span>
               <span :class="portfolioBalance - store.invested > 0 ? 'positive' : 'negative'">
                 {{ portfolioBalance - store.invested > 0 ? '+' : '' }}
                 {{ ((portfolioBalance - store.invested) / store.invested).toFixed(2) * 100 }}%
@@ -29,7 +29,7 @@
       <!-- Right Column: Holdings Table -->
       <div class="col-12 col-md-8">
         <div class="basic-widget price-chart-widget">
-          <price-chart-widget :history="store.portfolioHistory" />
+          <price-chart-widget :history="[]" />
         </div>
         <div class="basic-widget">
           <h5 class="q-pa-md">My Holdings</h5>
