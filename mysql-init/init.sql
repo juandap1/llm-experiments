@@ -28,7 +28,8 @@ CREATE TABLE IF NOT EXISTS tickers(
     shares_outstanding BIGINT,
     analyst_target_price FLOAT,
     ebitda DOUBLE,
-    is_etf BOOLEAN
+    is_etf BOOLEAN,
+    checked_split DATE
 );
 
 CREATE TABLE IF NOT EXISTS price_history(
@@ -49,5 +50,14 @@ CREATE TABLE IF NOT EXISTS dividend_history(
     declaration_date DATE,
     ex_dividend_date DATE,
     payment_date DATE,
+    FOREIGN KEY (ticker) REFERENCES tickers(ticker)
+);
+
+CREATE TABLE IF NOT EXISTS split_history(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    ticker VARCHAR(100),
+    split_from INT,
+    split_to INT,
+    execution_date DATE,
     FOREIGN KEY (ticker) REFERENCES tickers(ticker)
 );

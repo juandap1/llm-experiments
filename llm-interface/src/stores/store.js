@@ -6,10 +6,30 @@ export const useStore = defineStore('counter', {
     _transactions: null,
     _loadedInfo: {},
     _history: {},
+    _splitHistory: {},
   }),
 
   getters: {
     transactions: (state) => state._transactions,
+    adjustedTransactions: (state) => {
+      if (!state._transactions) return []
+      return state._transactions
+        .filter((t) => t.ticker == 'NVDA')
+        .map((t) => {
+          let transaction = { ...t }
+          const splits = state._splitHistory[transaction.ticker]
+          if (splits && Array.isArray(splits)) {
+            splits.forEach((split) => {
+              if (new Date(split.execution_date) > new Date(transaction.transaction_date)) {
+                const ratio = split.split_to / split.split_from
+                transaction.share_count *= ratio
+                transaction.share_price /= ratio
+              }
+            })
+          }
+          return transaction
+        })
+    },
     loadedInfo: (state) => state._loadedInfo,
     history: (state) => state._history,
     uniqueTickers: (state) => {
@@ -393,6 +413,75 @@ export const useStore = defineStore('counter', {
       }
 
       console.log('✅ All stock histories loaded')
+    },
+    async batchStockSplitRequest(tickers) {
+      const tickersToFetch = tickers.filter((ticker) => this._splitHistory[ticker] == null)
+      if (tickersToFetch.length === 0) {
+        console.log('All stock splits already loaded')
+        return
+      }
+      // PHASE 1: Try all requests at once (cached requests will succeed instantly)
+      const failedTickers = []
+      const promises = tickersToFetch.map((ticker) => {
+        return api
+          .get('/stock/split/' + ticker, {
+            params: {},
+          })
+          .then((response) => {
+            // console.log(`✅ Loaded history for ${ticker}`)
+            this._splitHistory[ticker] = response.data
+          })
+          .catch((error) => {
+            console.log(`⏳ ${ticker} needs rate-limited fetch ${error}`)
+            failedTickers.push(ticker)
+          })
+      })
+
+      await Promise.all(promises)
+
+      // PHASE 2: If any failed (rate limited), process them in batches
+      if (failedTickers.length === 0) {
+        console.log('✅ All stock splits loaded from cache')
+        return
+      }
+
+      console.log(`📦 Queueing ${failedTickers.length} stocks for rate-limited batch processing`)
+
+      const BATCH_SIZE = 5
+      const DELAY_MS = 60000 // 60 seconds
+
+      for (let i = 0; i < failedTickers.length; i += BATCH_SIZE) {
+        const batch = failedTickers.slice(i, i + BATCH_SIZE)
+
+        console.log(
+          `Processing batch ${Math.floor(i / BATCH_SIZE) + 1}/${Math.ceil(failedTickers.length / BATCH_SIZE)}: ${batch.join(', ')}`,
+        )
+
+        // Fetch all in current batch simultaneously
+        const batchPromises = batch.map((ticker) => {
+          return api
+            .get('/stock/split/' + ticker, {
+              params: {},
+            })
+            .then((response) => {
+              // console.log(`✅ Loaded history for ${ticker}`)
+              this._splitHistory[ticker] = response.data
+            })
+            .catch((error) => {
+              console.error(`❌ Failed to load split for ${ticker}:`, error)
+            })
+        })
+
+        await Promise.all(batchPromises)
+
+        // Wait before next batch (unless this was the last batch)
+        if (i + BATCH_SIZE < failedTickers.length) {
+          console.log(`⏸️  Waiting 60 seconds before next batch...`)
+          await new Promise((resolve) => setTimeout(resolve, DELAY_MS))
+        }
+      }
+
+      console.log('✅ All stock splits loaded')
     },
     getStockAnalysis(ticker) {
       let loadedInfo = this.loadedInfo[ticker]

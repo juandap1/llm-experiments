@@ -484,6 +484,45 @@ def get_stock_history(ticker: str, db: MySQLClient = Depends(get_db)):
         print(f"Error pulling stock history: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
+@app.get("/stock/split/{ticker}")
+def get_stock_split(ticker: str, db: MySQLClient = Depends(get_db)):
+    ticker = ticker.upper()
+    try:
+        splits = db.fetch_all("SELECT * FROM split_history WHERE ticker = %s", (ticker,))
+        if splits:
+            return splits
+        checked_split = db.fetch_one("SELECT checked_split FROM tickers WHERE ticker = %s", (ticker,))
+        if checked_split and checked_split['checked_split']:
+            return []
+        client = RESTClient(massive_token)
+        aggs = []
+        for a in client.list_splits(ticker):
+            aggs.append(a)
+        records_to_insert = []
+        json_response = []
+        for a in aggs:
+            record = (
+                ticker,
+                float(a.split_from), 
+                float(a.split_to), 
+                a.execution_date 
+            )
+            records_to_insert.append(record)
+            json_response.append({
+                "ticker": ticker,
+                "split_from": float(a.split_from),
+                "split_to": float(a.split_to),
+                "execution_date": a.execution_date,
+            })
+        if records_to_insert:
+            rows_inserted = db.insert_many_splits(ticker, records_to_insert)
+            print(f"✅ Successfully inserted {rows_inserted} split records for {ticker}.")
+            return json_response
+        return []
+    except Exception as e:
+        print(f"Error pulling stock splits: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 @app.get("/logo/{ticker}")
 def get_logo(ticker: str, db: MySQLClient = Depends(get_db)):
     ticker = ticker.upper()

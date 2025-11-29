@@ -1,5 +1,6 @@
 <template>
   <q-page class="basic-page q-pa-md">
+    <q-btn @click="test">Test</q-btn>
     <div class="row q-col-gutter-lg">
       <!-- Left Column: Stats & Dividends -->
       <div class="col-12 col-md-4">
@@ -78,10 +79,23 @@ export default defineComponent({
       store: useStore(),
     }
   },
-
+  methods: {
+    test() {
+      let firstTransactions = this.store.transactions?.filter(
+        (x) => x.transaction_date === '2024-04-22',
+      )
+      if (!firstTransactions) return
+      console.log(firstTransactions.reduce((acc, x) => acc + x.share_count * x.share_price, 0))
+      for (let t of firstTransactions) {
+        console.log(t.ticker, this.store.historyDateMap['2024-04-22']?.[t.ticker])
+      }
+    },
+  },
   mounted() {
     console.log(this.store)
     this.store.batchStockHistoryRequest(this.store.uniqueTickers)
+    this.store.batchStockSplitRequest(this.store.uniqueTickers)
+    this.test()
   },
   computed: {
     allTransactions() {
@@ -106,6 +120,7 @@ export default defineComponent({
     'holdings.length': {
       handler() {
         this.store.batchStockHistoryRequest(this.store.uniqueTickers)
+        this.store.batchStockSplitRequest(this.store.uniqueTickers)
       },
     },
   },

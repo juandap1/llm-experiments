@@ -188,3 +188,33 @@ class MySQLClient:
                     else:
                         print(f"❌ Batch insert failed after {MAX_RETRIES} attempts. Final Error: {e}")
                         raise
+
+    def insert_many_splits(self, ticker, split_data_list):
+        """
+        Inserts a list of split records using executemany for efficiency.
+        split_data_list should be a list of tuples: 
+        [(split_from, split_to, date), ...]
+        """
+        MAX_RETRIES = 2
+        
+        # Base SQL statement for the price_history table
+        sql = """
+            INSERT INTO split_history 
+            (ticker, split_from, split_to, execution_date)
+            VALUES (%s, %s, %s, %s)
+        """
+        for attempt in range(MAX_RETRIES):
+            self.ensure_connected() 
+            with self.connection.cursor() as cursor:
+                try:
+                    # Use executemany for batch insertion
+                    cursor.executemany(sql, split_data_list)
+                    cursor.execute("UPDATE tickers SET checked_split = %s WHERE ticker = %s", (datetime.now(), ticker))
+                    return cursor.rowcount 
+                except Exception as e:
+                    if attempt < MAX_RETRIES - 1:
+                        print(f"⚠️ Batch insert failed on attempt {attempt + 1}. Retrying...")
+                        continue
+                    else:
+                        print(f"❌ Batch insert failed after {MAX_RETRIES} attempts. Final Error: {e}")
+                        raise
