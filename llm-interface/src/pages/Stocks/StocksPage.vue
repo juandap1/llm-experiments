@@ -81,7 +81,7 @@ export default defineComponent({
 
   mounted() {
     console.log(this.store)
-    this.store.batchStockHistoryRequest(this.store.currently_holding)
+    this.store.batchStockHistoryRequest(this.store.uniqueTickers)
   },
   computed: {
     allTransactions() {
@@ -105,7 +105,7 @@ export default defineComponent({
   watch: {
     'holdings.length': {
       handler() {
-        this.store.batchStockHistoryRequest(this.store.currently_holding)
+        this.store.batchStockHistoryRequest(this.store.uniqueTickers)
       },
     },
   },

@@ -12,6 +12,11 @@ export const useStore = defineStore('counter', {
     transactions: (state) => state._transactions,
     loadedInfo: (state) => state._loadedInfo,
     history: (state) => state._history,
+    uniqueTickers: (state) => {
+      let tickers = state.transactions?.map((x) => x.ticker)
+      if (tickers != null) return Array.from(new Set(tickers))
+      return []
+    },
     holding_map: (state) =>
       state.transactions
         ?.slice()
@@ -79,6 +84,14 @@ export const useStore = defineStore('counter', {
         else return acc - item.share_count * item.share_price
       }, 0)
     },
+    historyDateMap: (state) =>
+      Object.values(state._history)
+        .flat()
+        .reduce((acc, item) => {
+          if (!acc[item.date]) acc[item.date] = {}
+          acc[item.date][item.ticker] = item.close_price
+          return acc
+        }, {}),
     portfolioHistory(state) {
       if (!state._transactions || !state._history) return []
 

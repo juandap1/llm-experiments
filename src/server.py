@@ -428,7 +428,7 @@ def get_stock_history(ticker: str, db: MySQLClient = Depends(get_db)):
     ticker = ticker.upper()
     try:
         history = db.fetch_all("""
-            SELECT date, open_price, close_price, low, high 
+            SELECT ticker, date, open_price, close_price, low, high 
             FROM price_history 
             WHERE ticker = %s 
             ORDER BY date ASC
@@ -452,6 +452,7 @@ def get_stock_history(ticker: str, db: MySQLClient = Depends(get_db)):
             )
             records_to_insert.append(record)
             json_response.append({
+                "ticker": ticker,
                 "date": datetime.datetime.fromtimestamp(a.timestamp / 1000).strftime('%Y-%m-%d'),
                 "open_price": float(a.open),
                 "close_price": float(a.close),
