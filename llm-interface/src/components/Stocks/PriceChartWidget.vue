@@ -1,10 +1,17 @@
 <template>
   <div class="q-mb-md">
     <div class="widget-header">
-      <div class="price-wrapper">
-        <h4>${{ history.at(-1)?.value.toFixed(2) }}</h4>
-        <span v-if="priceChange >= 0" class="price-change positive">+{{ priceChange }}%</span>
-        <span v-else class="price-change negative">{{ priceChange }}%</span>
+      <div class="header-info">
+        <div class="text-grey-5 text-weight-medium q-mb-xs">Portfolio Balance</div>
+        <div class="price-wrapper">
+          <h4 class="q-my-none">${{ portfolioBalance?.toFixed(2) }}</h4>
+          <span :class="allTimeReturn >= 0 ? 'positive' : 'negative'" class="price-change q-ml-sm">
+            {{ allTimeReturn >= 0 ? '+' : '' }}{{ allTimeReturn }}%
+          </span>
+        </div>
+        <div class="invested-row q-mt-sm text-grey-5">
+          Invested: <span class="text-white q-ml-xs">${{ invested?.toFixed(2) }}</span>
+        </div>
       </div>
       <div class="range-toolbar">
         <div
@@ -17,10 +24,6 @@
           {{ r }}
         </div>
       </div>
-      <!-- <button class="alt-btn" @click="addModal = true">
-        <q-icon name="fas fa-plus" />
-        Add
-      </button> -->
     </div>
     <canvas ref="pchart"></canvas>
   </div>
@@ -39,6 +42,14 @@ export default defineComponent({
       type: Array,
       required: true,
       default: () => [],
+    },
+    portfolioBalance: {
+      type: Number,
+      default: 0,
+    },
+    invested: {
+      type: Number,
+      default: 0,
     },
   },
   setup() {
@@ -337,12 +348,9 @@ export default defineComponent({
     //   if (this.store.history?.['MSFT'] == null) return []
     //   return this.store.history['MSFT']
     // },
-    priceChange() {
-      if (this.history.length == 0) return 0
-      let reduced = this.reduceDateRange()
-      let first = reduced[0].value
-      let last = reduced.at(-1).value
-      let change = ((last - first) / first) * 100
+    allTimeReturn() {
+      if (!this.invested) return 0
+      let change = ((this.portfolioBalance - this.invested) / this.invested) * 100
       return Math.round(change * 100) / 100
     },
   },
