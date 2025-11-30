@@ -39,7 +39,6 @@ export const useStore = defineStore('counter', {
     holding_map: (state) =>
       state.adjustedTransactions
         ?.slice()
-        .filter((x) => !new Set(['SPMO', 'SCHD', 'VOO', 'QQQM', 'COF', 'FDVV']).has(x.ticker))
         .reverse()
         .reduce((acc, item) => {
           if (acc[item.ticker] == null) {
@@ -99,8 +98,6 @@ export const useStore = defineStore('counter', {
       }, {}),
     invested: (state) => {
       return state.transactions?.reduce((acc, item) => {
-        let skip = new Set(['SPMO', 'SCHD', 'VOO', 'QQQM', 'COF', 'FDVV'])
-        if (skip.has(item.ticker)) return acc
         if (item.buying) return acc + item.share_count * item.share_price
         else return acc - item.share_count * item.share_price
       }, 0)
@@ -243,10 +240,8 @@ export const useStore = defineStore('counter', {
 
         // Replay transactions up to this date to get holdings and invested amount
         const holdingsAtDate = {}
-        const skip = new Set(['SPMO', 'SCHD', 'VOO', 'QQQM', 'COF', 'FDVV'])
         const transactionsUpToDate = this.adjustedTransactions
           .filter((t) => t.transaction_date <= date)
-          .filter((t) => !skip.has(t.ticker))
           .reverse()
 
         // Apply FIFO logic to build holdings at this date

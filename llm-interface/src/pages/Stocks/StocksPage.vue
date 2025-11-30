@@ -99,9 +99,7 @@ export default defineComponent({
         .sort((a, b) => b.value - a.value)
     },
     portfolioBalance() {
-      return this.holdings
-        .filter((x) => !new Set(['SPMO', 'SCHD', 'VOO', 'QQQM', 'COF', 'FDVV']).has(x.ticker))
-        .reduce((acc, x) => acc + x.value, 0)
+      return this.holdings.reduce((acc, x) => acc + x.value, 0)
     },
   },
   watch: {
