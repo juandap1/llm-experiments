@@ -7,28 +7,27 @@ export const useStore = defineStore('counter', {
     _loadedInfo: {},
     _history: {},
     _splitHistory: {},
+    profitLossHistory: [],
   }),
 
   getters: {
     transactions: (state) => state._transactions,
     adjustedTransactions: (state) => {
       if (!state._transactions) return []
-      return state._transactions
-        .filter((t) => t.ticker == 'NVDA')
-        .map((t) => {
-          let transaction = { ...t }
-          const splits = state._splitHistory[transaction.ticker]
-          if (splits && Array.isArray(splits)) {
-            splits.forEach((split) => {
-              if (new Date(split.execution_date) > new Date(transaction.transaction_date)) {
-                const ratio = split.split_to / split.split_from
-                transaction.share_count *= ratio
-                transaction.share_price /= ratio
-              }
-            })
-          }
-          return transaction
-        })
+      return state._transactions.map((t) => {
+        let transaction = { ...t }
+        const splits = state._splitHistory[transaction.ticker]
+        if (splits && Array.isArray(splits)) {
+          splits.forEach((split) => {
+            if (new Date(split.execution_date) > new Date(transaction.transaction_date)) {
+              const ratio = split.split_to / split.split_from
+              transaction.share_count *= ratio
+              transaction.share_price /= ratio
+            }
+          })
+        }
+        return transaction
+      })
     },
     loadedInfo: (state) => state._loadedInfo,
     history: (state) => state._history,
@@ -38,8 +37,9 @@ export const useStore = defineStore('counter', {
       return []
     },
     holding_map: (state) =>
-      state.transactions
+      state.adjustedTransactions
         ?.slice()
+        .filter((x) => !new Set(['SPMO', 'SCHD', 'VOO', 'QQQM', 'COF', 'FDVV']).has(x.ticker))
         .reverse()
         .reduce((acc, item) => {
           if (acc[item.ticker] == null) {
@@ -89,9 +89,10 @@ export const useStore = defineStore('counter', {
     value_map: (state) =>
       state.currently_holding?.reduce((acc, item) => {
         let asset = state.loadedInfo[item]
-        if (!asset?.latest_price || asset.latest_price == -1) return acc
+        let latest_price = state.priceMap[item] || asset?.latest_price
+        if (!latest_price) return acc
         let val = state.holding_map[item].reduce((value, transaction) => {
-          return value + transaction.shares * asset.latest_price
+          return value + transaction.shares * latest_price
         }, 0)
         acc[item] = val
         return acc
@@ -113,7 +114,7 @@ export const useStore = defineStore('counter', {
           return acc
         }, {}),
     portfolioHistory(state) {
-      if (!state._transactions || !state._history) return []
+      if (!state.adjustedTransactions || !state._history) return []
 
       // Get all unique dates from all price histories
       const allDates = new Set()
@@ -133,7 +134,7 @@ export const useStore = defineStore('counter', {
 
         // Replay transactions up to this date to get holdings
         const holdingsAtDate = {}
-        const transactionsUpToDate = state._transactions
+        const transactionsUpToDate = state.adjustedTransactions
           .filter((t) => t.transaction_date <= date)
           .sort((a, b) => new Date(a.transaction_date) - new Date(b.transaction_date))
 
@@ -194,12 +195,26 @@ export const useStore = defineStore('counter', {
 
       return portfolioData
     },
-    profitLossOverTime(state) {
-      if (!state._transactions || !state._history) return []
+    priceMap: (state) => {
+      if (!state._history) return {}
+      return Object.entries(state._history).reduce((acc, [ticker, history]) => {
+        if (!history) return acc
+        acc[ticker] = history[history.length - 1].close_price
+        return acc
+      }, {})
+    },
+  },
+
+  actions: {
+    calculateProfitLossHistory() {
+      if (!this.adjustedTransactions || !this._history) {
+        this.profitLossHistory = []
+        return
+      }
 
       // Get all unique dates from all price histories
       const allDates = new Set()
-      Object.values(state._history).forEach((history) => {
+      Object.values(this._history).forEach((history) => {
         if (history && Array.isArray(history)) {
           history.forEach((entry) => {
             if (entry.date) allDates.add(entry.date)
@@ -209,6 +224,18 @@ export const useStore = defineStore('counter', {
 
       const sortedDates = Array.from(allDates).sort()
 
+      // Build lookup map for prices
+      const priceMap = {}
+      Object.entries(this._history).forEach(([ticker, history]) => {
+        if (!history) return
+        priceMap[ticker] = {}
+        history.forEach((entry) => {
+          if (entry.date && entry.close_price) {
+            priceMap[ticker][entry.date] = entry.close_price
+          }
+        })
+      })
+
       // Build profit/loss for each date
       const profitLossData = sortedDates.map((date) => {
         let totalValue = 0
@@ -216,9 +243,11 @@ export const useStore = defineStore('counter', {
 
         // Replay transactions up to this date to get holdings and invested amount
         const holdingsAtDate = {}
-        const transactionsUpToDate = state._transactions
+        const skip = new Set(['SPMO', 'SCHD', 'VOO', 'QQQM', 'COF', 'FDVV'])
+        const transactionsUpToDate = this.adjustedTransactions
           .filter((t) => t.transaction_date <= date)
-          .sort((a, b) => new Date(a.transaction_date) - new Date(b.transaction_date))
+          .filter((t) => !skip.has(t.ticker))
+          .reverse()
 
         // Apply FIFO logic to build holdings at this date
         transactionsUpToDate.forEach((transaction) => {
@@ -252,7 +281,7 @@ export const useStore = defineStore('counter', {
                 lots.shift()
               }
             }
-
+            if (lots.length == 1 && lots[0].shares * lots[0].cost_per_share < 1) lots.shift()
             if (lots.length === 0) delete holdingsAtDate[ticker]
           }
         })
@@ -262,31 +291,27 @@ export const useStore = defineStore('counter', {
           const lots = holdingsAtDate[ticker]
           const totalShares = lots.reduce((sum, lot) => sum + lot.shares, 0)
 
-          // Find price for this ticker on this date
-          const history = state._history[ticker]
-          if (history && Array.isArray(history)) {
-            const priceEntry = history.find((entry) => entry.date === date)
-            if (priceEntry && priceEntry.close_price) {
-              totalValue += totalShares * priceEntry.close_price
-            }
+          if (this.historyDateMap[date][ticker]) {
+            totalValue += totalShares * this.historyDateMap[date][ticker]
+          } else {
+            totalValue += totalShares * this.priceMap[ticker]
           }
         })
 
         return {
           date,
-          value: totalValue,
+          value: this.invested + (totalValue - totalInvested),
+          worth: totalValue,
           invested: totalInvested,
           profitLoss: totalValue - totalInvested,
           profitLossPercent:
             totalInvested > 0 ? ((totalValue - totalInvested) / totalInvested) * 100 : 0,
+          holdingsAtDate,
         }
       })
 
-      return profitLossData
+      this.profitLossHistory = profitLossData
     },
-  },
-
-  actions: {
     getStockInfo(ticker, refresh = false) {
       if (this.loadedInfo[ticker] && !refresh) return
       api
@@ -326,6 +351,7 @@ export const useStore = defineStore('counter', {
           this._transactions = response.data
           let uniqueStocks = new Set(response.data.map((x) => x.ticker))
           this.batchStockInfoRequest(Array.from(uniqueStocks))
+          this.calculateProfitLossHistory()
         })
         .catch(console.error)
     },
@@ -349,6 +375,7 @@ export const useStore = defineStore('counter', {
 
       if (tickersToFetch.length === 0) {
         console.log('All stock histories already loaded')
+        this.calculateProfitLossHistory()
         return
       }
       // PHASE 1: Try all requests at once (cached requests will succeed instantly)
@@ -373,6 +400,7 @@ export const useStore = defineStore('counter', {
       // PHASE 2: If any failed (rate limited), process them in batches
       if (failedTickers.length === 0) {
         console.log('✅ All stock histories loaded from cache')
+        this.calculateProfitLossHistory()
         return
       }
 
@@ -413,11 +441,13 @@ export const useStore = defineStore('counter', {
       }
 
       console.log('✅ All stock histories loaded')
+      this.calculateProfitLossHistory()
     },
     async batchStockSplitRequest(tickers) {
       const tickersToFetch = tickers.filter((ticker) => this._splitHistory[ticker] == null)
       if (tickersToFetch.length === 0) {
         console.log('All stock splits already loaded')
+        this.calculateProfitLossHistory()
         return
       }
       // PHASE 1: Try all requests at once (cached requests will succeed instantly)
@@ -442,6 +472,7 @@ export const useStore = defineStore('counter', {
       // PHASE 2: If any failed (rate limited), process them in batches
       if (failedTickers.length === 0) {
         console.log('✅ All stock splits loaded from cache')
+        this.calculateProfitLossHistory()
         return
       }
 
@@ -482,6 +513,7 @@ export const useStore = defineStore('counter', {
       }
 
       console.log('✅ All stock splits loaded')
+      this.calculateProfitLossHistory()
     },
     getStockAnalysis(ticker) {
       let loadedInfo = this.loadedInfo[ticker]

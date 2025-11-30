@@ -1,6 +1,5 @@
 <template>
   <q-page class="basic-page q-pa-md">
-    <q-btn @click="test">Test</q-btn>
     <div class="row q-col-gutter-lg">
       <!-- Left Column: Stats & Dividends -->
       <div class="col-12 col-md-4">
@@ -30,7 +29,7 @@
       <!-- Right Column: Holdings Table -->
       <div class="col-12 col-md-8">
         <div class="basic-widget price-chart-widget">
-          <price-chart-widget :history="[]" />
+          <price-chart-widget :history="store.profitLossHistory" />
         </div>
         <div class="basic-widget">
           <h5 class="q-pa-md">My Holdings</h5>
@@ -79,23 +78,10 @@ export default defineComponent({
       store: useStore(),
     }
   },
-  methods: {
-    test() {
-      let firstTransactions = this.store.transactions?.filter(
-        (x) => x.transaction_date === '2024-04-22',
-      )
-      if (!firstTransactions) return
-      console.log(firstTransactions.reduce((acc, x) => acc + x.share_count * x.share_price, 0))
-      for (let t of firstTransactions) {
-        console.log(t.ticker, this.store.historyDateMap['2024-04-22']?.[t.ticker])
-      }
-    },
-  },
+  methods: {},
   mounted() {
-    console.log(this.store)
     this.store.batchStockHistoryRequest(this.store.uniqueTickers)
     this.store.batchStockSplitRequest(this.store.uniqueTickers)
-    this.test()
   },
   computed: {
     allTransactions() {
@@ -113,7 +99,9 @@ export default defineComponent({
         .sort((a, b) => b.value - a.value)
     },
     portfolioBalance() {
-      return this.holdings.reduce((acc, x) => acc + x.value, 0)
+      return this.holdings
+        .filter((x) => !new Set(['SPMO', 'SCHD', 'VOO', 'QQQM', 'COF', 'FDVV']).has(x.ticker))
+        .reduce((acc, x) => acc + x.value, 0)
     },
   },
   watch: {
