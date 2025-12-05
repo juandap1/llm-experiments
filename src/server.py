@@ -117,7 +117,7 @@ def clean_data_dictionary(data: dict) -> dict:
             
     return cleaned_data
 
-@app.get("/stock/{ticker}")
+@app.get("/stock/ticker/{ticker}")
 def get_stock_info(ticker: str, db: MySQLClient = Depends(get_db)):
     ticker = ticker.upper()
     try:

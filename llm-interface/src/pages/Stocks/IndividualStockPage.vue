@@ -2,14 +2,14 @@
   <q-page class="basic-page">
     <div class="stock-header">
       <div class="stock-logo">
-        <img src="http://localhost:3141/logo/MSFT" alt="Stock ticker logo" />
+        <img :src="`http://localhost:3141/logo/${ticker}`" alt="Stock ticker logo" />
       </div>
       <div>
         <div class="stock-ticker">{{ stockInfo?.ticker }}</div>
         <div class="stock-name">{{ stockInfo?.name }}</div>
       </div>
     </div>
-    <price-chart-widget />
+    <price-chart-widget :history="stockHistory" />
     <div class="analysis-widget" v-if="analysis">
       <h6><q-icon name="fas fa-star-of-life" /> {{ analysis['general_headline'] }}</h6>
       <div class="analysis-event" v-for="e in analysis['events']" :key="e">
@@ -43,18 +43,29 @@ export default defineComponent({
   name: 'IndividualStockPage',
   components: { HistoryWidget, PriceChartWidget },
   mounted() {
-    useStore().getStockInfo('MSFT')
+    useStore().getStockInfo(this.ticker)
   },
   computed: {
+    ticker() {
+      return this.$route.params.ticker
+    },
     stockInfo() {
-      return useStore().loadedInfo['MSFT']
+      return useStore().loadedInfo[this.ticker]
+    },
+    stockHistory() {
+      return useStore().history?.[this.ticker].map((x) => {
+        return {
+          ...x,
+          value: x.close_price,
+        }
+      })
     },
     analysis() {
       if (!this.stockInfo?.analysis || this.stockInfo.analysis == 'loading...') return null
       return JSON.parse(this.stockInfo.analysis)
     },
     stockTransactions() {
-      return useStore().transactions?.filter((x) => x.ticker == 'MSFT')
+      return useStore().transactions?.filter((x) => x.ticker == this.ticker)
     },
   },
 })

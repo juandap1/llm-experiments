@@ -45,7 +45,10 @@ export default defineComponent({
   components: {},
 
   setup() {
-    return {}
+    const store = useStore()
+    return {
+      store,
+    }
   },
   data() {
     return {
@@ -54,6 +57,27 @@ export default defineComponent({
   },
   mounted() {
     useStore().getTransactions()
+  },
+  computed: {
+    holdings() {
+      if (!this.store.currently_holding) return []
+      return this.store.currently_holding
+        .map((x) => {
+          return {
+            ticker: x,
+            value: this.store.value_map?.[x] || 0,
+          }
+        })
+        .sort((a, b) => b.value - a.value)
+    },
+  },
+  watch: {
+    'holdings.length': {
+      handler() {
+        this.store.batchStockHistoryRequest(this.store.uniqueTickers)
+        this.store.batchStockSplitRequest(this.store.uniqueTickers)
+      },
+    },
   },
 })
 </script>

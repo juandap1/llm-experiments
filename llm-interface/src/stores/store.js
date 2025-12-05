@@ -310,7 +310,7 @@ export const useStore = defineStore('counter', {
     getStockInfo(ticker, refresh = false) {
       if (this.loadedInfo[ticker] && !refresh) return
       api
-        .get('/stock/' + ticker, {
+        .get('/stock/ticker/' + ticker, {
           params: {},
         })
         .then((response) => {
@@ -318,7 +318,7 @@ export const useStore = defineStore('counter', {
           this._loadedInfo[ticker] = response.data
           if (!response.data.analysis) {
             this._loadedInfo[ticker].analysis = 'loading...'
-            this.getStockAnalysis(ticker)
+            //this.getStockAnalysis(ticker)
           }
         })
         .catch(console.error)

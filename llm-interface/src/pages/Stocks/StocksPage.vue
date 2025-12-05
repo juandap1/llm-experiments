@@ -68,10 +68,7 @@ export default defineComponent({
     }
   },
   methods: {},
-  mounted() {
-    this.store.batchStockHistoryRequest(this.store.uniqueTickers)
-    this.store.batchStockSplitRequest(this.store.uniqueTickers)
-  },
+  mounted() {},
   computed: {
     allTransactions() {
       return useStore().transactions
@@ -89,14 +86,6 @@ export default defineComponent({
     },
     portfolioBalance() {
       return this.holdings.reduce((acc, x) => acc + x.value, 0)
-    },
-  },
-  watch: {
-    'holdings.length': {
-      handler() {
-        this.store.batchStockHistoryRequest(this.store.uniqueTickers)
-        this.store.batchStockSplitRequest(this.store.uniqueTickers)
-      },
     },
   },
 })
