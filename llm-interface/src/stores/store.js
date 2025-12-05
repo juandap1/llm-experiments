@@ -7,6 +7,7 @@ export const useStore = defineStore('counter', {
     _loadedInfo: {},
     _history: {},
     _splitHistory: {},
+    _dividends: {},
     profitLossHistory: [],
   }),
 
@@ -522,6 +523,17 @@ export const useStore = defineStore('counter', {
         .then((response) => {
           console.log(response)
           this._loadedInfo[ticker].analysis = response.data
+        })
+        .catch(console.error)
+    },
+    getStockDividends(ticker) {
+      api
+        .get('/dividend/' + ticker, {
+          params: {},
+        })
+        .then((response) => {
+          console.log(response)
+          this._dividends[ticker] = response.data
         })
         .catch(console.error)
     },

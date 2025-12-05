@@ -218,3 +218,33 @@ class MySQLClient:
                     else:
                         print(f"❌ Batch insert failed after {MAX_RETRIES} attempts. Final Error: {e}")
                         raise
+
+    def insert_dividend_history(self, ticker, dividend_data_list):
+        """
+        Inserts a list of dividend records using executemany for efficiency.
+        dividend_data_list should be a list of tuples: 
+        [(amount, declaration_date, ex_dividend_date, payment_date), ...]
+        """
+        MAX_RETRIES = 2
+        
+        # Base SQL statement for the price_history table
+        sql = """
+            INSERT INTO dividend_history 
+            (ticker, amount, declaration_date, ex_dividend_date, payment_date)
+            VALUES (%s, %s, %s, %s, %s)
+        """
+        for attempt in range(MAX_RETRIES):
+            self.ensure_connected() 
+            with self.connection.cursor() as cursor:
+                try:
+                    # Use executemany for batch insertion
+                    cursor.executemany(sql, dividend_data_list)
+                    cursor.execute("UPDATE tickers SET checked_dividend = %s WHERE ticker = %s", (datetime.now(), ticker))
+                    return cursor.rowcount 
+                except Exception as e:
+                    if attempt < MAX_RETRIES - 1:
+                        print(f"⚠️ Batch insert failed on attempt {attempt + 1}. Retrying...")
+                        continue
+                    else:
+                        print(f"❌ Batch insert failed after {MAX_RETRIES} attempts. Final Error: {e}")
+                        raise

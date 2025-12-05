@@ -29,7 +29,8 @@ CREATE TABLE IF NOT EXISTS tickers(
     analyst_target_price FLOAT,
     ebitda DOUBLE,
     is_etf BOOLEAN,
-    checked_split DATE
+    checked_split DATE,
+    checked_dividend DATE
 );
 
 CREATE TABLE IF NOT EXISTS price_history(

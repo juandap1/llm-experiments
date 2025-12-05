@@ -363,6 +363,7 @@ def get_stock_info_batch(req: BatchStockRequest, db: MySQLClient = Depends(get_d
 
     return final
 
+@app.get("/dividend/{ticker}")
 def get_dividend_history(ticker: str, db: MySQLClient = Depends(get_db)):
     ticker = ticker.upper()
     try:
@@ -375,27 +376,36 @@ def get_dividend_history(ticker: str, db: MySQLClient = Depends(get_db)):
         if history:
             return history
 
-        url = f'https://www.alphavantage.co/query?function=DIVIDEND&symbol={ticker}&apikey={stock_token}'
+        url = f'https://www.alphavantage.co/query?function=DIVIDENDS&symbol={ticker}&apikey={stock_token}'
         r = requests.get(url)
         data = r.json()
         dividend_history = data.get("data", [])
         records_to_insert = []
+        json_response = []
         for d in dividend_history:
-            try:
-                record = (
-                    ticker,
-                    float(d['amount']), 
-                    float(d['declaration_date']), 
-                    float(d['ex_dividend_date']), 
-                    float(d['payment_date'])
-                )
-                records_to_insert.append(record)
-            except (KeyError, ValueError) as e:
-                print(f"Skipping record for {date_str}: {e}")
+            d = clean_data_dictionary(d)
+            if d.get('amount') is None:
                 continue
+            
+            record = (
+                ticker,
+                float(d['amount']), 
+                d['declaration_date'], 
+                d['ex_dividend_date'],
+                d['payment_date']
+            )
+            records_to_insert.append(record)
+            json_response.append({
+                "ticker": ticker,
+                "declaration_date": d['declaration_date'],
+                "amount": d['amount'],
+                "ex_dividend_date": d['ex_dividend_date'],
+                "payment_date": d['payment_date']
+            })
         if records_to_insert:
-            rows_inserted = db.insert_many_prices(ticker, records_to_insert)
+            rows_inserted = db.insert_dividend_history(ticker, records_to_insert)
             print(f"✅ Successfully inserted {rows_inserted} price records for {ticker}.")
+            return json_response
     except Exception as e:
         print(f"Failed to fetch dividend history for {ticker}: {e}")
 

@@ -44,6 +44,7 @@ export default defineComponent({
   components: { HistoryWidget, PriceChartWidget },
   mounted() {
     useStore().getStockInfo(this.ticker)
+    useStore().getStockDividends(this.ticker)
   },
   computed: {
     ticker() {
@@ -53,7 +54,7 @@ export default defineComponent({
       return useStore().loadedInfo[this.ticker]
     },
     stockHistory() {
-      return useStore().history?.[this.ticker].map((x) => {
+      return useStore().history?.[this.ticker]?.map((x) => {
         return {
           ...x,
           value: x.close_price,
