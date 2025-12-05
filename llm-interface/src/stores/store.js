@@ -13,6 +13,7 @@ export const useStore = defineStore('counter', {
 
   getters: {
     transactions: (state) => state._transactions,
+    dividends: (state) => state._dividends,
     adjustedTransactions: (state) => {
       if (!state._transactions) return []
       return state._transactions.map((t) => {
@@ -532,8 +533,10 @@ export const useStore = defineStore('counter', {
           params: {},
         })
         .then((response) => {
-          console.log(response)
-          this._dividends[ticker] = response.data
+          this._dividends[ticker] = response.data.sort(
+            (a, b) => new Date(a.ex_dividend_date) - new Date(b.ex_dividend_date),
+          )
+          console.log(this._dividends[ticker])
         })
         .catch(console.error)
     },

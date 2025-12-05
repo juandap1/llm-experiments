@@ -368,7 +368,7 @@ def get_dividend_history(ticker: str, db: MySQLClient = Depends(get_db)):
     ticker = ticker.upper()
     try:
         history = db.fetch_all("""
-            SELECT declaration_date, amount 
+            SELECT *
             FROM dividend_history 
             WHERE ticker = %s 
             ORDER BY declaration_date ASC
