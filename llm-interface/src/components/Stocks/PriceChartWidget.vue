@@ -493,6 +493,18 @@ export default defineComponent({
     subMetrics() {
       // If individual page AND we have a balance, show the Position Value as secondary
       if (this.individual && this.portfolioBalance) {
+        // user wants the return specific to their position (Total Return), not the chart range
+        if (this.invested > 0) {
+          const change = this.portfolioBalance - this.invested
+          const percent = (change / this.invested) * 100
+          return {
+            current: this.portfolioBalance,
+            change: change,
+            percent: percent,
+          }
+        }
+
+        // Fallback if no invested data
         return {
           label: 'Your Position',
           ...this.rangeMetrics,
