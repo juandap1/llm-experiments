@@ -1,5 +1,5 @@
 <template>
-  <tr class="stock-item" v-if="stockInfo">
+  <tr class="stock-item" v-if="stockInfo" @click="$router.push(`/stocks/ticker/${ticker}`)">
     <th scope="row" class="asset-col text-left">
       <div class="item-info">
         <q-img class="stock-logo" :src="`http://localhost:3141/logo/${ticker}`" loading="lazy" />
@@ -9,8 +9,8 @@
         </div>
       </div>
     </th>
-    <td class="text-right">${{ stockInfo.latest_price.toFixed(2) }}</td>
     <td class="text-right">{{ holding.toFixed(2) }}</td>
+    <td class="text-right">${{ stockInfo.latest_price.toFixed(2) }}</td>
     <td class="text-right">${{ avgCost.toFixed(2) }}</td>
     <td class="text-right font-weight-bold">${{ value.toFixed(2) }}</td>
     <td class="text-right">
@@ -86,6 +86,7 @@ export default defineComponent({
 .stock-item {
   border-bottom: 1px solid var(--border-color);
   transition: background-color 0.2s ease;
+  cursor: pointer;
 
   &:hover {
     background-color: rgba(255, 255, 255, 0.03);

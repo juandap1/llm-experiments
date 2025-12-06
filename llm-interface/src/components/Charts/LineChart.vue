@@ -21,6 +21,9 @@ export default defineComponent({
       required: true,
       default: () => [],
     },
+    dataLabel: {
+      type: String,
+    },
   },
   setup() {
     return {
@@ -45,7 +48,7 @@ export default defineComponent({
         ),
         datasets: [
           {
-            label: 'MSFT',
+            label: this.dataLabel,
             data: this.data,
             backgroundColor: '#06d671',
             borderColor: '#06d671',

@@ -31,6 +31,7 @@
         <line-chart
           :labels="dividendHistory?.map((x) => x.ex_dividend_date)"
           :data="dividendHistory?.map((x) => x.amount)"
+          :dataLabel="ticker"
         />
       </div>
       <dividend-growth :dividend-growth="dividendGrowth" />

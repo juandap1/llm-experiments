@@ -18,8 +18,8 @@
                 <thead>
                   <tr>
                     <th class="text-left">Asset</th>
-                    <th class="text-right">Price</th>
                     <th class="text-right">Shares</th>
+                    <th class="text-right">Price</th>
                     <th class="text-right">Avg Cost</th>
                     <th class="text-right">Value</th>
                     <th class="text-right">Return</th>
