@@ -3,10 +3,11 @@
     <div class="widget-header">
       <div class="header-info">
         <div
+          v-if="!individual"
           class="text-grey-5 text-weight-bold text-uppercase q-mb-xs"
           style="font-size: 11px; letter-spacing: 1px"
         >
-          {{ ticker || 'Portfolio Value' }}
+          {{ 'Portfolio Value' }}
         </div>
         <div class="price-wrapper q-mb-xs">
           <h3 class="q-my-none text-weight-bolder" style="font-size: 32px">

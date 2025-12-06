@@ -4,8 +4,8 @@
   --primary: #111;
   --secondary: #06d671;
   --txt-color: #eee;
-  --positive: #06d671;
-  --negative: #ff3b3b;
+  --positive: #4caf50;
+  --negative: #ef5350;
 }
 
 body {
@@ -120,6 +120,17 @@ a {
   text-decoration: none;
 }
 
+.section-header {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #aaa;
+  margin-bottom: 10px;
+  border-left: 3px solid #06d671;
+  padding-left: 10px;
+}
+
 .positive {
   color: var(--positive) !important;
   border-color: var(--positive) !important;
@@ -128,4 +139,12 @@ a {
 .negative {
   color: var(--negative) !important;
   border-color: var(--negative) !important;
+}
+
+.text-pos {
+  color: var(--positive) !important;
+}
+
+.text-neg {
+  color: var(--negative) !important;
 }
