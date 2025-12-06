@@ -9,34 +9,61 @@
         <div class="stock-name">{{ stockInfo?.name }}</div>
       </div>
     </div>
-    <price-chart-widget
-      :history="stockHistory"
-      :portfolioBalance="value"
-      :invested="invested"
-      :ticker="ticker"
-      individual
-    />
-    <div class="analysis-widget" v-if="analysis">
-      <h6><q-icon name="fas fa-star-of-life" /> {{ analysis['general_headline'] }}</h6>
-      <div class="analysis-event" v-for="e in analysis['events']" :key="e">
-        <div class="ae-title">{{ e.headline }}</div>
-        <div class="ae-content">{{ e.summary }}</div>
-      </div>
-      <div class="analysis-event">
-        <div class="ae-title">Broader look: Market and sector context</div>
-        <div class="ae-content">{{ analysis['market_summary'] }}</div>
-      </div>
+    <div class="q-mb-lg">
+      <q-tabs
+        v-model="tab"
+        class="custom-tabs"
+        indicator-color="transparent"
+        active-color="white"
+        align="left"
+        dense
+        no-caps
+        shrink
+      >
+        <q-tab name="overview" label="Overview" :ripple="false" />
+        <q-tab name="dividends" label="Dividends" :ripple="false" />
+        <q-tab name="history" label="History" :ripple="false" />
+      </q-tabs>
     </div>
-    <div class="q-my-md">
-      <h6>Profile</h6>
-      <div class="stock-desc">{{ stockInfo?.description }}</div>
-      <div>
-        <span class="tag">{{ stockInfo?.sector }}</span>
-        <span class="tag">{{ stockInfo?.industry }}</span>
-      </div>
-    </div>
-    <individual-dividend-view :ticker="ticker" />
-    <history-widget :transactions="stockTransactions" />
+
+    <q-tab-panels v-model="tab" animated class="bg-transparent text-white">
+      <q-tab-panel name="overview" class="q-pa-none">
+        <price-chart-widget
+          :history="stockHistory"
+          :portfolioBalance="value"
+          :invested="invested"
+          :ticker="ticker"
+          individual
+        />
+        <div class="analysis-widget" v-if="analysis">
+          <h6><q-icon name="fas fa-star-of-life" /> {{ analysis['general_headline'] }}</h6>
+          <div class="analysis-event" v-for="e in analysis['events']" :key="e">
+            <div class="ae-title">{{ e.headline }}</div>
+            <div class="ae-content">{{ e.summary }}</div>
+          </div>
+          <div class="analysis-event">
+            <div class="ae-title">Broader look: Market and sector context</div>
+            <div class="ae-content">{{ analysis['market_summary'] }}</div>
+          </div>
+        </div>
+        <div class="q-my-md">
+          <h6>Profile</h6>
+          <div class="stock-desc">{{ stockInfo?.description }}</div>
+          <div>
+            <span class="tag">{{ stockInfo?.sector }}</span>
+            <span class="tag">{{ stockInfo?.industry }}</span>
+          </div>
+        </div>
+      </q-tab-panel>
+
+      <q-tab-panel name="dividends" class="q-pa-none">
+        <individual-dividend-view :ticker="ticker" />
+      </q-tab-panel>
+
+      <q-tab-panel name="history" class="q-pa-none">
+        <history-widget :transactions="stockTransactions" />
+      </q-tab-panel>
+    </q-tab-panels>
   </q-page>
 </template>
 
@@ -50,6 +77,11 @@ import IndividualDividendView from 'src/components/Stocks/IndividualDividendView
 export default defineComponent({
   name: 'IndividualStockPage',
   components: { HistoryWidget, PriceChartWidget, IndividualDividendView },
+  data() {
+    return {
+      tab: 'overview',
+    }
+  },
   mounted() {
     useStore().getStockInfo(this.ticker)
     useStore().getStockDividends(this.ticker)
@@ -169,6 +201,46 @@ export default defineComponent({
   .ae-content {
     font-weight: 500;
     color: #ccc;
+  }
+}
+
+.custom-tabs {
+  background: transparent;
+  padding: 0;
+
+  :deep(.q-tab) {
+    min-height: 32px;
+    border-radius: 20px;
+    padding: 0 16px;
+    margin-right: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #777;
+    transition: all 0.2s ease;
+    text-transform: capitalize;
+
+    &.q-tab--active {
+      color: #fff;
+      background: #333; /* Dark pill background */
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+
+      .q-tab__content::after {
+        display: none; /* No dot */
+      }
+    }
+
+    &:hover:not(.q-tab--active) {
+      color: #aaa;
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .q-tab__indicator {
+      display: none;
+    }
+
+    .q-tab__content {
+      padding: 0;
+    }
   }
 }
 </style>

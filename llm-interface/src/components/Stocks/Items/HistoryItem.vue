@@ -1,20 +1,29 @@
 <template>
   <div class="hist-item">
-    <div class="hist-row main">
-      <div>{{ ticker }} market buy</div>
-      <div>
-        ${{ cost }}
-        <span v-if="priceChange >= 0" class="price-change positive"
-          >+{{ priceChange.toFixed(2) }}%</span
-        >
-        <span v-else class="price-change negative">{{ priceChange.toFixed(2) }}%</span>
+    <!-- Icon / Type Indicator -->
+    <div class="hi-icon">
+      <q-icon name="fas fa-arrow-down" color="green-4" size="12px" />
+    </div>
+
+    <!-- Main Details -->
+    <div class="hi-content">
+      <div class="hi-header">
+        <span class="hi-ticker">{{ ticker }}</span>
+        <span class="hi-action">Market Buy</span>
+      </div>
+      <div class="hi-sub">{{ share_count }} shares @ ${{ share_price.toFixed(2) }}</div>
+    </div>
+
+    <!-- Date (Centered-ish or Right aligned next to values) -->
+    <div class="hi-date">{{ date }}</div>
+
+    <!-- Financials -->
+    <div class="hi-financials">
+      <div class="hi-cost">${{ cost }}</div>
+      <div class="price-change" :class="priceChange >= 0 ? 'text-green-4' : 'text-red-4'">
+        {{ priceChange >= 0 ? '+' : '' }}{{ priceChange.toFixed(2) }}%
       </div>
     </div>
-    <div class="hist-row alt">
-      <div>{{ date }}</div>
-      <div>{{ share_count }} shares at ${{ share_price.toFixed(2) }}</div>
-    </div>
-    <hr />
   </div>
 </template>
 
@@ -38,13 +47,12 @@ export default defineComponent({
     date() {
       let d = new Date(this.transaction_date)
       const options = {
-        month: 'short', // "Sep"
-        day: 'numeric', // "21"
-        year: 'numeric', // "2025"
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
         timeZone: 'UTC',
       }
-      const formattedDate = new Intl.DateTimeFormat('en-US', options).format(d)
-      return formattedDate
+      return new Intl.DateTimeFormat('en-US', options).format(d)
     },
     stockInfo() {
       return useStore().loadedInfo[this.ticker]
@@ -52,6 +60,7 @@ export default defineComponent({
     priceChange() {
       let first = parseFloat(this.share_price)
       let last = parseFloat(this.stockInfo?.latest_price)
+      if (!last) return 0
       let change = ((last - first) / first) * 100
       return Math.round(change * 100) / 100
     },
@@ -60,49 +69,89 @@ export default defineComponent({
 </script>
 <style lang="scss" scoped>
 .hist-item {
-  padding: 0px 10px;
-}
-
-.hist-row {
   display: flex;
-  justify-content: space-between;
+  align-items: center;
+  padding: 16px 12px;
+  background: rgba(255, 255, 255, 0.02);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  transition: background 0.2s ease;
+  border-radius: 8px;
 
-  :last-child {
-    justify-content: flex-end;
+  &:hover {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  &:last-child {
+    border-bottom: none;
   }
 }
 
-.hist-row.main {
-  font-weight: bold;
+.hi-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: rgba(76, 175, 80, 0.15);
+  border-radius: 50%;
+  margin-right: 16px;
 }
 
-.hist-row.alt {
-  font-weight: bold;
-  color: #aaa;
-  font-size: 13px;
+.hi-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
-hr {
-  border: none; /* Remove default borders */
-  height: 1px; /* Set the height of the line */
-  background-color: var(--border-color); /* Set the color of the line */
-  margin: 10px 15px;
+.hi-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 2px;
+}
+
+.hi-ticker {
+  font-weight: 700;
+  font-size: 14px;
+  color: #fff;
+}
+
+.hi-action {
+  font-size: 11px;
+  color: #888;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.hi-sub {
+  font-size: 12px;
+  color: #666;
+}
+
+.hi-date {
+  font-size: 12px;
+  color: #555;
+  margin-right: 24px;
+  font-weight: 500;
+}
+
+.hi-financials {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  min-width: 80px;
+}
+
+.hi-cost {
+  font-weight: 700;
+  font-size: 14px;
+  color: #fff;
+  margin-bottom: 2px;
 }
 
 .price-change {
-  border-radius: 50px;
-  padding: 2px 10px;
-  background-color: rgb(255, 255, 255, 0.1);
-  font-size: 13px;
-}
-
-.price-change.positive {
-  color: #7cff7c;
-  background-color: #7cff7c35;
-}
-
-.price-change.negative {
-  color: #ff7c7c;
-  background-color: #ff7c7c35;
+  font-size: 11px;
+  font-weight: 600;
 }
 </style>

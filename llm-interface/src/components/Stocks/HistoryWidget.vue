@@ -7,11 +7,11 @@
         Add
       </button>
     </div>
-    <q-scroll-area class="hist-scroller" dark>
+    <div class="hist-list">
       <template v-if="transactions != null">
         <history-item v-for="i in transactions" :key="i" v-bind="i" />
       </template>
-    </q-scroll-area>
+    </div>
     <q-dialog v-model="addModal">
       <div class="modal">
         <h6>Add Stock Purchase</h6>
@@ -126,15 +126,15 @@ export default defineComponent({
 </script>
 <style lang="scss" scoped>
 .basic-widget {
-  border: 1px solid var(--border-color);
-  border-radius: 15px;
+  /* Removed border/radius for cleaner integration */
 }
 
 .widget-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px;
+  padding: 10px 0; /* Reduced padding and removed horizontal padding to align with other content */
+  margin-bottom: 10px;
 }
 
 .modal {
@@ -148,8 +148,9 @@ export default defineComponent({
   margin: 20px 0px;
 }
 
-.hist-scroller {
-  height: 270px;
-  padding: 0px 20px;
+.hist-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 </style>
