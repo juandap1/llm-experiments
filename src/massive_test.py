@@ -9,8 +9,8 @@ print(massive_token)
 client = RESTClient(massive_token)
 
 aggs = []
-for a in client.list_aggs("MSFT", 1, "day", "2023-12-31", "2025-11-25"):
+for a in client.list_aggs("MSFT", 1, "day", "2023-12-01", datetime.datetime.now().strftime("%Y-%m-%d")):
     aggs.append(a)
 print(len(aggs))
 print(aggs[0])
-print(datetime.datetime.fromtimestamp(aggs[0].timestamp / 1000).strftime('%Y-%m-%d'))
+print(datetime.datetime.fromtimestamp(aggs[-1].timestamp / 1000).strftime('%Y-%m-%d'))

@@ -186,7 +186,7 @@ class BatchAnalyzer:
         BEGIN JSON OUTPUT NOW. Start with the opening curly brace
         """
         stream = self.client.chat(
-            model='gemma3:1b',
+            model='gemma3:4b',
             messages=[
                 {"role": "system", "content": SYSTEM_MESSAGE},
                 {"role": "user", "content": USER_PROMPT}

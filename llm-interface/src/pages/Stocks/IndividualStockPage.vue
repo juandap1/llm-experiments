@@ -1,13 +1,19 @@
 <template>
   <q-page class="basic-page">
     <div class="stock-header">
-      <div class="stock-logo">
-        <img :src="`http://localhost:3141/logo/${ticker}`" alt="Stock ticker logo" />
+      <div class="flex items-center" style="gap: 15px">
+        <div class="stock-logo">
+          <img :src="`http://localhost:3141/logo/${ticker}`" alt="Stock ticker logo" />
+        </div>
+        <div>
+          <div class="stock-ticker">{{ stockInfo?.ticker }}</div>
+          <div class="stock-name">{{ stockInfo?.name }}</div>
+        </div>
       </div>
-      <div>
-        <div class="stock-ticker">{{ stockInfo?.ticker }}</div>
-        <div class="stock-name">{{ stockInfo?.name }}</div>
-      </div>
+      <q-btn flat no-caps class="refresh-btn" @click="refreshData" :loading="refreshing">
+        <q-icon name="fas fa-sync-alt" size="12px" class="q-mr-sm" />
+        <div>Refresh</div>
+      </q-btn>
     </div>
     <div class="q-mb-lg">
       <q-tabs
@@ -37,6 +43,9 @@
         />
         <div class="analysis-widget" v-if="analysis">
           <h6><q-icon name="fas fa-star-of-life" /> {{ analysis['general_headline'] }}</h6>
+          <div class="text-grey-6 text-italic q-mb-md" style="font-size: 11px">
+            Last Updated: {{ formatDate(stockInfo?.analysis_updated) }}
+          </div>
           <div class="analysis-event" v-for="e in analysis['events']" :key="e">
             <div class="ae-title">{{ e.headline }}</div>
             <div class="ae-content">{{ e.summary }}</div>
@@ -80,12 +89,10 @@ export default defineComponent({
   data() {
     return {
       tab: 'overview',
+      refreshing: false,
     }
   },
-  mounted() {
-    useStore().getStockInfo(this.ticker)
-    useStore().getStockDividends(this.ticker)
-  },
+  mounted() {},
   computed: {
     ticker() {
       return this.$route.params.ticker
@@ -120,7 +127,9 @@ export default defineComponent({
     },
     analysis() {
       if (!this.stockInfo?.analysis || this.stockInfo.analysis == 'loading...') return null
-      return JSON.parse(this.stockInfo.analysis)
+      if (typeof this.stockInfo.analysis == 'string')
+        return JSON.parse(this.removeControlCharacters(this.stockInfo.analysis))
+      return this.stockInfo.analysis
     },
     stockTransactions() {
       return useStore().transactions?.filter((x) => x.ticker == this.ticker)
@@ -130,6 +139,40 @@ export default defineComponent({
     },
   },
   methods: {
+    removeControlCharacters(jsonString) {
+      // Regex: Finds all ASCII control characters (U+0000 to U+001F)
+      // which includes the newlines, tabs, and other non-printable characters.
+      return jsonString.replace(/[\u0000-\u001F]/g, '')
+    },
+    async refreshData() {
+      this.refreshing = true
+      const store = useStore()
+      let response = await store.refreshStock(this.ticker)
+      let data = response.data
+      store._loadedInfo[this.ticker] = {
+        ticker: this.ticker,
+        name: data['name'],
+        description: data['description'],
+        latest_price: data['latest_price'],
+        sector: data['sector'],
+        industry: data['industry'],
+        analysis: data['analysis'],
+        analysis_updated: data['analysis_updated'],
+        book_value: data['book_value'],
+        earnings_per_share: data['earnings_per_share'],
+        revenue_per_share: data['revenue_per_share'],
+        dividend_per_share: data['dividend_per_share'],
+        shares_outstanding: data['shares_outstanding'],
+        analyst_target_price: data['analyst_target_price'],
+        ebitda: data['ebitda'],
+      }
+      store._history[this.ticker] = data.history
+      store._splitHistory[this.ticker] = data.splitHistory
+      store._dividends[this.ticker] = data.dividends
+      setTimeout(() => {
+        this.refreshing = false
+      }, 500)
+    },
     isPaid(dateStr) {
       if (!dateStr) return false
       return new Date(dateStr) <= new Date()
@@ -150,9 +193,25 @@ export default defineComponent({
 <style lang="scss" scoped>
 .stock-header {
   display: flex;
-  gap: 15px;
   align-items: center;
+  justify-content: space-between;
   margin-bottom: 25px;
+}
+
+.refresh-btn {
+  border-radius: 50px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #888;
+  font-weight: 600;
+  font-size: 11px;
+  padding: 4px 12px;
+  min-height: 32px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+  }
 }
 
 .stock-logo {

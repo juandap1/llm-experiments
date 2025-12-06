@@ -117,6 +117,12 @@ def clean_data_dictionary(data: dict) -> dict:
             
     return cleaned_data
 
+def get_ticker_overview(ticker):
+    url = f'https://www.alphavantage.co/query?function=OVERVIEW&symbol={ticker}&apikey={stock_token}'
+    r = requests.get(url)
+    data = r.json()
+    return data
+
 @app.get("/stock/ticker/{ticker}")
 def get_stock_info(ticker: str, db: MySQLClient = Depends(get_db)):
     ticker = ticker.upper()
@@ -156,9 +162,7 @@ def get_stock_info(ticker: str, db: MySQLClient = Depends(get_db)):
                     pass 
 
             if not row or not row["name"] or not row["earnings_per_share"]:
-                url = f'https://www.alphavantage.co/query?function=OVERVIEW&symbol={ticker}&apikey={stock_token}'
-                r = requests.get(url)
-                data = r.json()
+                data = get_ticker_overview(ticker)
                 # Check if data is valid
                 if "Name" in data:
                     db.update_company_data(ticker, data["Name"], data["Description"], data["Sector"], data["Industry"], data["BookValue"], data["DilutedEPSTTM"], data["RevenuePerShareTTM"], data["DividendPerShare"], data["SharesOutstanding"], data["AnalystTargetPrice"], data["EBITDA"])
@@ -170,6 +174,7 @@ def get_stock_info(ticker: str, db: MySQLClient = Depends(get_db)):
                         "sector": data["Sector"],
                         "industry": data["Industry"],
                         "analysis": row["analysis"],
+                        "analysis_updated": row["analysis_updated"],
                         "book_value": data["BookValue"],
                         "earnings_per_share": data["DilutedEPSTTM"],
                         "revenue_per_share": data["RevenuePerShareTTM"],
@@ -188,6 +193,7 @@ def get_stock_info(ticker: str, db: MySQLClient = Depends(get_db)):
                         "sector": row["sector"] if row else "",
                         "industry": row["industry"] if row else "",
                         "analysis": row["analysis"] if row else "",
+                        "analysis_updated": row["analysis_updated"] if row else "",
                         "book_value": row["book_value"] if row else "",
                         "earnings_per_share": row["earnings_per_share"] if row else "",
                         "revenue_per_share": row["revenue_per_share"] if row else "",
@@ -351,6 +357,7 @@ def get_stock_info_batch(req: BatchStockRequest, db: MySQLClient = Depends(get_d
             "sector": row.get("sector", ""),
             "industry": row.get("industry", ""),
             "analysis": row.get("analysis", ""),
+            "analysis_updated": row.get("analysis_updated", ""),
             "book_value": row.get("book_value", -1),
             "earnings_per_share": row.get("earnings_per_share", -1),
             "revenue_per_share": row.get("revenue_per_share", -1),
@@ -586,6 +593,146 @@ def get_stock_analysis(ticker: str = "", company: str = "", db: MySQLClient = De
         return j
     except Exception as e:
         print(f"❌ An unexpected error occurred for getting analysis for {ticker}: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/stock/refresh/{ticker}")
+def refresh_stock(ticker: str, db: MySQLClient = Depends(get_db)):
+    try:
+        ticker = ticker.upper()
+        row = db.fetch_one("SELECT * FROM tickers WHERE ticker = %s", (ticker,))
+        refreshed = row
+        # Pull Latest Company Overview Data
+        data = get_ticker_overview(ticker)
+        if data["Name"]:
+            db.update_company_data(ticker, data["Name"], data["Description"], data["Sector"], data["Industry"], data["BookValue"], data["DilutedEPSTTM"], data["RevenuePerShareTTM"], data["DividendPerShare"], data["SharesOutstanding"], data["AnalystTargetPrice"], data["EBITDA"])
+            refreshed["name"] = data["Name"]
+            refreshed["description"] = data["Description"]
+            refreshed["sector"] = data["Sector"]
+            refreshed["industry"] = data["Industry"]
+            refreshed["book_value"] = data["BookValue"]
+            refreshed["earnings_per_share"] = data["DilutedEPSTTM"]
+            refreshed["revenue_per_share"] = data["RevenuePerShareTTM"]
+            refreshed["dividend_per_share"] = data["DividendPerShare"]
+            refreshed["shares_outstanding"] = data["SharesOutstanding"]
+            refreshed["analyst_target_price"] = data["AnalystTargetPrice"]
+            refreshed["ebitda"] = data["EBITDA"]
+        
+        # Pull Latest Price Data
+        saved_price_history = db.fetch_all("""
+            SELECT ticker, date, open_price, close_price, low, high 
+            FROM price_history 
+            WHERE ticker = %s 
+            ORDER BY date ASC
+        """, (ticker,))
+        last_price_update = saved_price_history[-1]['date'] if saved_price_history else None
+        client = RESTClient(massive_token)
+        aggs = []
+        for a in client.list_aggs(ticker, 1, "day", "2023-12-01", datetime.datetime.now().strftime("%Y-%m-%d")):
+            aggs.append(a)
+        records_to_insert = []
+        for a in aggs:
+            record = (
+                ticker,
+                float(a.open), 
+                float(a.close), 
+                float(a.low), 
+                float(a.high),
+                datetime.datetime.fromtimestamp(a.timestamp / 1000).strftime('%Y-%m-%d') 
+            )
+            if not last_price_update or a.timestamp > datetime.datetime.combine(last_price_update, datetime.time(23,59,59)).timestamp() * 1000:
+                records_to_insert.append(record)
+                saved_price_history.append({
+                    "ticker": ticker,
+                    "date": datetime.datetime.fromtimestamp(a.timestamp / 1000).strftime('%Y-%m-%d'),
+                    "open_price": float(a.open),
+                    "close_price": float(a.close),
+                    "low": float(a.low),
+                    "high": float(a.high)
+                })
+        if records_to_insert:
+            rows_inserted = db.insert_many_prices(ticker, records_to_insert)
+            print(f"✅ Successfully inserted {rows_inserted} price records for {ticker}.")
+        refreshed["price_history"] = saved_price_history
+
+        # Pull Latest Dividend Data
+        saved_div_history = db.fetch_all("""
+            SELECT *
+            FROM dividend_history 
+            WHERE ticker = %s 
+            ORDER BY declaration_date ASC
+        """, (ticker,)) # Pass as tuple
+        last_dividend_check = saved_div_history[-1]['ex_dividend_date'] if saved_div_history else None
+        url = f'https://www.alphavantage.co/query?function=DIVIDENDS&symbol={ticker}&apikey={stock_token}'
+        r = requests.get(url)
+        data = r.json()
+        dividend_history = data.get("data", [])
+        records_to_insert = []
+        for d in dividend_history:
+            d = clean_data_dictionary(d)
+            if d.get('amount') is None:
+                continue
+            
+            record = (
+                ticker,
+                float(d['amount']), 
+                d['declaration_date'], 
+                d['ex_dividend_date'],
+                d['payment_date']
+            )
+            if not last_dividend_check or datetime.datetime.strptime(d['ex_dividend_date'], '%Y-%m-%d') > datetime.datetime.combine(last_dividend_check, datetime.time(23,59,59)):
+                records_to_insert.append(record)
+                saved_div_history.append({
+                    "ticker": ticker,
+                    "declaration_date": d['declaration_date'],
+                    "amount": d['amount'],
+                    "ex_dividend_date": d['ex_dividend_date'],
+                    "payment_date": d['payment_date']
+                })
+        if records_to_insert:
+            rows_inserted = db.insert_dividend_history(ticker, records_to_insert)
+            print(f"✅ Successfully inserted {rows_inserted} price records for {ticker}.")
+        refreshed["dividend_history"] = saved_div_history
+
+        # Pull Latest Split Data
+        splits = db.fetch_all("SELECT * FROM split_history WHERE ticker = %s", (ticker,))
+        last_split_check = splits[-1]['execution_date'] if splits else None
+        aggs = []
+        for a in client.list_splits(ticker):
+            aggs.append(a)
+        records_to_insert = []
+        json_response = []
+        for a in aggs:
+            record = (
+                ticker,
+                float(a.split_from), 
+                float(a.split_to), 
+                a.execution_date 
+            )
+            if not last_split_check or datetime.datetime.strptime(a.execution_date, '%Y-%m-%d') > datetime.datetime.combine(last_split_check, datetime.time(23,59,59)):
+                records_to_insert.append(record)
+                json_response.append({
+                    "ticker": ticker,
+                    "split_from": float(a.split_from),
+                    "split_to": float(a.split_to),
+                    "execution_date": a.execution_date,
+                })
+        if records_to_insert:
+            rows_inserted = db.insert_many_splits(ticker, records_to_insert)
+            print(f"✅ Successfully inserted {rows_inserted} split records for {ticker}.")
+        refreshed["split_history"] = json_response
+
+        # Pull Latest Analysis Data
+        last_analysis_check = row['analysis_updated']
+        analysis = analyzer.generate_analysis(ticker, refreshed["name"])
+        db.update_analysis(ticker, analysis)
+        j = json.loads(analysis)
+        refreshed["analysis"] = j
+
+        return refreshed
+        
+        
+    except Exception as e:
+        print(f"❌ An unexpected error occurred for refreshing stock {ticker}: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":

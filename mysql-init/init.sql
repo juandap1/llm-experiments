@@ -20,7 +20,6 @@ CREATE TABLE IF NOT EXISTS tickers(
     analysis MEDIUMTEXT,
     analysis_updated DATE,
     latest_price FLOAT,
-    latest_date DATE,
     book_value FLOAT,
     earnings_per_share FLOAT,
     revenue_per_share FLOAT,

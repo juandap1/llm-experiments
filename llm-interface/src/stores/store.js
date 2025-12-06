@@ -540,6 +540,11 @@ export const useStore = defineStore('counter', {
         })
         .catch(console.error)
     },
+    refreshStock(ticker) {
+      return api.get('/stock/refresh/' + ticker, {
+        params: {},
+      })
+    },
   },
 })
 
