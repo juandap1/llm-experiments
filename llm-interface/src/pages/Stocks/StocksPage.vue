@@ -8,6 +8,7 @@
               :history="store.profitLossHistory"
               :portfolioBalance="portfolioBalance"
               :invested="store.invested"
+              ticker="My Balance"
             />
           </div>
           <div class="basic-widget">

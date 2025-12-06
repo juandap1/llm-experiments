@@ -536,7 +536,7 @@ export const useStore = defineStore('counter', {
           this._dividends[ticker] = response.data.sort(
             (a, b) => new Date(a.ex_dividend_date) - new Date(b.ex_dividend_date),
           )
-          console.log(this._dividends[ticker])
+          // console.log(this._dividends[ticker])
         })
         .catch(console.error)
     },

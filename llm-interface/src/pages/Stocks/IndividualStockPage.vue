@@ -9,7 +9,13 @@
         <div class="stock-name">{{ stockInfo?.name }}</div>
       </div>
     </div>
-    <price-chart-widget :history="stockHistory" />
+    <price-chart-widget
+      :history="stockHistory"
+      :portfolioBalance="value"
+      :invested="invested"
+      :ticker="ticker"
+      individual
+    />
     <div class="analysis-widget" v-if="analysis">
       <h6><q-icon name="fas fa-star-of-life" /> {{ analysis['general_headline'] }}</h6>
       <div class="analysis-event" v-for="e in analysis['events']" :key="e">
@@ -31,23 +37,82 @@
     </div>
     <div class="q-my-md">
       <h6>Dividends</h6>
-      <div>{{ stockInfo?.dividend_per_share * shareCount }}</div>
-      <div class="stock-desc">${{ stockInfo?.dividend_per_share.toFixed(2) }} per share</div>
-      <div class="dividend-chart">
-        <line-chart
-          :labels="dividendHistory?.map((x) => x.ex_dividend_date)"
-          :data="dividendHistory?.map((x) => x.amount)"
-        />
+
+      <!-- Current Stats -->
+      <div class="row q-col-gutter-md q-mb-lg">
+        <div class="col-4">
+          <div class="stat-label">Yield</div>
+          <div class="stat-value">
+            {{
+              stockInfo?.latest_price
+                ? ((stockInfo.dividend_per_share / stockInfo.latest_price) * 100).toFixed(2)
+                : '-'
+            }}%
+          </div>
+        </div>
+        <div class="col-4">
+          <div class="stat-label">Annual Payout</div>
+          <div class="stat-value">${{ stockInfo?.dividend_per_share.toFixed(2) }}</div>
+        </div>
+        <div class="col-4">
+          <div class="stat-label">Est. Annual Income</div>
+          <div class="stat-value">
+            ${{ (stockInfo?.dividend_per_share * shareCount).toFixed(2) }}
+          </div>
+        </div>
       </div>
-      {{ dividendGrowth }}
-      <div class="row q-gutter-sm q-mt-sm">
-        <template v-for="(data, label) in dividendGrowth" :key="label">
-          <q-badge v-if="data" :color="data.growth >= 0 ? 'green-9' : 'red-9'" text-color="white">
-            <div class="q-mr-xs">{{ label }}:</div>
-            <div style="font-weight: bold">{{ data.growth }}%</div>
-            <q-tooltip> Was ${{ data.pastAmount }} on {{ data.pastDate }} </q-tooltip>
-          </q-badge>
-        </template>
+
+      <!-- Growth Section -->
+      <div class="q-mb-lg">
+        <div class="section-header">Dividend Growth</div>
+        <div class="dividend-chart">
+          <line-chart
+            :labels="dividendHistory?.map((x) => x.ex_dividend_date)"
+            :data="dividendHistory?.map((x) => x.amount)"
+          />
+        </div>
+        <div class="growth-row" v-if="dividendGrowth">
+          <template v-for="(data, label) in dividendGrowth" :key="label">
+            <div v-if="data" class="growth-item">
+              <div class="gi-header">
+                <span class="gi-label">{{ label }} CAGR</span>
+              </div>
+              <div class="gi-value" :class="data.growth >= 0 ? 'text-pos' : 'text-neg'">
+                <q-icon
+                  :name="data.growth >= 0 ? 'fas fa-arrow-up' : 'fas fa-arrow-down'"
+                  size="10px"
+                  class="q-mr-xs"
+                />
+                {{ data.growth }}%
+              </div>
+              <div class="gi-sub">from ${{ data.pastAmount }}</div>
+            </div>
+          </template>
+        </div>
+      </div>
+
+      <!-- Earnings History Section -->
+      <div>
+        <div class="row items-center justify-between q-mb-sm">
+          <div class="section-header">Your Earnings History</div>
+          <div class="total-earned">
+            Total: <span class="text-green-4">${{ totalDividendsEarned.toFixed(2) }}</span>
+          </div>
+        </div>
+        <div class="dividend-list-container" v-if="sortedDividendHistoryDesc.length">
+          <div
+            v-for="div in sortedDividendHistoryDesc"
+            :key="div.ex_dividend_date"
+            class="dividend-card"
+          >
+            <div class="dc-amount" :class="isPaid(div.payment_date) ? 'text-green-4' : ''">
+              +${{ div.earned.toFixed(2) }}
+              <div class="dc-shares">({{ div.sharesOwned.toFixed(2) }} shares)</div>
+            </div>
+            <div class="dc-date">Ex: {{ formatDate(div.ex_dividend_date) }}</div>
+            <div class="dc-pay">Pay: {{ formatDate(div.payment_date) }}</div>
+          </div>
+        </div>
       </div>
     </div>
     <history-widget :transactions="stockTransactions" />
@@ -74,6 +139,17 @@ export default defineComponent({
     },
     stockInfo() {
       return useStore().loadedInfo[this.ticker]
+    },
+    value() {
+      return useStore().value_map[this.ticker]
+    },
+    invested() {
+      return useStore()
+        .adjustedTransactions?.filter((x) => x.ticker == this.ticker)
+        .reduce((acc, x) => {
+          if (x.buying) return acc + x.share_count * x.share_price
+          return acc - x.share_count * x.share_price
+        }, 0)
     },
     stockHistory() {
       return useStore().history?.[this.ticker]?.map((x) => {
@@ -190,6 +266,85 @@ export default defineComponent({
     stockTransactions() {
       return useStore().transactions?.filter((x) => x.ticker == this.ticker)
     },
+    sortedDividendHistoryDesc() {
+      const history = this.dividendHistory
+      const transactions = this.adjustedStockTransactions
+      if (!history || !transactions) return []
+
+      // Create a list with 'earned' amount attached
+      const enriched = history
+        .map((div) => {
+          const exDate = new Date(div.ex_dividend_date)
+
+          // Find holdings BEFORE ex-dividend date
+          const relevantTrans = transactions.filter((t) => new Date(t.transaction_date) < exDate)
+          const sharesOwned = relevantTrans.reduce((acc, t) => {
+            return t.buying ? acc + t.share_count : acc - t.share_count
+          }, 0)
+
+          // Only include positive share counts (floating point errors safety)
+          if (sharesOwned < 0.0001) return null
+
+          return {
+            ...div,
+            earned: sharesOwned * Number(div.amount),
+            sharesOwned: sharesOwned, // optional, good for debug
+          }
+        })
+        .filter(Boolean) // Remove nulls
+
+      return enriched.sort((a, b) => new Date(b.ex_dividend_date) - new Date(a.ex_dividend_date))
+    },
+    adjustedStockTransactions() {
+      return useStore().adjustedTransactions?.filter((x) => x.ticker == this.ticker)
+    },
+    totalDividendsEarned() {
+      const history = this.dividendHistory
+      const transactions = this.adjustedStockTransactions
+      if (!history || !transactions) return 0
+
+      // Sort both ascending by date
+      const sortedDivs = [...history].sort(
+        (a, b) => new Date(a.ex_dividend_date) - new Date(b.ex_dividend_date),
+      )
+
+      let totalEarned = 0
+
+      sortedDivs.forEach((div) => {
+        const exDate = new Date(div.ex_dividend_date)
+
+        // Find holdings BEFORE ex-dividend date
+        const relevantTrans = transactions.filter((t) => new Date(t.transaction_date) < exDate)
+
+        const sharesOwned = relevantTrans.reduce((acc, t) => {
+          return t.buying ? acc + t.share_count : acc - t.share_count
+        }, 0)
+
+        // Assuming dividend history amounts are per-share (split-adjusted if source is adjusted)
+        // If sharesOwned > 0, add to total
+        if (sharesOwned > 0) {
+          totalEarned += sharesOwned * Number(div.amount)
+        }
+      })
+
+      return totalEarned
+    },
+  },
+  methods: {
+    isPaid(dateStr) {
+      if (!dateStr) return false
+      return new Date(dateStr) <= new Date()
+    },
+    formatDate(dateStr) {
+      if (!dateStr) return '-'
+      const d = new Date(dateStr)
+      return d.toLocaleDateString('en-US', {
+        month: 'short',
+        year: '2-digit',
+        day: 'numeric',
+        timeZone: 'UTC',
+      })
+    },
   },
 })
 </script>
@@ -253,5 +408,138 @@ export default defineComponent({
 .dividend-chart {
   margin-top: 15px;
   height: 250px;
+}
+
+.growth-row {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.growth-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.gi-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #888;
+  font-weight: 600;
+}
+
+.gi-value {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 4px 0 2px 0;
+  display: flex;
+  align-items: center;
+}
+
+.gi-sub {
+  font-size: 11px;
+  color: #555;
+  font-weight: 500;
+}
+
+.text-pos {
+  color: #4caf50;
+}
+
+.text-neg {
+  color: #ef5350;
+}
+
+.stat-label {
+  font-size: 11px;
+  color: #888;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.stat-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.dividend-list-container {
+  display: flex;
+  overflow-x: auto;
+  gap: 12px;
+  padding: 8px 0px;
+}
+
+.dividend-list-container::-webkit-scrollbar {
+  height: 6px;
+}
+.dividend-list-container::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 3px;
+}
+.dividend-list-container::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+.dividend-card {
+  min-width: 100px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.2s;
+}
+
+.dividend-card:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+.dc-amount {
+  font-weight: bold;
+  font-size: 15px;
+  color: #fff;
+  margin-bottom: 4px;
+}
+
+.dc-shares {
+  font-size: 11px;
+  font-weight: normal;
+  color: #aaa;
+  margin-left: 2px;
+}
+
+.dc-date,
+.dc-pay {
+  font-size: 10px;
+  color: #888;
+  white-space: nowrap;
+}
+
+.section-header {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #aaa;
+  margin-bottom: 10px;
+  border-left: 3px solid #06d671;
+  padding-left: 10px;
+}
+
+.total-earned {
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
 }
 </style>

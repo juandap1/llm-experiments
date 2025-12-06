@@ -2,30 +2,99 @@
   <div class="q-mb-md">
     <div class="widget-header">
       <div class="header-info">
-        <div class="text-grey-5 text-weight-medium q-mb-xs">Portfolio Balance</div>
-        <div class="price-wrapper">
-          <h4 class="q-my-none">${{ portfolioBalance?.toFixed(2) }}</h4>
-          <span :class="allTimeReturn >= 0 ? 'positive' : 'negative'" class="price-change q-ml-sm">
-            {{ allTimeReturn >= 0 ? '+' : '' }}{{ allTimeReturn }}%
-          </span>
+        <div
+          class="text-grey-5 text-weight-bold text-uppercase q-mb-xs"
+          style="font-size: 11px; letter-spacing: 1px"
+        >
+          {{ ticker || 'Portfolio Value' }}
         </div>
-        <div class="invested-row q-mt-sm text-grey-5">
-          Invested: <span class="text-white q-ml-xs">${{ invested?.toFixed(2) }}</span>
+        <div class="price-wrapper q-mb-xs">
+          <h3 class="q-my-none text-weight-bolder" style="font-size: 32px">
+            ${{ (mainMetrics.current || 0).toFixed(2) }}
+          </h3>
+        </div>
+        <div class="return-row flex items-center">
+          <span
+            :class="mainMetrics.change >= 0 ? 'text-green-4' : 'text-red-4'"
+            class="text-weight-bold q-mr-sm"
+            style="font-size: 15px"
+          >
+            {{ mainMetrics.change >= 0 ? '+' : '' }}${{
+              (Math.abs(mainMetrics.change) || 0).toFixed(2)
+            }}
+            ({{ mainMetrics.change >= 0 ? '+' : '' }}{{ (mainMetrics.percent || 0).toFixed(2) }}%)
+          </span>
+          <span class="text-grey-6" style="font-size: 12px; font-weight: 500">{{
+            dateRangeLabel
+          }}</span>
         </div>
       </div>
-      <div class="range-toolbar">
-        <div
-          class="range-opt"
-          :class="{ selected: r == selectedRange }"
-          @click="selectedRange = r"
-          v-for="r in rangeOptions"
-          :key="r"
-        >
-          {{ r }}
+
+      <div class="header-controls">
+        <div class="range-toolbar">
+          <div
+            class="range-opt"
+            :class="{ selected: r == selectedRange }"
+            @click="selectedRange = r"
+            v-for="r in rangeOptions"
+            :key="r"
+          >
+            {{ r }}
+          </div>
+        </div>
+
+        <div class="holdings-card q-mt-md" v-if="subMetrics || invested">
+          <!-- Position Value & Return -->
+          <div
+            v-if="subMetrics"
+            class="hc-section q-mb-xs q-pb-xs"
+            style="border-bottom: 1px solid rgba(255, 255, 255, 0.1)"
+          >
+            <div
+              class="text-grey-6 text-uppercase"
+              style="font-size: 9px; letter-spacing: 0.5px; margin-bottom: 2px"
+            >
+              My Equity
+            </div>
+            <div class="flex items-center justify-between no-wrap">
+              <span
+                class="text-white text-weight-bold q-mr-md"
+                style="font-size: 16px; line-height: 1.1"
+              >
+                ${{ subMetrics.current.toFixed(2) }}
+              </span>
+              <span
+                :class="subMetrics.change >= 0 ? 'text-green-4' : 'text-red-4'"
+                class="text-weight-bold flex items-center bg-dark-transparent"
+                style="
+                  font-size: 11px;
+                  padding: 2px 6px;
+                  border-radius: 4px;
+                  background: rgba(255, 255, 255, 0.05);
+                "
+              >
+                {{ subMetrics.change >= 0 ? '+' : '' }}{{ subMetrics.percent.toFixed(2) }}%
+              </span>
+            </div>
+          </div>
+
+          <!-- Invested Amount -->
+          <div v-if="invested" class="hc-section">
+            <div class="flex items-center justify-between no-wrap">
+              <span class="text-grey-6 text-uppercase" style="font-size: 9px; letter-spacing: 0.5px"
+                >Cost Basis</span
+              >
+              <span class="text-grey-4 text-weight-medium" style="font-size: 11px"
+                >${{ invested?.toFixed(2) }}</span
+              >
+            </div>
+          </div>
         </div>
       </div>
     </div>
-    <canvas ref="pchart"></canvas>
+    <div class="chart-container">
+      <canvas ref="pchart"></canvas>
+    </div>
   </div>
 </template>
 
@@ -38,6 +107,9 @@ export default defineComponent({
   components: {},
   name: 'PriceChartWidget',
   props: {
+    ticker: {
+      type: String,
+    },
     history: {
       type: Array,
       required: true,
@@ -51,6 +123,9 @@ export default defineComponent({
       type: Number,
       default: 0,
     },
+    individual: {
+      type: Boolean,
+    },
   },
   setup() {
     return {
@@ -62,12 +137,15 @@ export default defineComponent({
   data() {
     return {
       selectedRange: '1YR',
+      filteredHistory: [],
     }
   },
   methods: {
     genChart() {
       if (this.history.length == 0) return
       let reduced = this.reduceDateRange()
+      this.filteredHistory = reduced // Store for computed metrics
+
       const labels = reduced?.map((x) => x.date)
       const data = {
         labels: labels.map((x) =>
@@ -80,11 +158,12 @@ export default defineComponent({
         ),
         datasets: [
           {
-            label: 'MSFT',
+            label: this.ticker,
             data: reduced?.map((x) => x.value),
             backgroundColor: '#06d671',
             borderColor: '#06d671',
             pointRadius: 0,
+            pointHoverRadius: 4,
           },
         ],
       }
@@ -95,11 +174,14 @@ export default defineComponent({
           layout: {
             padding: {
               bottom: 20,
+              top: 10,
             },
           },
           responsive: true,
+          maintainAspectRatio: false,
           interaction: {
             intersect: false,
+            mode: 'index',
           },
           plugins: {
             legend: {
@@ -222,62 +304,87 @@ export default defineComponent({
       this.chart = new Chart(htmlRef, config)
     },
     reduceDateRange() {
-      if (this.history.length == 0) return
-      const today = new Date()
-      let startDate = new Date()
-      startDate.setUTCHours(0, 0, 0, 0)
-      startDate.setDate(today.getDate() - 8)
+      if (this.history.length === 0) return []
+
+      const ONE_DAY_MS = 24 * 60 * 60 * 1000
+
+      // Get the latest date from the data itself, not system time
+      // Assume sorted oldest -> newest (standard for charts)
+      const lastItem = this.history[this.history.length - 1]
+      const latestDataTimestamp = new Date(lastItem.date).getTime()
+      const now = new Date(latestDataTimestamp) // "now" is effectively the last available data point
+
+      const ONE_YEAR_MS = 365.25 * ONE_DAY_MS
+
+      let minDateTimestamp = 0
       let samplingIntervalDays = 1
+
+      // Helper to add a buffer to ensure inclusive start dates (e.g. capture the exact start day)
+      // Subtracting 12 hours ensures we don't miss the start date due to any DST/Timezone drift if mixed
+      const BUFFER = 12 * 60 * 60 * 1000
+
       switch (this.selectedRange.toLowerCase()) {
         case '1w':
-          startDate.setDate(today.getDate() - 8)
-          samplingIntervalDays = 1 // Keep daily data
+          minDateTimestamp = now.getTime() - 7 * ONE_DAY_MS - BUFFER
+          samplingIntervalDays = 1
           break
 
-        case '1m': // Last 1 month
-          startDate.setMonth(today.getMonth() - 1)
-          samplingIntervalDays = 1 // Keep daily data
+        case '1m':
+          // Approx 30 days
+          minDateTimestamp = now.getTime() - 30 * ONE_DAY_MS - BUFFER
+          samplingIntervalDays = 1
           break
 
-        case 'ytd': // Year To Date
-          startDate = new Date(today.getFullYear(), 0, 1) // Start of current year
-          samplingIntervalDays = 3 // Sample every 3rd day
+        case 'ytd':
+          // Start of the year of the data, in UTC to match data format
+          // Note: Date.UTC returns a timestamp directly
+          minDateTimestamp = Date.UTC(now.getUTCFullYear(), 0, 1) - BUFFER
+          samplingIntervalDays = 3
           break
 
-        case '1yr': // Last 1 year
-          startDate.setFullYear(today.getFullYear() - 1)
-          samplingIntervalDays = 5 // Sample every 5th day (weekly)
+        case '1yr':
+          minDateTimestamp = now.getTime() - ONE_YEAR_MS - BUFFER
+          samplingIntervalDays = 5
           break
 
-        case '5yr': // Last 5 years
-          startDate.setFullYear(today.getFullYear() - 5)
-          samplingIntervalDays = 10 // Sample every 10th day
+        case '5yr':
+          minDateTimestamp = now.getTime() - 5 * ONE_YEAR_MS - BUFFER
+          samplingIntervalDays = 10
           break
 
-        case '10yr': // Last 10 years
-          startDate.setFullYear(today.getFullYear() - 10)
-          samplingIntervalDays = 20 // Sample every 20th day (monthly)
+        case '10yr':
+          minDateTimestamp = now.getTime() - 10 * ONE_YEAR_MS - BUFFER
+          samplingIntervalDays = 20
           break
 
-        case 'all': // All Time (since 1990)
-          // Use a very aggressive sampling rate for full history
-          samplingIntervalDays = 60 // Sample every 60th day (quarterly-ish)
+        case 'all':
+          minDateTimestamp = 0 // epoch
+          samplingIntervalDays = 60
           break
 
         default:
           return this.history
       }
-      let startIndex = 0 // Default to 0 (start of array, or ALL time)
-      for (let i = this.history.length - 1; i >= 0; i--) {
-        const currentDataDate = new Date(this.history[i].date)
-        if (currentDataDate < startDate) {
-          startIndex = i + 1
-          break
+
+      // Filter: Only include items whose date >= minDateTimestamp
+      // history items date format: "2025-12-01". new Date("...") returns UTC midnight usually, or local.
+      // To be strictly safe, we treat everything as timestamps.
+      // We assume this.history is sorted oldest -> newest? The existing code looped backwards.
+
+      const filtered = []
+      // Find start index
+      for (let i = 0; i < this.history.length; i++) {
+        // Create date object from string
+        const d = new Date(this.history[i].date).getTime()
+        if (d >= minDateTimestamp) {
+          filtered.push(this.history[i])
         }
       }
-      let range =
-        this.selectedRange.toLowerCase() == 'all' ? this.history : this.history.slice(startIndex)
-      let reduced = this.filterByInterval(range, samplingIntervalDays)
+
+      // If filtering resulted in nothing (e.g. 1W range but no data in last week),
+      // maybe return the last data point or empty? Return empty for now.
+
+      let reduced = this.filterByInterval(filtered, samplingIntervalDays)
       return reduced
     },
     filterByInterval(data, intervalDays) {
@@ -340,14 +447,82 @@ export default defineComponent({
     },
   },
   mounted() {
-    // this.store.getStockHistory('MSFT')
     this.genChart()
   },
   computed: {
-    // history() {
-    //   if (this.store.history?.['MSFT'] == null) return []
-    //   return this.store.history['MSFT']
-    // },
+    rangeMetrics() {
+      if (!this.filteredHistory || this.filteredHistory.length < 1) {
+        return { current: 0, change: 0, percent: 0 }
+      }
+      const startPrice = Number(this.filteredHistory[0].value)
+      const endPrice = Number(this.filteredHistory[this.filteredHistory.length - 1].value)
+
+      if (startPrice === 0) return { current: 0, change: 0, percent: 0 }
+
+      const percentChange = (endPrice - startPrice) / startPrice
+
+      if (this.portfolioBalance) {
+        // If we have a balance, we treat this as a position.
+        // We calculate the dollar gain proportional to the price movement applied to current balance.
+        // StartHoldings = CurrentHoldings / (1 + %Change)
+        const startHoldingsValue = this.portfolioBalance / (1 + percentChange)
+        const dollarChange = this.portfolioBalance - startHoldingsValue
+
+        return {
+          current: this.portfolioBalance,
+          change: dollarChange,
+          percent: percentChange * 100, // Convert to 0-100 scale
+        }
+      } else {
+        // Pure price chart (no holdings), just show price delta
+        return {
+          current: endPrice,
+          change: endPrice - startPrice,
+          percent: percentChange * 100,
+        }
+      }
+    },
+    mainMetrics() {
+      // If individual page, emphasize Stock Price (unitMetrics)
+      // If portfolio page (or non-individual), emphasize Value (rangeMetrics)
+      if (this.individual) {
+        return this.unitMetrics
+      }
+      return this.rangeMetrics
+    },
+    subMetrics() {
+      // If individual page AND we have a balance, show the Position Value as secondary
+      if (this.individual && this.portfolioBalance) {
+        return {
+          label: 'Your Position',
+          ...this.rangeMetrics,
+        }
+      }
+      return null
+    },
+    currentPrice() {
+      if (this.portfolioBalance) return this.portfolioBalance
+      if (this.history && this.history.length > 0) {
+        return Number(this.history[this.history.length - 1].value)
+      }
+      return 0
+    },
+    dateRangeLabel() {
+      if (this.selectedRange === 'All') return 'All Time'
+      return `Past ${this.selectedRange}`
+    },
+    unitMetrics() {
+      if (!this.filteredHistory || this.filteredHistory.length < 1) {
+        return { current: 0, change: 0, percent: 0 }
+      }
+      const startVal = Number(this.filteredHistory[0].value)
+      const endVal = Number(this.filteredHistory[this.filteredHistory.length - 1].value)
+
+      const change = endVal - startVal
+      const percent = startVal !== 0 ? (change / startVal) * 100 : 0
+
+      return { current: endVal, change, percent }
+    },
     allTimeReturn() {
       if (!this.invested) return 0
       let change = ((this.portfolioBalance - this.invested) / this.invested) * 100
@@ -367,9 +542,15 @@ export default defineComponent({
 <style lang="scss" scoped>
 .widget-header {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   margin-bottom: 20px;
+}
+
+.header-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
 }
 
 .range-toolbar {
@@ -377,15 +558,16 @@ export default defineComponent({
   padding: 1px;
   border-radius: 50px;
   display: flex;
-  gap: 4px;
+  gap: 2px;
 
   .range-opt {
-    padding: 5px 10px;
-    font-size: 12px;
+    padding: 3px 8px;
+    font-size: 11px;
     font-weight: bold;
-    color: #aaa;
+    color: #888;
     cursor: pointer;
     border-radius: 50px;
+    transition: all 0.2s;
   }
 
   .range-opt:hover,
@@ -401,21 +583,26 @@ export default defineComponent({
   gap: 5px;
 }
 
-.price-change {
-  border-radius: 50px;
-  padding: 2px 10px;
-  background-color: rgb(255, 255, 255, 0.1);
-  font-size: 18px;
-  font-weight: bold;
+.invested-badge {
+  opacity: 0.8;
+  transition: opacity 0.2s;
+}
+.invested-badge:hover {
+  opacity: 1;
 }
 
-.price-change.positive {
-  color: #7cff7c;
-  background-color: #7cff7c35;
+.chart-container {
+  position: relative;
+  height: 300px;
+  width: 100%;
 }
 
-.price-change.negative {
-  color: #ff7c7c;
-  background-color: #ff7c7c35;
+.holdings-card {
+  background-color: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 8px 10px;
+  min-width: 140px;
+  backdrop-filter: blur(5px);
 }
 </style>
