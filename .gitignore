@@ -8,6 +8,7 @@ __pycache__/
 background_video.mp4
 qdrant_storage/
 neo4j_data/
+mysql_data/
 
 .env
 .DS_Store
