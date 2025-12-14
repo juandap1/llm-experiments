@@ -43,8 +43,8 @@ massive_token = os.getenv("MASSIVE_TOKEN")
 # Initialize clients
 # Note: In FastAPI, it's often better to initialize these in a startup event or as dependencies if they need to be closed.
 # For now, keeping them global as in the original script.
-client = ollama.Client(host='http://ollama:11434')
-vector_db = QdrantServerClient(host="qdrant")
+client = ollama.Client(host='http://llm_ollama:11434')
+vector_db = QdrantServerClient(host="llm_qdrant")
 analyzer = BatchAnalyzer(vector_db, client)
 
 # Dependency
@@ -121,6 +121,7 @@ def get_ticker_overview(ticker):
     url = f'https://www.alphavantage.co/query?function=OVERVIEW&symbol={ticker}&apikey={stock_token}'
     r = requests.get(url)
     data = r.json()
+    data = clean_data_dictionary(data)
     return data
 
 @app.get("/stock/ticker/{ticker}")
@@ -155,8 +156,8 @@ def get_stock_info(ticker: str, db: MySQLClient = Depends(get_db)):
                 # Handle potential API errors or empty responses
                 if "Global Quote" in data and "05. price" in data["Global Quote"]:
                     latest_price = float(data["Global Quote"]["05. price"])
-                    latest_date = data["Global Quote"]["07. latest trading day"]
-                    db.update_stock_price(ticker, latest_price, latest_date)
+                    # latest_date = data["Global Quote"]["07. latest trading day"]
+                    db.update_stock_price(ticker, latest_price)
                 else:
                     # Fallback or error handling if price not found
                     pass 
@@ -301,10 +302,10 @@ def get_stock_info_batch(req: BatchStockRequest, db: MySQLClient = Depends(get_d
         data = clean_data_dictionary(data)
         if kind == "price" and "Global Quote" in data:
             price = data["Global Quote"].get("05. price")
-            date = data["Global Quote"].get("07. latest trading day")
+            # date = data["Global Quote"].get("07. latest trading day")
             if price:
                 price = float(price)
-                db.update_stock_price(ticker, price, date)
+                db.update_stock_price(ticker, price)
                 if ticker not in rows_by_ticker:
                     rows_by_ticker[ticker] = {"ticker": ticker}
                 rows_by_ticker[ticker]["latest_price"] = price
@@ -694,39 +695,39 @@ def refresh_stock(ticker: str, db: MySQLClient = Depends(get_db)):
         refreshed["dividend_history"] = saved_div_history
 
         # Pull Latest Split Data
-        splits = db.fetch_all("SELECT * FROM split_history WHERE ticker = %s", (ticker,))
-        last_split_check = splits[-1]['execution_date'] if splits else None
-        aggs = []
-        for a in client.list_splits(ticker):
-            aggs.append(a)
-        records_to_insert = []
-        json_response = []
-        for a in aggs:
-            record = (
-                ticker,
-                float(a.split_from), 
-                float(a.split_to), 
-                a.execution_date 
-            )
-            if not last_split_check or datetime.datetime.strptime(a.execution_date, '%Y-%m-%d') > datetime.datetime.combine(last_split_check, datetime.time(23,59,59)):
-                records_to_insert.append(record)
-                json_response.append({
-                    "ticker": ticker,
-                    "split_from": float(a.split_from),
-                    "split_to": float(a.split_to),
-                    "execution_date": a.execution_date,
-                })
-        if records_to_insert:
-            rows_inserted = db.insert_many_splits(ticker, records_to_insert)
-            print(f"✅ Successfully inserted {rows_inserted} split records for {ticker}.")
-        refreshed["split_history"] = json_response
+        # splits = db.fetch_all("SELECT * FROM split_history WHERE ticker = %s", (ticker,))
+        # last_split_check = splits[-1]['execution_date'] if splits else None
+        # aggs = []
+        # for a in client.list_splits(ticker):
+        #     aggs.append(a)
+        # records_to_insert = []
+        # json_response = []
+        # for a in aggs:
+        #     record = (
+        #         ticker,
+        #         float(a.split_from), 
+        #         float(a.split_to), 
+        #         a.execution_date 
+        #     )
+        #     if not last_split_check or datetime.datetime.strptime(a.execution_date, '%Y-%m-%d') > datetime.datetime.combine(last_split_check, datetime.time(23,59,59)):
+        #         records_to_insert.append(record)
+        #         json_response.append({
+        #             "ticker": ticker,
+        #             "split_from": float(a.split_from),
+        #             "split_to": float(a.split_to),
+        #             "execution_date": a.execution_date,
+        #         })
+        # if records_to_insert:
+        #     rows_inserted = db.insert_many_splits(ticker, records_to_insert)
+        #     print(f"✅ Successfully inserted {rows_inserted} split records for {ticker}.")
+        # refreshed["split_history"] = json_response
 
         # Pull Latest Analysis Data
-        last_analysis_check = row['analysis_updated']
-        analysis = analyzer.generate_analysis(ticker, refreshed["name"])
-        db.update_analysis(ticker, analysis)
-        j = json.loads(analysis)
-        refreshed["analysis"] = j
+        # last_analysis_check = row['analysis_updated']
+        # analysis = analyzer.generate_analysis(ticker, refreshed["name"])
+        # db.update_analysis(ticker, analysis)
+        # j = json.loads(analysis)
+        # refreshed["analysis"] = j
 
         return refreshed
         

@@ -113,14 +113,14 @@ class MySQLClient:
             # self.connection.commit()
             return 200
         
-    def update_stock_price(self, ticker, price, date):
+    def update_stock_price(self, ticker, price):
         self.ensure_connected()
         with self.connection.cursor() as cursor:
             sql = """
-                INSERT INTO tickers (ticker, latest_price, latest_date) VALUES (%s, %s, %s)
-                ON DUPLICATE KEY UPDATE latest_price=%s, latest_date=%s
+                INSERT INTO tickers (ticker, latest_price) VALUES (%s, %s)
+                ON DUPLICATE KEY UPDATE latest_price=%s
             """
-            cursor.execute(sql, (ticker, price, date, price, date))
+            cursor.execute(sql, (ticker, price, price))
             # self.connection.commit()
             return
 

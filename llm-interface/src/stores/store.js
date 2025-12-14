@@ -326,6 +326,7 @@ export const useStore = defineStore('counter', {
         .catch(console.error)
     },
     batchStockInfoRequest(tickers) {
+      if (!tickers || tickers.length === 0) return
       api
         .post('/stock/batch', {
           tickers,
