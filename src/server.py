@@ -37,7 +37,7 @@ CONTAINER_ROOT = '/app'
 
 # SECRETS
 logo_dev_token = os.getenv("LOGO_DEV_TOKEN")
-stock_token = os.getenv("ALPHAVANTAGE_TOKEN")
+stock_token = os.getenv("ALT_ALPHAVANTAGE_KEY") #os.getenv("ALPHAVANTAGE_TOKEN")
 massive_token = os.getenv("MASSIVE_TOKEN")
 
 # Initialize clients
@@ -662,6 +662,8 @@ def refresh_stock(ticker: str, db: MySQLClient = Depends(get_db)):
             WHERE ticker = %s 
             ORDER BY declaration_date ASC
         """, (ticker,)) # Pass as tuple
+        if not saved_div_history:
+            saved_div_history = []
         last_dividend_check = saved_div_history[-1]['ex_dividend_date'] if saved_div_history else None
         url = f'https://www.alphavantage.co/query?function=DIVIDENDS&symbol={ticker}&apikey={stock_token}'
         r = requests.get(url)
@@ -695,32 +697,32 @@ def refresh_stock(ticker: str, db: MySQLClient = Depends(get_db)):
         refreshed["dividend_history"] = saved_div_history
 
         # Pull Latest Split Data
-        # splits = db.fetch_all("SELECT * FROM split_history WHERE ticker = %s", (ticker,))
-        # last_split_check = splits[-1]['execution_date'] if splits else None
-        # aggs = []
-        # for a in client.list_splits(ticker):
-        #     aggs.append(a)
-        # records_to_insert = []
-        # json_response = []
-        # for a in aggs:
-        #     record = (
-        #         ticker,
-        #         float(a.split_from), 
-        #         float(a.split_to), 
-        #         a.execution_date 
-        #     )
-        #     if not last_split_check or datetime.datetime.strptime(a.execution_date, '%Y-%m-%d') > datetime.datetime.combine(last_split_check, datetime.time(23,59,59)):
-        #         records_to_insert.append(record)
-        #         json_response.append({
-        #             "ticker": ticker,
-        #             "split_from": float(a.split_from),
-        #             "split_to": float(a.split_to),
-        #             "execution_date": a.execution_date,
-        #         })
-        # if records_to_insert:
-        #     rows_inserted = db.insert_many_splits(ticker, records_to_insert)
-        #     print(f"✅ Successfully inserted {rows_inserted} split records for {ticker}.")
-        # refreshed["split_history"] = json_response
+        splits = db.fetch_all("SELECT * FROM split_history WHERE ticker = %s", (ticker,))
+        last_split_check = splits[-1]['execution_date'] if splits else None
+        aggs = []
+        for a in client.list_splits(ticker):
+            aggs.append(a)
+        records_to_insert = []
+        json_response = []
+        for a in aggs:
+            record = (
+                ticker,
+                float(a.split_from), 
+                float(a.split_to), 
+                a.execution_date 
+            )
+            if not last_split_check or datetime.datetime.strptime(a.execution_date, '%Y-%m-%d') > datetime.datetime.combine(last_split_check, datetime.time(23,59,59)):
+                records_to_insert.append(record)
+                json_response.append({
+                    "ticker": ticker,
+                    "split_from": float(a.split_from),
+                    "split_to": float(a.split_to),
+                    "execution_date": a.execution_date,
+                })
+        if records_to_insert:
+            rows_inserted = db.insert_many_splits(ticker, records_to_insert)
+            print(f"✅ Successfully inserted {rows_inserted} split records for {ticker}.")
+        refreshed["split_history"] = json_response
 
         # Pull Latest Analysis Data
         # last_analysis_check = row['analysis_updated']

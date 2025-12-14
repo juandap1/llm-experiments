@@ -166,9 +166,9 @@ export default defineComponent({
         analyst_target_price: data['analyst_target_price'],
         ebitda: data['ebitda'],
       }
-      store._history[this.ticker] = data.history
-      store._splitHistory[this.ticker] = data.splitHistory
-      store._dividends[this.ticker] = data.dividends
+      store._history[this.ticker] = data.price_history
+      store._splitHistory[this.ticker] = data.split_history
+      store._dividends[this.ticker] = data.dividend_history
       setTimeout(() => {
         this.refreshing = false
       }, 500)
