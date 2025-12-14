@@ -76,6 +76,7 @@ export default defineComponent({
       handler() {
         this.store.batchStockHistoryRequest(this.store.uniqueTickers)
         this.store.batchStockSplitRequest(this.store.uniqueTickers)
+        this.store.batchStockDividendRequest(this.store.uniqueTickers)
       },
     },
   },

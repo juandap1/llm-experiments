@@ -513,6 +513,54 @@ export const useStore = defineStore('counter', {
       console.log('✅ All stock splits loaded')
       this.calculateProfitLossHistory()
     },
+    async batchStockDividendRequest(tickers) {
+      const tickersToFetch = tickers.filter((ticker) => this._dividends[ticker] == null)
+      if (tickersToFetch.length === 0) {
+        console.log('All stock dividends already loaded')
+        return
+      }
+      // PHASE 1: Try all requests at once (cached requests will succeed instantly)
+      const failedTickers = []
+      const promises = tickersToFetch.map((ticker) => {
+        return this.getStockDividends(ticker)
+      })
+
+      await Promise.all(promises)
+
+      // PHASE 2: If any failed (rate limited), process them in batches
+      if (failedTickers.length === 0) {
+        console.log('✅ All stock dividends loaded from cache')
+        return
+      }
+
+      console.log(`📦 Queueing ${failedTickers.length} stocks for rate-limited batch processing`)
+
+      const BATCH_SIZE = 5
+      const DELAY_MS = 60000 // 60 seconds
+
+      for (let i = 0; i < failedTickers.length; i += BATCH_SIZE) {
+        const batch = failedTickers.slice(i, i + BATCH_SIZE)
+
+        console.log(
+          `Processing batch ${Math.floor(i / BATCH_SIZE) + 1}/${Math.ceil(failedTickers.length / BATCH_SIZE)}: ${batch.join(', ')}`,
+        )
+
+        // Fetch all in current batch simultaneously
+        const batchPromises = batch.map((ticker) => {
+          return this.getStockDividends(ticker)
+        })
+
+        await Promise.all(batchPromises)
+
+        // Wait before next batch (unless this was the last batch)
+        if (i + BATCH_SIZE < failedTickers.length) {
+          console.log(`⏸️  Waiting 60 seconds before next batch...`)
+          await new Promise((resolve) => setTimeout(resolve, DELAY_MS))
+        }
+      }
+
+      console.log('✅ All stock dividends loaded')
+    },
     getStockAnalysis(ticker) {
       let loadedInfo = this.loadedInfo[ticker]
       api
