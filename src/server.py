@@ -600,8 +600,8 @@ def get_stock_analysis(ticker: str = "", company: str = "", db: MySQLClient = De
 def get_stock_income(ticker: str, db: MySQLClient = Depends(get_db)):
     try:
         ticker = ticker.upper()
-        annual_income = db.fetch_all("SELECT * FROM annual_income_history WHERE ticker = %s", (ticker,))
-        quarterly_income = db.fetch_all("SELECT * FROM quarterly_income_history WHERE ticker = %s", (ticker,))
+        annual_income = db.fetch_all("SELECT * FROM annual_income_history WHERE ticker = %s ORDER BY fiscalDateEnding DESC", (ticker,))
+        quarterly_income = db.fetch_all("SELECT * FROM quarterly_income_history WHERE ticker = %s ORDER BY fiscalDateEnding DESC", (ticker,))
         if not quarterly_income or not annual_income:
             url = f'https://www.alphavantage.co/query?function=INCOME_STATEMENT&symbol={ticker}&apikey={stock_token}'
             r = requests.get(url)

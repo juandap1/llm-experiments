@@ -72,11 +72,10 @@ export default defineComponent({
   },
   computed: {
     quarterlyIncomeData() {
-      let quarterlyIncomeData = useStore()
-        ._incomeReports[this.ticker]?.quarterly_income?.sort((a, b) => {
-          return new Date(a.fiscalDateEnding) - new Date(b.fiscalDateEnding)
-        })
-        .slice(-12)
+      let quarterlyIncomeData = useStore()._incomeReports[this.ticker]?.quarterly_income?.slice(
+        0,
+        18,
+      )
       let ret = {
         datasets: [],
         labels: [],
@@ -104,11 +103,7 @@ export default defineComponent({
       return ret
     },
     annualIncomeData() {
-      let annualIncomeData = useStore()
-        ._incomeReports[this.ticker]?.annual_income?.sort((a, b) => {
-          return new Date(a.fiscalDateEnding) - new Date(b.fiscalDateEnding)
-        })
-        .slice(-12)
+      let annualIncomeData = useStore()._incomeReports[this.ticker]?.annual_income
       let ret = {
         datasets: [],
         labels: [],
@@ -136,11 +131,10 @@ export default defineComponent({
       return ret
     },
     quarterlyNetIncomeData() {
-      let quarterlyIncomeData = useStore()
-        ._incomeReports[this.ticker]?.quarterly_income?.sort((a, b) => {
-          return new Date(a.fiscalDateEnding) - new Date(b.fiscalDateEnding)
-        })
-        .slice(-12)
+      let quarterlyIncomeData = useStore()._incomeReports[this.ticker]?.quarterly_income?.slice(
+        0,
+        18,
+      )
       let ret = {
         datasets: [],
         labels: [],
@@ -160,11 +154,7 @@ export default defineComponent({
       return ret
     },
     annualNetIncomeData() {
-      let annualIncomeData = useStore()
-        ._incomeReports[this.ticker]?.annual_income?.sort((a, b) => {
-          return new Date(a.fiscalDateEnding) - new Date(b.fiscalDateEnding)
-        })
-        .slice(-12)
+      let annualIncomeData = useStore()._incomeReports[this.ticker]?.annual_income
       let ret = {
         datasets: [],
         labels: [],

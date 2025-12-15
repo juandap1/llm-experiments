@@ -64,6 +64,7 @@
           </div>
         </div>
         <company-metrics-widget :ticker="ticker" />
+        <key-stats-widget :ticker="ticker" />
       </q-tab-panel>
 
       <q-tab-panel name="dividends" class="q-pa-none">
@@ -84,10 +85,17 @@ import { useStore } from 'src/stores/store'
 import PriceChartWidget from 'src/components/Stocks/PriceChartWidget.vue'
 import IndividualDividendView from 'src/components/Stocks/IndividualDividendView.vue'
 import CompanyMetricsWidget from 'src/components/Stocks/CompanyMetricsWidget.vue'
+import KeyStatsWidget from 'src/components/Stocks/KeyStatsWidget.vue'
 
 export default defineComponent({
   name: 'IndividualStockPage',
-  components: { HistoryWidget, PriceChartWidget, IndividualDividendView, CompanyMetricsWidget },
+  components: {
+    HistoryWidget,
+    PriceChartWidget,
+    IndividualDividendView,
+    CompanyMetricsWidget,
+    KeyStatsWidget,
+  },
   data() {
     return {
       tab: 'overview',
