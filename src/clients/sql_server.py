@@ -248,3 +248,27 @@ class MySQLClient:
                     else:
                         print(f"❌ Batch insert failed after {MAX_RETRIES} attempts. Final Error: {e}")
                         raise
+
+    def insert_income_reports(self, table, ticker, income_reports):
+        MAX_RETRIES = 2
+        
+        # Base SQL statement for the price_history table
+        sql = f"""
+            INSERT INTO {table} 
+            (ticker, fiscalDateEnding, reportedCurrency, grossProfit, totalRevenue, costOfRevenue, costofGoodsAndServicesSold, operatingIncome, sellingGeneralAndAdministrative, researchAndDevelopment, operatingExpenses, investmentIncomeNet, netInterestIncome, interestIncome, interestExpense, nonInterestIncome, otherNonOperatingIncome, depreciation, depreciationAndAmortization, incomeBeforeTax, incomeTaxExpense, interestAndDebtExpense, netIncomeFromContinuingOperations, comprehensiveIncomeNetOfTax, ebit, ebitda, netIncome)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        """
+        for attempt in range(MAX_RETRIES):
+            self.ensure_connected() 
+            with self.connection.cursor() as cursor:
+                try:
+                    # Use executemany for batch insertion
+                    cursor.executemany(sql, income_reports)
+                    return cursor.rowcount
+                except Exception as e:
+                    if attempt < MAX_RETRIES - 1:
+                        print(f"⚠️ Batch insert failed on attempt {attempt + 1}. Retrying...")
+                        continue
+                    else:
+                        print(f"❌ Batch insert failed after {MAX_RETRIES} attempts. Final Error: {e}")
+                        raise

@@ -92,7 +92,9 @@ export default defineComponent({
       refreshing: false,
     }
   },
-  mounted() {},
+  mounted() {
+    useStore().getStockIncomeReports(this.ticker)
+  },
   computed: {
     ticker() {
       return this.$route.params.ticker

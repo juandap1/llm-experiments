@@ -8,6 +8,7 @@ export const useStore = defineStore('counter', {
     _history: {},
     _splitHistory: {},
     _dividends: {},
+    _incomeReports: {},
     profitLossHistory: [],
   }),
 
@@ -593,6 +594,15 @@ export const useStore = defineStore('counter', {
       return api.get('/stock/refresh/' + ticker, {
         params: {},
       })
+    },
+    getStockIncomeReports(ticker) {
+      api
+        .get('/stock/income/' + ticker)
+        .then((response) => {
+          console.log(response)
+          this._incomeReports[ticker] = response.data
+        })
+        .catch(console.error)
     },
   },
 })

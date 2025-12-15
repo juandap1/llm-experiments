@@ -596,6 +596,97 @@ def get_stock_analysis(ticker: str = "", company: str = "", db: MySQLClient = De
         print(f"❌ An unexpected error occurred for getting analysis for {ticker}: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
+@app.get("/stock/income/{ticker}")
+def get_stock_income(ticker: str, db: MySQLClient = Depends(get_db)):
+    try:
+        ticker = ticker.upper()
+        annual_income = db.fetch_all("SELECT * FROM annual_income_history WHERE ticker = %s", (ticker,))
+        quarterly_income = db.fetch_all("SELECT * FROM quarterly_income_history WHERE ticker = %s", (ticker,))
+        if not quarterly_income or not annual_income:
+            url = f'https://www.alphavantage.co/query?function=INCOME_STATEMENT&symbol={ticker}&apikey={stock_token}'
+            r = requests.get(url)
+            data = r.json()
+            annual_income = data["annualReports"]
+            quarterly_income = data["quarterlyReports"]
+            annual_reports_to_insert = []
+            for a in annual_income:
+                a = clean_data_dictionary(a)
+                record = (
+                    ticker,
+                    a["fiscalDateEnding"],
+                    a["reportedCurrency"],
+                    a["grossProfit"],
+                    a["totalRevenue"],
+                    a["costOfRevenue"],
+                    a["costofGoodsAndServicesSold"],
+                    a["operatingIncome"],
+                    a["sellingGeneralAndAdministrative"],
+                    a["researchAndDevelopment"],
+                    a["operatingExpenses"],
+                    a["investmentIncomeNet"],
+                    a["netInterestIncome"],
+                    a["interestIncome"],
+                    a["interestExpense"],
+                    a["nonInterestIncome"],
+                    a["otherNonOperatingIncome"],
+                    a["depreciation"],
+                    a["depreciationAndAmortization"],
+                    a["incomeBeforeTax"],
+                    a["incomeTaxExpense"],
+                    a["interestAndDebtExpense"],
+                    a["netIncomeFromContinuingOperations"],
+                    a["comprehensiveIncomeNetOfTax"],
+                    a["ebit"],
+                    a["ebitda"],
+                    a["netIncome"],
+                )
+                annual_reports_to_insert.append(record)
+            if annual_reports_to_insert:
+                rows_inserted = db.insert_income_reports("annual_income_history", ticker, annual_reports_to_insert)
+                print(f"✅ Successfully inserted {rows_inserted} annual income records for {ticker}.")
+
+            quarterly_reports_to_insert = []
+            for q in quarterly_income:
+                q = clean_data_dictionary(q)
+                record = (
+                    ticker,
+                    q["fiscalDateEnding"],
+                    q["reportedCurrency"],
+                    q["grossProfit"],
+                    q["totalRevenue"],
+                    q["costOfRevenue"],
+                    q["costofGoodsAndServicesSold"],
+                    q["operatingIncome"],
+                    q["sellingGeneralAndAdministrative"],
+                    q["researchAndDevelopment"],
+                    q["operatingExpenses"],
+                    q["investmentIncomeNet"],
+                    q["netInterestIncome"],
+                    q["interestIncome"],
+                    q["interestExpense"],
+                    q["nonInterestIncome"],
+                    q["otherNonOperatingIncome"],
+                    q["depreciation"],
+                    q["depreciationAndAmortization"],
+                    q["incomeBeforeTax"],
+                    q["incomeTaxExpense"],
+                    q["interestAndDebtExpense"],
+                    q["netIncomeFromContinuingOperations"],
+                    q["comprehensiveIncomeNetOfTax"],
+                    q["ebit"],
+                    q["ebitda"],
+                    q["netIncome"],
+                )
+                quarterly_reports_to_insert.append(record)
+            if quarterly_reports_to_insert:
+                rows_inserted = db.insert_income_reports("quarterly_income_history", ticker, quarterly_reports_to_insert)
+                print(f"✅ Successfully inserted {rows_inserted} quarterly income records for {ticker}.")
+                
+        return {"annual_income": annual_income, "quarterly_income": quarterly_income}
+    except Exception as e:
+        print(f"❌ An unexpected error occurred for getting income for {ticker}: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 @app.get("/stock/refresh/{ticker}")
 def refresh_stock(ticker: str, db: MySQLClient = Depends(get_db)):
     try:
