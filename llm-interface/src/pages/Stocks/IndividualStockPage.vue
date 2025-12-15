@@ -63,6 +63,7 @@
             <span class="tag">{{ stockInfo?.industry }}</span>
           </div>
         </div>
+        <company-metrics-widget :ticker="ticker" />
       </q-tab-panel>
 
       <q-tab-panel name="dividends" class="q-pa-none">
@@ -82,10 +83,11 @@ import HistoryWidget from 'src/components/Stocks/HistoryWidget.vue'
 import { useStore } from 'src/stores/store'
 import PriceChartWidget from 'src/components/Stocks/PriceChartWidget.vue'
 import IndividualDividendView from 'src/components/Stocks/IndividualDividendView.vue'
+import CompanyMetricsWidget from 'src/components/Stocks/CompanyMetricsWidget.vue'
 
 export default defineComponent({
   name: 'IndividualStockPage',
-  components: { HistoryWidget, PriceChartWidget, IndividualDividendView },
+  components: { HistoryWidget, PriceChartWidget, IndividualDividendView, CompanyMetricsWidget },
   data() {
     return {
       tab: 'overview',
