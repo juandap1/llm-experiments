@@ -15,21 +15,36 @@
         <q-tab name="quarterly" label="Quarterly" :ripple="false" />
       </q-tabs>
     </div>
-    <div class="q-my-xs">
-      <div class="chart-title">Income Overview</div>
-      <div class="chart-key">
-        <div class="key-item">
-          <div class="revenue-dot"></div>
-          Revenue
+    <div class="metric-charts">
+      <div class="chart-col">
+        <div class="chart-title">Income Overview</div>
+        <div class="chart-key">
+          <div class="key-item">
+            <div class="dot revenue-dot"></div>
+            Revenue
+          </div>
+          <div class="key-item">
+            <div class="dot earnings-dot"></div>
+            Earnings
+          </div>
         </div>
-        <div class="key-item">
-          <div class="earnings-dot"></div>
-          Earnings
+        <div class="chart-container">
+          <bar-chart v-if="tab == 'quarterly'" v-bind="quarterlyIncomeData" />
+          <bar-chart v-if="tab == 'annual'" v-bind="annualIncomeData" />
         </div>
       </div>
-      <div class="chart-container">
-        <bar-chart v-if="tab == 'quarterly'" v-bind="quarterlyIncomeData" />
-        <bar-chart v-if="tab == 'annual'" v-bind="annualIncomeData" />
+      <div class="chart-col">
+        <div class="chart-title">Net Income</div>
+        <div class="chart-key">
+          <div class="key-item">
+            <div class="dot net-income-dot"></div>
+            Net Income
+          </div>
+        </div>
+        <div class="chart-container">
+          <bar-chart v-if="tab == 'quarterly'" v-bind="quarterlyNetIncomeData" />
+          <bar-chart v-if="tab == 'annual'" v-bind="annualNetIncomeData" />
+        </div>
       </div>
     </div>
   </div>
@@ -120,10 +135,70 @@ export default defineComponent({
       }
       return ret
     },
+    quarterlyNetIncomeData() {
+      let quarterlyIncomeData = useStore()
+        ._incomeReports[this.ticker]?.quarterly_income?.sort((a, b) => {
+          return new Date(a.fiscalDateEnding) - new Date(b.fiscalDateEnding)
+        })
+        .slice(-12)
+      let ret = {
+        datasets: [],
+        labels: [],
+      }
+      const thickness = 10
+      if (quarterlyIncomeData) {
+        ret.labels = quarterlyIncomeData.map((x) => x.fiscalDateEnding)
+        ret.datasets.push({
+          label: 'Net Income',
+          data: quarterlyIncomeData.map((x) => x.netIncome),
+          backgroundColor: 'rgb(255, 146, 219)',
+          barThickness: thickness,
+          borderRadius: thickness,
+          borderWidth: 3,
+        })
+      }
+      return ret
+    },
+    annualNetIncomeData() {
+      let annualIncomeData = useStore()
+        ._incomeReports[this.ticker]?.annual_income?.sort((a, b) => {
+          return new Date(a.fiscalDateEnding) - new Date(b.fiscalDateEnding)
+        })
+        .slice(-12)
+      let ret = {
+        datasets: [],
+        labels: [],
+      }
+      const thickness = 10
+      if (annualIncomeData) {
+        ret.labels = annualIncomeData.map((x) => x.fiscalDateEnding)
+        ret.datasets.push({
+          label: 'Net Income',
+          data: annualIncomeData.map((x) => x.netIncome),
+          backgroundColor: 'rgb(255, 146, 219)',
+          barThickness: thickness,
+          borderRadius: thickness,
+          borderWidth: 3,
+        })
+      }
+      return ret
+    },
   },
 })
 </script>
 <style lang="scss" scoped>
+.metric-charts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 25px;
+}
+
+.chart-col {
+  flex: 1;
+  min-width: 300px;
+  max-width: 95vw;
+}
+
 .chart-title {
   font-size: 16px;
   font-weight: bold;
@@ -143,21 +218,25 @@ export default defineComponent({
   color: #888;
 }
 
-.revenue-dot {
+.dot {
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background-color: rgb(255, 99, 132);
-}
-.earnings-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background-color: rgb(75, 192, 192);
+  &.revenue-dot {
+    background-color: rgb(255, 99, 132);
+  }
+  &.earnings-dot {
+    background-color: rgb(75, 192, 192);
+  }
+
+  &.net-income-dot {
+    background-color: rgb(255, 146, 219);
+  }
 }
 
 .chart-container {
   height: 300px;
+  max-height: 50vw;
 }
 
 .custom-tabs {
