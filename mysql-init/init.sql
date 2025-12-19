@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS tickers(
     dividend_per_share FLOAT,
     shares_outstanding BIGINT,
     analyst_target_price FLOAT,
-    ebitda MEDIUMINT,
+    ebitda BIGINT,
     is_etf BOOLEAN,
     checked_split DATE,
     checked_dividend DATE
