@@ -57,6 +57,7 @@ export default defineComponent({
   },
   mounted() {
     useStore().getTransactions()
+    console.log(useStore())
   },
   computed: {
     holdings() {

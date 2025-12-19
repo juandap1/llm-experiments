@@ -11,7 +11,7 @@ def clean_money(x):
     x = x.replace(",", "")
     return float(x)
 
-df = pd.read_csv("csv/cleaned_etfs.csv", quotechar='"', escapechar='\\', engine="python")
+df = pd.read_csv("csv/399fa606-6cdc-5186-9861-f664a8ba9dad.csv", quotechar='"', escapechar='\\', engine="python")
 df = df[df["Trans Code"].isin(["Buy", "Sell"])]
 df["Activity Date"] = pd.to_datetime(df["Activity Date"], format="%m/%d/%Y")
 

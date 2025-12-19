@@ -1,16 +1,16 @@
 <template>
-  <tr class="stock-item" v-if="stockInfo" @click="$router.push(`/stocks/ticker/${ticker}`)">
+  <tr class="stock-item" @click="$router.push(`/stocks/ticker/${ticker}`)">
     <th scope="row" class="asset-col text-left">
       <div class="item-info">
         <q-img class="stock-logo" :src="`http://localhost:3141/logo/${ticker}`" loading="lazy" />
         <div class="text-col">
           <div class="item-ticker">{{ ticker }}</div>
-          <div class="item-name">{{ stockInfo.name }}</div>
+          <div class="item-name">{{ stockInfo?.name }}</div>
         </div>
       </div>
     </th>
     <td class="text-right">{{ holding.toFixed(2) }}</td>
-    <td class="text-right">${{ stockInfo.latest_price.toFixed(2) }}</td>
+    <td class="text-right">${{ stockInfo?.latest_price.toFixed(2) }}</td>
     <td class="text-right">${{ avgCost.toFixed(2) }}</td>
     <td class="text-right font-weight-bold">${{ value.toFixed(2) }}</td>
     <td class="text-right">

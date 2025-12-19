@@ -388,8 +388,7 @@ export const useStore = defineStore('counter', {
             // console.log(`✅ Loaded history for ${ticker}`)
             this._history[ticker] = response.data
           })
-          .catch((error) => {
-            console.log(`⏳ ${ticker} needs rate-limited fetch ${error}`)
+          .catch(() => {
             failedTickers.push(ticker)
           })
       })
@@ -425,8 +424,8 @@ export const useStore = defineStore('counter', {
               // console.log(`✅ Loaded history for ${ticker}`)
               this._history[ticker] = response.data
             })
-            .catch((error) => {
-              console.error(`❌ Failed to load history for ${ticker}:`, error)
+            .catch(() => {
+              // console.error(`❌ Failed to load history for ${ticker}:`, error)
             })
         })
 
@@ -460,8 +459,7 @@ export const useStore = defineStore('counter', {
             // console.log(`✅ Loaded history for ${ticker}`)
             this._splitHistory[ticker] = response.data
           })
-          .catch((error) => {
-            console.log(`⏳ ${ticker} needs rate-limited fetch ${error}`)
+          .catch(() => {
             failedTickers.push(ticker)
           })
       })
@@ -497,8 +495,8 @@ export const useStore = defineStore('counter', {
               // console.log(`✅ Loaded history for ${ticker}`)
               this._splitHistory[ticker] = response.data
             })
-            .catch((error) => {
-              console.error(`❌ Failed to load split for ${ticker}:`, error)
+            .catch(() => {
+              // console.error(`❌ Failed to load split for ${ticker}:`, error)
             })
         })
 
@@ -575,7 +573,7 @@ export const useStore = defineStore('counter', {
           console.log(response)
           this._loadedInfo[ticker].analysis = response.data
         })
-        .catch(console.error)
+        .catch()
     },
     getStockDividends(ticker) {
       api
@@ -583,12 +581,12 @@ export const useStore = defineStore('counter', {
           params: {},
         })
         .then((response) => {
-          this._dividends[ticker] = response.data.sort(
+          this._dividends[ticker] = response.data?.sort(
             (a, b) => new Date(a.ex_dividend_date) - new Date(b.ex_dividend_date),
           )
           // console.log(this._dividends[ticker])
         })
-        .catch(console.error)
+        .catch()
     },
     refreshStock(ticker) {
       return api.get('/stock/refresh/' + ticker, {
@@ -602,7 +600,7 @@ export const useStore = defineStore('counter', {
           console.log(response)
           this._incomeReports[ticker] = response.data
         })
-        .catch(console.error)
+        .catch()
     },
   },
 })

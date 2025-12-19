@@ -178,6 +178,8 @@ class MySQLClient:
             self.ensure_connected() 
             with self.connection.cursor() as cursor:
                 try:
+                    # Ensure ticker exists in the parent 'tickers' table to avoid FK violation
+                    cursor.execute("INSERT IGNORE INTO tickers (ticker) VALUES (%s)", (ticker,))
                     # Use executemany for batch insertion
                     cursor.executemany(sql, price_data_list)
                     return cursor.rowcount 
@@ -207,6 +209,8 @@ class MySQLClient:
             self.ensure_connected() 
             with self.connection.cursor() as cursor:
                 try:
+                    # Ensure ticker exists in the parent 'tickers' table to avoid FK violation
+                    cursor.execute("INSERT IGNORE INTO tickers (ticker) VALUES (%s)", (ticker,))
                     # Use executemany for batch insertion
                     cursor.executemany(sql, split_data_list)
                     cursor.execute("UPDATE tickers SET checked_split = %s WHERE ticker = %s", (datetime.now(), ticker))
@@ -237,6 +241,8 @@ class MySQLClient:
             self.ensure_connected() 
             with self.connection.cursor() as cursor:
                 try:
+                    # Ensure ticker exists in the parent 'tickers' table to avoid FK violation
+                    cursor.execute("INSERT IGNORE INTO tickers (ticker) VALUES (%s)", (ticker,))
                     # Use executemany for batch insertion
                     cursor.executemany(sql, dividend_data_list)
                     cursor.execute("UPDATE tickers SET checked_dividend = %s WHERE ticker = %s", (datetime.now(), ticker))
@@ -262,6 +268,8 @@ class MySQLClient:
             self.ensure_connected() 
             with self.connection.cursor() as cursor:
                 try:
+                    # Ensure ticker exists in the parent 'tickers' table to avoid FK violation
+                    cursor.execute("INSERT IGNORE INTO tickers (ticker) VALUES (%s)", (ticker,))
                     # Use executemany for batch insertion
                     cursor.executemany(sql, income_reports)
                     return cursor.rowcount
