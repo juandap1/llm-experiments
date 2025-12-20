@@ -10,7 +10,7 @@
       </div>
     </th>
     <td class="text-right">{{ holding.toFixed(2) }}</td>
-    <td class="text-right">${{ stockInfo?.latest_price.toFixed(2) }}</td>
+    <td class="text-right">${{ stockInfo?.latest_price?.toFixed(2) }}</td>
     <td class="text-right">${{ avgCost.toFixed(2) }}</td>
     <td class="text-right font-weight-bold">${{ value.toFixed(2) }}</td>
     <td class="text-right">
